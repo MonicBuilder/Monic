@@ -1,14 +1,9 @@
 var gulp = require('gulp');
 var es6 = require('gulp-es6-transpiler'),
-	rename = require('gulp-rename'),
 	bump = require('gulp-bump');
 
 gulp.task('es6-transpiler', function () {
-	gulp.src('./lib/*.es6')
-		.pipe(rename(function (path) {
-			path.extname = '.js';
-		}))
-
+	gulp.src('./lib/*.js')
 		.pipe(es6({disallowUnknownReferences: false}))
 		.pipe(gulp.dest('./build/'));
 });

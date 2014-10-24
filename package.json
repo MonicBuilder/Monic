@@ -29,7 +29,6 @@
   "devDependencies": {
     "gulp": "^3.8.9",
     "gulp-bump": "^0.1.11",
-    "gulp-es6-transpiler": "^1.0.0",
-    "gulp-rename": "^1.2.0"
+    "gulp-es6-transpiler": "^1.0.0"
   }
 }
