@@ -1,0 +1,35 @@
+{
+  "name": "monic",
+  "version": "1.0.0",
+  "main": "monic.js",
+  "bin": {
+    "monic": "bin/monic.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kobezzza/Monic"
+  },
+  "dependencies": {
+    "async": "^0.9.0",
+    "glob": "^4.0.6"
+  },
+  "keywords": [
+    "templates"
+  ],
+  "author": "Kobezzza <kobezzza@mail.ru> (https://github.com/Kobezzza)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kobezzza/Monic/issues"
+  },
+  "description": "Сборщик файлов.",
+  "homepage": "https://github.com/kobezzza/Monic",
+  "devDependencies": {
+    "gulp": "^3.8.9",
+    "gulp-bump": "^0.1.11",
+    "gulp-es6-transpiler": "^1.0.0",
+    "gulp-rename": "^1.2.0"
+  }
+}
