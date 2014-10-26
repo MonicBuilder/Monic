@@ -11,6 +11,7 @@ exports.VERSION = [1, 0, 0];
  * @param {Array=} [params.flags] - массив заданных флагов
  * @param {Array=} [params.labels] - массив заданных меток
  * @param {?string=} [params.content] - текст файла
+ * @param {?string=} [params.lineSeparator] - символ перевода строки
  * @param {function(Error, string=, string=)} callback - функция обратного вызова
  */
 exports.compile = function(file, params, callback) {
@@ -18,6 +19,7 @@ exports.compile = function(file, params, callback) {
 
 	params.flags = params.flags || [];
 	params.labels = params.labels || [];
+	params.lineSeparator = params.lineSeparator || '\n';
 
 	if (params.flags) {
 		params.flags = params.flags.reduce(function (res, el, key) {
@@ -30,13 +32,13 @@ exports.compile = function(file, params, callback) {
 			return callback(err);
 		}
 
-		callback(null, fileStructure.compile(params.labels, params.flags), path);
+		callback(null, fileStructure.compile(params.labels, params.flags, params.lineSeparator), path);
 	}
 
 	if (params.content) {
-		new Parser().parse(file, params.content, finish);
+		new Parser(params.lineSeparator).parse(file, params.content, finish);
 
 	} else {
-		new Parser().parseFile(file, finish);
+		new Parser(params.lineSeparator).parseFile(file, finish);
 	}
 };
