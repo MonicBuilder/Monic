@@ -1,5 +1,6 @@
 var Parser = require('./build/parser');
 
+/** @type {!Array} */
 exports.VERSION = [1, 0, 0];
 
 /**
@@ -12,24 +13,18 @@ exports.VERSION = [1, 0, 0];
  * @param {function(Error, string=, string=)} callback - функция обратного вызова
  */
 exports.compile = function(file, content, labels, flags, callback) {
-	if (!content) {
-		new Parser().parseFile(file, function (err, fileStructure, path) {
+	function finish(err, fileStructure, path) {
+		if (err) {
+			return callback(err);
+		}
 
-			if (err) {
-				return callback(err);
-			}
+		callback(null, fileStructure.compile(labels, flags), path);
+	}
 
-			callback(null, fileStructure.compile(labels, flags), path);
-		});
+	if (content) {
+		new Parser().parse(file, content, finish);
 
 	} else {
-		new Parser().parse(file, content, function (err, fileStructure, path) {
-
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, fileStructure.compile(labels, flags), path);
-		});
+		new Parser().parseFile(file, finish);
 	}
 };
