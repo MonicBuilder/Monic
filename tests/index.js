@@ -3,9 +3,10 @@ var monic = require('../monic');
 
 var fs = require('fs');
 var path = require('path');
+var nl = require('os').EOL;
 
 if (process.argv[2]) {
-	monic.compile(path.join(basePath, process.argv[2], 'test.js'), [], {}, function (err, result) {
+	monic.compile(path.join(basePath, process.argv[2], 'test.js'), {lineSeparator: nl}, function (err, result) {
 		if (err) {
 			throw err;
 		}
@@ -28,7 +29,7 @@ if (process.argv[2]) {
 				}
 
 				if (stat.isDirectory()) {
-					monic.compile(path.join(dirPath, 'test.js'), [], {}, function (err, builderResult) {
+					monic.compile(path.join(dirPath, 'test.js'), {lineSeparator: nl}, function (err, builderResult) {
 						if (err) {
 							throw err;
 						}
@@ -38,9 +39,8 @@ if (process.argv[2]) {
 								throw err;
 							}
 
-							var status = builderResult.replace(/\r/g, '').trim() ===
-								result.replace(/\r/g, '').trim() ?
-									'ok' : 'fail';
+							var status = builderResult.trim() === result.trim() ?
+								'ok' : 'fail';
 
 							console.log(dir + ' ' + status);
 						});
