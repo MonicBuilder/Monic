@@ -8,8 +8,8 @@ exports.VERSION = [1, 0, 0];
  *
  * @param {string} file - адрес файла
  * @param {Object} [params] - дополнительные параметры операции
- * @param {Array=} [params.flags] - массив заданных флагов
- * @param {Array=} [params.labels] - массив заданных меток
+ * @param {Object=} [params.flags] - таблица заданных флагов
+ * @param {Object=} [params.labels] - таблица заданных меток
  * @param {?string=} [params.content] - текст файла
  * @param {?string=} [params.lineSeparator] - символ перевода строки
  * @param {Array=} [params.replacers] - массив функций трансформации
@@ -17,17 +17,10 @@ exports.VERSION = [1, 0, 0];
  */
 exports.compile = function(file, params, callback) {
 	params = params || {};
-	params.flags = params.flags || [];
-	params.labels = params.labels || [];
+	params.flags = params.flags || {};
+	params.labels = params.labels || {};
 	params.lineSeparator = params.lineSeparator || '\n';
 	params.replacers = params.replacers || [];
-
-	if (params.flags) {
-		params.flags = params.flags.reduce(function (res, el, key) {
-			res[key] = true;
-			return res;
-		}, {});
-	}
 
 	function finish(err, fileStructure, path) {
 		if (err) {
