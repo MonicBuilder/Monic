@@ -15,6 +15,13 @@ if (process.argv[2]) {
 	});
 
 } else {
+	var logPath = path.join(__dirname, 'error.txt'),
+		log = '';
+
+	if (fs.existsSync(logPath)) {
+		fs.unlinkSync(logPath);
+	}
+
 	fs.readdir(basePath, function (err, dirs) {
 		if (err) {
 			throw err;
@@ -29,21 +36,31 @@ if (process.argv[2]) {
 				}
 
 				if (stat.isDirectory()) {
-					monic.compile(path.join(dirPath, 'test.js'), {lineSeparator: nl}, function (err, builderResult) {
+					monic.compile(path.join(dirPath, 'test.js'), {lineSeparator: nl}, function (err, res) {
 						if (err) {
 							throw err;
 						}
 
-						fs.readFile(path.join(dirPath, 'result.js'), 'utf8', function (err, result) {
-							if (err) {
-								throw err;
+						res = res.trim();
+						var expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
+							status = 'ok';
+
+						if (res !== expected) {
+							status = 'fail';
+
+							if (log) {
+								log += '~~~~~~~~~~~~~~\n\n';
 							}
 
-							var status = builderResult.trim() === result.trim() ?
-								'ok' : 'fail';
+							log += 'Test: ' + dir + ', \n\nResult:\n' + res + '\n\nExpected:\n' + expected;
 
-							console.log(dir + ' ' + status);
-						});
+							fs.writeFileSync(
+								logPath,
+								log
+							);
+						}
+
+						console.log(dir + ' ' + status);
 					});
 				}
 			});
