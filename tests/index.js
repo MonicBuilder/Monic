@@ -1,9 +1,9 @@
-var basePath = 'tests';
-var monic = require('../monic');
+var basePath = 'tests',
+	monic = require('../monic');
 
-var fs = require('fs');
-var path = require('path');
-var nl = require('os').EOL;
+var fs = require('fs'),
+	path = require('path'),
+	nl = require('os').EOL;
 
 if (process.argv[2]) {
 	monic.compile(path.join(basePath, process.argv[2], 'test.js'), {lineSeparator: nl}, function (err, result) {
