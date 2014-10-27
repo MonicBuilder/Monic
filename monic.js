@@ -34,7 +34,7 @@ exports.compile = function(file, params, callback) {
 			return callback(err);
 		}
 
-		callback(null, fileStructure.compile(params.labels, params.flags, params.lineSeparator), path);
+		callback(null, fileStructure.compile(params.labels, params.flags), path);
 	}
 
 	var p = {
