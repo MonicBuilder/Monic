@@ -8,8 +8,126 @@ Monic — сборщик JS-файлов ([форк Jossy](https://github.com/Ko
 [![NPM dependencies](https://david-dm.org/kobezzza/monic.svg)](https://david-dm.org/kobezzza/monic)
 [![Build Status](https://travis-ci.org/kobezzza/Monic.svg?branch=master)](https://travis-ci.org/kobezzza/Monic)
 
-## Синтаксис и возможности
+## Использование
+### Сборка из командной строки
+#### Установка
 
+```bash
+npm install monic --global
+```
+
+#### Использование
+
+```bash
+monic [options] [file ...]
+```
+
+##### options
+
+```bash
+-h, --help               вывод справки
+-V, --version            вывод версии Monic
+
+-f, --file [src]         путь к файлу (метаинформация)
+
+--line-separator         символ новой строки (\n, \r или \r\n)
+--flags [list]           список флагов через запятую
+--labels [list]          список меток через запятую
+```
+
+##### Дополнение
+
+Результат сборки выводится в output, поэтому если хочется сразу сохранить его в файл.
+
+```bash
+monic file.js --flags ie --labels escapeHTML > _file.js
+```
+
+#### Примеры
+
+**Сборка файла с выводом результата в консоль**
+
+```bash
+monic myFile.js
+```
+
+**Сборка текста с выводом результата в консоль**
+
+```bash
+monic '//#include foo/*.js' -f myFile.js
+```
+
+Или поверх `stdio`
+
+```bash
+echo '//#include foo/*.js' | monic -f myFile.js
+```
+
+### Использование сборщика из NodeJS
+
+```js
+var monic = require('monic');
+monic.compile(
+	'myFile.js',
+
+	{
+		labels: {
+			escapeHTML: true
+		},
+
+		flags: {
+			ie: true
+		}
+	},
+
+	function (err, result) {
+		if (err) {
+			trhow err;
+		}
+
+		console.log(result);
+	}
+);
+```
+
+**Явное указание текста файла**
+
+```js
+var monic = require('monic');
+monic.compile(
+	'myFile.js',
+
+	{
+		content: '...'
+	},
+
+	function (err, result) {
+		...
+	}
+);
+```
+
+**Задание функций предварительной обработки**
+
+```js
+var monic = require('monic');
+monic.compile(
+	'myFile.js',
+
+	{
+		// Замена require конструкций на #include
+		replacers: function (text) {
+			return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
+		}
+	},
+
+	function (err, result) {
+		...
+	}
+);
+```
+
+## Синтаксис и возможности
 ### Подключение файлов
 
 Включить содержимое внешнего файла в текущий можно директивой `#include ...`.
@@ -220,127 +338,6 @@ String.truncate = function() {
 
 Кроме этого, `#without` тоже смотрит на эти области. Поэтому, например, `escapeHTML` может попасть в common.js,
 а `truncate` — в feature.js.
-
-## Использование
-
-### Сборка из командной строки
-
-#### Установка
-
-```bash
-npm install monic --global
-```
-
-#### Использование
-
-```bash
-monic [options] [file ...]
-```
-
-##### options
-
-```bash
--h, --help               вывод справки
--V, --version            вывод версии Monic
-
--f, --file [src]         путь к файлу (метаинформация)
-
---line-separator         символ новой строки (\n, \r или \r\n)
---flags [list]           список флагов через запятую
---labels [list]          список меток через запятую
-```
-
-##### Дополнение
-
-Результат сборки выводится в output, поэтому если хочется сразу сохранить его в файл.
-
-```bash
-monic file.js --flags ie --labels escapeHTML > _file.js
-```
-
-#### Примеры
-
-**Сборка файла с выводом результата в консоль**
-
-```bash
-monic myFile.js
-```
-
-**Сборка текста с выводом результата в консоль**
-
-```bash
-monic '//#include foo/*.js' -f myFile.js
-```
-
-Или поверх `stdio`
-
-```bash
-echo '//#include foo/*.js' | monic -f myFile.js
-```
-
-### Использование сборщика из NodeJS
-
-```js
-var monic = require('monic');
-monic.compile(
-	'myFile.js',
-
-	{
-		labels: {
-			escapeHTML: true
-		},
-
-		flags: {
-			ie: true
-		}
-	},
-
-	function (err, result) {
-		if (err) {
-			trhow err;
-		}
-
-		console.log(result);
-	}
-);
-```
-
-**Явное указание текста файла**
-
-```js
-var monic = require('monic');
-monic.compile(
-	'myFile.js',
-
-	{
-		content: '...'
-	},
-
-	function (err, result) {
-		...
-	}
-);
-```
-
-**Задание функций предварительной обработки**
-
-```js
-var monic = require('monic');
-monic.compile(
-	'myFile.js',
-
-	{
-		// Замена require конструкций на #include
-		replacers: function (text) {
-			return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
-		}
-	},
-
-	function (err, result) {
-		...
-	}
-);
-```
 
 ## Лицензия
 
