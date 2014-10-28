@@ -1,37 +1,86 @@
 #!/usr/bin/env node
 
-var builder = require('./builder');
+var monic = require('../monic'),
+	program = require('commander');
 
-if (require.main == module) {
-	if (process.argv[2]) {
-		compileFile(process.argv[2], process.argv.slice(3));
+var path = require('path'),
+	fs = require('fs');
 
-	} else {
-		console.log('Usage: ...');
+program
+	.version(monic.VERSION.join('.'))
+	.usage('[options] [file ...]')
+
+	.option('-f, --file [src]', 'path to the file (meta-information)')
+	.option('--line-separator [char]', 'the newline character')
+	.option('--flags [flags]', 'list of flags separated by commas')
+	.option('--labels [labels]', 'list of labels separated by commas')
+
+	.parse(process.argv);
+
+var args = program['args'],
+	input;
+
+var file = program['source'],
+	out = program['output'];
+
+if (!file && args.length) {
+	input = args.join(' ');
+
+	if (fs.existsSync(input)) {
+		file = input;
+		input = void 0;
 	}
-
-} else {
-	module.exports = require('./builder');
 }
 
-function compileFile(fileParam, vars) {
-	var fileParams = fileParam.split('::');
-	builder.compile(fileParams.shift() || 'index.js', null, fileParams, makeFlags(vars), function (err, result) {
+function action(file, input) {
+	if (!file) {
+		console.error('Invalid input data');
+		process.exit(1);
+	}
 
+	function toObj(res, el) {
+		res[el] = true;
+		return res;
+	}
+
+	monic.compile(file, {
+		content: input,
+		lineSeparator: program['lineSeparator'],
+		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
+		labels: (program['labels'] || '').split(',').reduce(toObj, {})
+
+	}, function (err, data) {
 		if (err) {
-			throw err;
+			console.error(err.message);
+			process.exit(1);
 		}
 
-		console.log(result);
+		console.log(data);
 	});
 }
 
-function makeFlags(vars) {
-	var flags = {};
+if (!file && input == null) {
+	var buf = '';
+	var stdin = process.stdin,
+		stdout = process.stdout;
 
-	for (var i = 0; i < vars.length; i++) {
-		flags[vars[i]] = true;
-	}
+	stdin.setEncoding('utf8');
+	stdin.on('data', function (chunk)  {
+		buf += chunk;
+	});
 
-	return flags;
+	stdin.on('end', function ()  {
+		action(program['file'], buf);
+	}).resume();
+
+	var nl = program['lineSeparator'] || '\n';
+	process.on('SIGINT', function ()  {
+		stdout.write(nl);
+		stdin.emit('end');
+		stdout.write(nl);
+		process.exit();
+	});
+
+} else {
+	action(file || program['file'], input);
 }
