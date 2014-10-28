@@ -6,16 +6,20 @@ var path = require('path');
  *
  * @constructor
  * @param {string} src - путь к файлу
+ * @param {string} lineSeparator - символ перевода строки
  */
-function FileStructure(src) {
+function FileStructure(src, lineSeparator) {
 	this.fname = src;
+	this.nl = lineSeparator;
 
 	this.root = {
 		type: 'root',
-		content: []
+		content: [],
+		labels: {}
 	};
 
 	this.currentBlock = this.root;
+	this.included = {};
 }
 
 /**
@@ -25,7 +29,7 @@ function FileStructure(src) {
  * @return {string}
  */
 FileStructure.prototype.getRelativePathOf = function (src) {
-	return path.join(path.dirname(this.fname), src);
+	return path.resolve(path.dirname(this.fname), src);
 };
 
 /**
@@ -48,7 +52,7 @@ FileStructure.prototype.addCode = function (code) {
  * Добавить другой файл в струтуру файла
  *
  * @param {!FileStructure} fileStructure - структура добавляемого файла
- * @param {!Array} labels - массив меток
+ * @param {!Object} labels - таблица заданных меток
  * @return {!FileStructure}
  */
 FileStructure.prototype.addInclude = function (fileStructure, labels) {
@@ -65,7 +69,7 @@ FileStructure.prototype.addInclude = function (fileStructure, labels) {
  * Добавить исключение файла в структуру файла
  *
  * @param {!FileStructure} fileStructure - структура добавляемого файла
- * @param {!Array} labels - массив меток
+ * @param {!Object} labels - таблица заданных меток
  * @return {!FileStructure}
  */
 FileStructure.prototype.addWithout = function (fileStructure, labels) {
@@ -118,10 +122,6 @@ FileStructure.prototype.addUnset = function (flag) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.beginIf = function (flag, value) {
-	if (this.currentBlock.type === 'if') {
-		throw new Error('Block "#if" cannot be nested');
-	}
-
 	var ifBlock = {
 		parent: this.currentBlock,
 		type: 'if',
@@ -156,10 +156,6 @@ FileStructure.prototype.endIf = function () {
  * @return {!FileStructure}
  */
 FileStructure.prototype.beginLabel = function (label) {
-	if (this.currentBlock.type != 'root') {
-		throw new Error('Block "#label" cannot be nested');
-	}
-
 	var labelBlock = {
 		parent: this.currentBlock,
 		type: 'label',
@@ -193,7 +189,7 @@ FileStructure.prototype.endLabel = function () {
  * @return {!FileStructure}
  */
 FileStructure.prototype.error = function (msg) {
-	this.addCode('throw new Error(' + JSON.stringify('fileBuilder error: ' + msg) + ');\n');
+	this.addCode((("throw new Error(" + (JSON.stringify(("fileBuilder error: " + msg)))) + (");" + (this.nl)) + ""));
 	return this;
 };
 
@@ -221,23 +217,33 @@ FileStructure.prototype.reset = function () {
 /**
  * Компилировать структуру файла
  *
- * @param {Array=} [opt_labels] - массив меток
- * @param {Object=} [opt_flags] - таблица флагов
+ * @param {Array=} [opt_labels] - таблица заданных меток
+ * @param {Object=} [opt_flags] - таблица заданных флагов
  * @return {string}
  */
 FileStructure.prototype.compile = function (opt_labels, opt_flags) {
-	return this._compileBlock(this.root, opt_labels || [], opt_flags || {});
+	if (opt_labels) {
+		for (var key in opt_labels) {
+			if (!opt_labels.hasOwnProperty(key)) {
+				continue;
+			}
+
+			this.root.labels[key] = true;
+		}
+	}
+
+	return this._compileBlock(this.root, this.root.labels, opt_flags || {});
 };
 
 /**
  * Компилировать исключение файла
  *
- * @param {Array=} [opt_labels] - массив меток
- * @param {Object=} [opt_flags] - таблица флагов
+ * @param {Array=} [opt_labels] - таблица заданных меток
+ * @param {Object=} [opt_flags] - таблица заданных флагов
  * @return {!FileStructure}
  */
 FileStructure.prototype.without = function (opt_labels, opt_flags) {
-	this._compileBlock(this.root, opt_labels || [], opt_flags || {});
+	this._compileBlock(this.root, opt_labels || {}, opt_flags || {});
 	return this;
 };
 
@@ -274,8 +280,8 @@ FileStructure.prototype._resetBlock = function (block) {
  *
  * @private
  * @param {Object} block - объект структуры файла
- * @param {!Array} labels - массив меток
- * @param {!Object} flags - таблица флагов
+ * @param {!Object} labels - таблица заданных меток
+ * @param {!Object} flags - таблица заданных флагов
  * @return {string}
  */
 FileStructure.prototype._compileBlock = function (block, labels, flags) {var this$0 = this;
@@ -288,13 +294,28 @@ FileStructure.prototype._compileBlock = function (block, labels, flags) {var thi
 		} break;
 
 		case 'include': {
-			return block.fileStructure.compile(block.labels, flags);
-		}
+			var cacheKey = block.fileStructure.fname +
+				'@' + Object.keys(block.labels).sort() +
+				'@' + Object.keys(flags).sort();
+
+			for (var key in labels) {
+				if (!labels.hasOwnProperty(key)) {
+					continue;
+				}
+
+				block.labels[key] = true;
+			}
+
+			if (!this.included[cacheKey]) {
+				this.included[cacheKey] = true;
+				return block.fileStructure.compile(block.labels, flags);
+			}
+
+		} break;
 
 		case 'without': {
 			block.fileStructure.without(block.labels, flags);
-			return '';
-		}
+		} break;
 
 		case 'set': {
 			flags[block.varName] = block.value;
@@ -317,8 +338,8 @@ FileStructure.prototype._compileBlock = function (block, labels, flags) {var thi
  *
  * @private
  * @param {Object} block - объект структуры файла
- * @param {!Array} labels - массив меток
- * @param {!Object} flags - таблица флагов
+ * @param {!Object} labels - таблица заданных меток
+ * @param {!Object} flags - таблица заданных флагов
  * @return {boolean}
  */
 FileStructure.prototype._isValidContentBlock = function (block, labels, flags) {
@@ -328,11 +349,11 @@ FileStructure.prototype._isValidContentBlock = function (block, labels, flags) {
 		}
 
 		case 'if': {
-			return !!flags[block.varName] === !!block.value;
+			return Boolean(flags[block.varName]) === Boolean(block.value);
 		}
 
 		case 'label': {
-			return !labels.length || labels.indexOf(block.label) > -1;
+			return Boolean(!Object.keys(labels).length || labels[block.label]);
 		}
 	}
 

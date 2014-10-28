@@ -1,14 +1,14 @@
-module.exports = FileBuilderError;
+module.exports = MonicError;
 
 /**
- * Ошибка FileBuilder
+ * Объект ошибки Monic
  *
  * @constructor
- * @param {string} msg - сообщение ошибки
+ * @param {string} msg - текст ошибки
  * @param {string} file - адрес файла, в котором произошла ошибка
  * @param {number} line - номер строки, на которой произошла ошибка
  */
-function FileBuilderError(msg, file, line) {
+function MonicError(msg, file, line) {
 	this.message = msg;
 	this.file = file;
 	this.line = line;
@@ -18,6 +18,6 @@ function FileBuilderError(msg, file, line) {
  * Преобразовать объект ошибки в строку
  * @return {string}
  */
-FileBuilderError.prototype.toString = function() {
-	return 'Error: ' + this.message + ' (' + this.file + ':' + this.line + ')';
+MonicError.prototype.toString = function() {
+	return (("Error: " + (this.message)) + (" (" + (this.file)) + (": " + (this.line)) + ")");
 };
