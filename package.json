@@ -6,7 +6,7 @@
     "monic": "bin/monic.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests"
   },
   "repository": {
     "type": "git",
@@ -14,17 +14,18 @@
   },
   "dependencies": {
     "async": "^0.9.0",
+    "commander": "^2.5.0",
     "glob": "^4.0.6"
   },
   "keywords": [
-    "templates"
+    "files builder"
   ],
   "author": "Kobezzza <kobezzza@mail.ru> (https://github.com/Kobezzza)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kobezzza/Monic/issues"
   },
-  "description": "Сборщик файлов.",
+  "description": "Сборщик JavaScript файлов.",
   "homepage": "https://github.com/kobezzza/Monic",
   "devDependencies": {
     "gulp": "^3.8.9",
