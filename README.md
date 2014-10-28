@@ -129,7 +129,7 @@ alert('IE only');
 
 Эта функциональность очень полезна полезна при разработке библиотек и фреймворков.
 Например, в нашей библиотеке есть файл String.js, содержащий несколько десятков функций для работы со строками.
-Выделять каждую функцию в отдельный файл как-то неправильно, но и подключать потом несколько сотен строк кода ради одной функции тоже не хочется. В случае с Monic файл String.js размечается на области. 
+Выделять каждую функцию в отдельный файл как-то неправильно, но и подключать потом несколько сотен строк кода ради одной функции тоже не хочется. В случае с Monic файл String.js размечается на области.
 Имена у областей могут быть произвольными, но лучше, чтобы они совпадали с именами функций.
 
 ```js
@@ -221,27 +221,121 @@ String.truncate = function() {
 
 ### Сборка из командной строки
 
-```js
-monic file.js --flags ie,debug --labels escapeHTML
+#### Установка
+
+```bash
+npm install monic --global
 ```
+
+#### Использование
+
+```bash
+monic [options] [file ...]
+```
+
+##### options
+
+```bash
+-h, --help               вывод справки
+-V, --version            вывод версии Monic
+
+-f, --file [src]         путь к файлу (метаинформация)
+
+--line-separator         символ новой строки (\n, \r или \r\n)
+--flags [list]           список флагов через запятую
+--labels [list]          список меток через запятую
+```
+
+##### Дополнение
 
 Результат сборки выводится в output, поэтому если хочется сразу сохранить его в файл.
 
-```js
+```bash
 monic file.js --flags ie --labels escapeHTML > _file.js
+```
+
+#### Примеры
+
+**Сборка файла с выводом результата в консоль**
+
+```bash
+monic myFile.js
+```
+
+**Сборка текста с выводом результата в консоль**
+
+```bash
+monic '//#include foo/*.js' -f myFile.js
+```
+
+Или поверх `stdio`
+
+```bash
+echo '//#include foo/*.js' | monic -f myFile.js
 ```
 
 ### Использование сборщика из NodeJS
 
 ```js
 var monic = require('monic');
-monic.compile('string.js', {labels: {escapeHTML: true}, flags: {ie: true}}, function (err, result) {
-	if (err) {
-		trhow err;
+monic.compile(
+	'myFile.js',
+
+	{
+		labels: {
+			escapeHTML: true
+		},
+
+		flags: {
+			ie: true
+		}
+	},
+
+	function (err, result) {
+		if (err) {
+			trhow err;
+		}
+
+		console.log(result);
 	}
-	
-	console.log(result);
-});
+);
+```
+
+**Явное указание текста файла**
+
+```js
+var monic = require('monic');
+monic.compile(
+	'myFile.js',
+
+	{
+		content: '...'
+	},
+
+	function (err, result) {
+		...
+	}
+);
+```
+
+**Задание функций предварительной обработки**
+
+```js
+var monic = require('monic');
+monic.compile(
+	'myFile.js',
+
+	{
+		// Замена require конструкций на #include
+		replacers: function (text) {
+			return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
+		}
+	},
+
+	function (err, result) {
+		...
+	}
+);
 ```
 
 ## Лицензия
