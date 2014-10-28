@@ -343,7 +343,7 @@ String.truncate = function() {
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Андрей Кобец (Kobezzza) <<kobezzza@mail.ru>>
+Copyright (c) 2014 Андрей Кобец (Kobezzza) <kobezzza@mail.ru>
 
 Данная лицензия разрешает лицам, получившим копию данного программного обеспечения и
 сопутствующей документации (в дальнейшем именуемыми «Программное Обеспечение»),
