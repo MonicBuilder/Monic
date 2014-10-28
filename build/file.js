@@ -29,7 +29,7 @@ function FileStructure(src, lineSeparator) {
  * @return {string}
  */
 FileStructure.prototype.getRelativePathOf = function (src) {
-	return path.resolve(path.dirname(this.fname), src);
+	return path.normalize(path.resolve(path.dirname(this.fname), src));
 };
 
 /**

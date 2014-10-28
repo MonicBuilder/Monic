@@ -12,8 +12,8 @@ program
 
 	.option('-f, --file [src]', 'path to the file (meta-information)')
 	.option('--line-separator [char]', 'the newline character')
-	.option('--flags [flags]', 'list of flags separated by commas')
-	.option('--labels [labels]', 'list of labels separated by commas')
+	.option('--flags [list]', 'list of flags separated by commas')
+	.option('--labels [list]', 'list of labels separated by commas')
 
 	.parse(process.argv);
 

@@ -112,7 +112,7 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 		dirname = path.dirname(file);
 
 	// Обработка масок URL
-	content = content.replace(/^(\s*\/\/#include\s+)(.*)/gm, function(sstr, decl, src)  {
+	content = content.replace(/^(\s*\/\/(?:#include|without)\s+)(.*)/gm, function(sstr, decl, src)  {
 		if (/\*/.test(src)) {
 			actions.push(function(callback)  {
 				var parts = src.split('::');
