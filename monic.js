@@ -35,8 +35,8 @@ exports.compile = function(file, params, callback) {
 		replacers: params.replacers
 	};
 
-	if (params.content) {
-		new Parser(p).parse(file, params.content, finish);
+	if (params.content != null) {
+		new Parser(p).parse(file, String(params.content), finish);
 
 	} else {
 		new Parser(p).parseFile(file, finish);
