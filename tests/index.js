@@ -5,70 +5,59 @@ var fs = require('fs'),
 	path = require('path'),
 	nl = require('os').EOL;
 
-if (process.argv[2]) {
-	monic.compile(path.join(basePath, process.argv[2], 'test.js'), {lineSeparator: nl}, function (err, result) {
-		if (err) {
-			throw err;
-		}
+var logPath = path.join(__dirname, 'error.txt'),
+	log = '';
 
-		console.log(result);
-	});
+if (fs.existsSync(logPath)) {
+	fs.unlinkSync(logPath);
+}
 
-} else {
-	var logPath = path.join(__dirname, 'error.txt'),
-		log = '';
-
-	if (fs.existsSync(logPath)) {
-		fs.unlinkSync(logPath);
+fs.readdir(basePath, function (err, dirs) {
+	if (err) {
+		throw err;
 	}
 
-	fs.readdir(basePath, function (err, dirs) {
-		if (err) {
-			throw err;
-		}
+	dirs.forEach(function (dir) {
+		var dirPath = path.join(basePath, dir);
 
-		dirs.forEach(function (dir) {
-			var dirPath = path.join(basePath, dir);
+		fs.stat(dirPath, function (err, stat) {
+			if (err) {
+				throw err;
+			}
 
-			fs.stat(dirPath, function (err, stat) {
-				if (err) {
-					throw err;
-				}
+			if (stat.isDirectory()) {
+				monic.compile(path.join(dirPath, 'test.js'), {lineSeparator: nl}, function (err, res) {
+					if (err) {
+						throw err;
+					}
 
-				if (stat.isDirectory()) {
-					monic.compile(path.join(dirPath, 'test.js'), {lineSeparator: nl}, function (err, res) {
-						if (err) {
-							throw err;
+					res = res.trim();
+					var expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
+						status = 'ok',
+						error = res !== expected;
+
+					if (error) {
+						status = 'fail';
+
+						if (log) {
+							log += '~~~~~~~~~~~~~~\n\n';
 						}
 
-						res = res.trim();
-						var expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
-							status = 'ok',
-							error = res !== expected;
+						log += 'Test: ' + dir + '\n\nResult:\n' + res + '\n\nExpected:\n' + expected;
 
-						if (error) {
-							status = 'fail';
+						fs.writeFileSync(
+							logPath,
+							log
+						);
+					}
 
-							if (log) {
-								log += '~~~~~~~~~~~~~~\n\n';
-							}
+					console[error ? 'error' : 'log'](dir + ' - ' + status);
 
-							log += 'Test: ' + dir + '\n\nResult:\n' + res + '\n\nExpected:\n' + expected;
-
-							fs.writeFileSync(
-								logPath,
-								log
-							);
-						}
-
-						console[error ? 'error' : 'log'](dir + ' - ' + status);
-
-						if (error) {
-							process.exit(1);
-						}
-					});
-				}
-			});
+					if (error) {
+						process.exit(1);
+					}
+				});
+			}
 		});
 	});
-}
+});
