@@ -18,6 +18,6 @@ function MonicError(msg, file, line) {
  * Преобразовать объект ошибки в строку
  * @return {string}
  */
-MonicError.prototype.toString = function() {
+MonicError.prototype.toString = function () {
 	return (("Error: " + (this.message)) + (" (" + (this.file)) + (": " + (this.line)) + ")");
 };
