@@ -43,9 +43,10 @@ if (process.argv[2]) {
 
 						res = res.trim();
 						var expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
-							status = 'ok';
+							status = 'ok',
+							error = res !== expected;
 
-						if (res !== expected) {
+						if (error) {
 							status = 'fail';
 
 							if (log) {
@@ -60,7 +61,11 @@ if (process.argv[2]) {
 							);
 						}
 
-						console.log(dir + ' ' + status);
+						console[error ? 'error' : 'log'](dir + ' ' + status);
+
+						if (error) {
+							process.exit(1);
+						}
 					});
 				}
 			});
