@@ -1,6 +1,6 @@
 {
   "name": "monic",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "monic.js",
   "bin": {
     "monic": "bin/monic.js"
