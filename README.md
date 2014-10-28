@@ -115,10 +115,12 @@ monic.compile(
 	'myFile.js',
 
 	{
-		// Замена require конструкций на #include
-		replacers: function (text) {
-			return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
-		}
+		replacers: [
+			// Замена require конструкций на #include
+			function (text) {
+				return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
+			}
+		]
 	},
 
 	function (err, result) {
