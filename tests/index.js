@@ -61,7 +61,7 @@ if (process.argv[2]) {
 							);
 						}
 
-						console[error ? 'error' : 'log'](dir + ' ' + status);
+						console[error ? 'error' : 'log'](dir + ' - ' + status);
 
 						if (error) {
 							process.exit(1);
