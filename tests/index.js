@@ -52,7 +52,7 @@ if (process.argv[2]) {
 								log += '~~~~~~~~~~~~~~\n\n';
 							}
 
-							log += 'Test: ' + dir + ', \n\nResult:\n' + res + '\n\nExpected:\n' + expected;
+							log += 'Test: ' + dir + '\n\nResult:\n' + res + '\n\nExpected:\n' + expected;
 
 							fs.writeFileSync(
 								logPath,

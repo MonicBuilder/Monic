@@ -1,14 +1,3 @@
-//#set a
-//#include test.js
-alert(1);
-
-//#label t2
-//#include ::t3
-alert(2);
-//#endlabel t2
-
-//#label t3
-alert(3);
-//#endlabel t3
-
+//#set foo
+//#include test.js::car
 alert(1);
