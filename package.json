@@ -1,16 +1,35 @@
 {
   "name": "monic",
-  "version": "1.0.3",
+  "description": "Сборщик JavaScript файлов.",
+  "version": "1.0.4",
+  "homepage": "https://github.com/kobezzza/Monic",
+  "author": {
+    "name": "Kobezzza",
+    "email": "kobezzza@mail.ru",
+    "url": "https://github.com/kobezzza/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kobezzza/Monic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kobezzza/Monic/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/kobezzza/Monic/blob/master/LICENSE"
+    }
+  ],
   "main": "monic.js",
   "bin": {
     "monic": "bin/monic.js"
   },
+  "engines": {
+    "node": ">= 0.10"
+  },
   "scripts": {
     "test": "node tests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kobezzza/Monic"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -20,13 +39,6 @@
   "keywords": [
     "files builder"
   ],
-  "author": "Kobezzza <kobezzza@mail.ru> (https://github.com/Kobezzza)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/kobezzza/Monic/issues"
-  },
-  "description": "Сборщик JavaScript файлов.",
-  "homepage": "https://github.com/kobezzza/Monic",
   "devDependencies": {
     "gulp": "^3.8.9",
     "gulp-bump": "^0.1.11",
