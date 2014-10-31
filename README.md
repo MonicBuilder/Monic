@@ -91,7 +91,7 @@ monic.compile(
 
 	function (err, result) {
 		if (err) {
-			trhow err;
+			throw err;
 		}
 
 		console.log(result);
