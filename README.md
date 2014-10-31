@@ -63,6 +63,10 @@ monic '//#include foo/*.js' -f myFile.js
 echo '//#include foo/*.js' | monic -f myFile.js
 ```
 
+### [Использование с Grunt](https://github.com/kobezzza/grunt-monic)
+
+### [Использование с Gulp](https://github.com/kobezzza/gulp-monic)
+
 ### Использование сборщика из NodeJS
 
 ```js
@@ -265,13 +269,13 @@ alert('IE only');
 var String = {};
 
 //#label truncate
-String.truncate = function() {
+String.truncate = function () {
 
 };
 //#endlabel truncate
 
 //#label escapeHTML
-String.escapeHTML = function() {
+String.escapeHTML = function () {
 
 };
 //#endlabel escapeHTML
@@ -288,7 +292,7 @@ String.escapeHTML = function() {
 ```js
 var String = {};
 
-String.escapeHTML = function() {
+String.escapeHTML = function () {
 
 };
 ```
@@ -310,7 +314,7 @@ String.escapeHTML = function() {
 ```js
 //#label truncate
 //#include ::trim
-String.truncate = function() {};
+String.truncate = function () {};
 //#endlabel truncate
 ```
 
@@ -330,13 +334,13 @@ alert(1);
 ```js
 var String = {};
 
-String.escapeHTML = function() {
+String.escapeHTML = function () {
 
 };
 
 alert(1);
 
-String.truncate = function() {
+String.truncate = function () {
 
 };
 ```

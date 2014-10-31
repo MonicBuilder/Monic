@@ -1,7 +1,7 @@
 var Parser = require('./build/parser');
 
 /** @type {!Array} */
-exports.VERSION = [1, 0, 4];
+exports.VERSION = [1, 0, 5];
 
 /**
  * Обработать указанный файл
@@ -15,7 +15,7 @@ exports.VERSION = [1, 0, 4];
  * @param {Array=} [params.replacers] - массив функций трансформации
  * @param {function(Error, string=, string=)} callback - функция обратного вызова
  */
-exports.compile = function(file, params, callback) {
+exports.compile = function (file, params, callback) {
 	params = params || {};
 	params.flags = params.flags || {};
 	params.labels = params.labels || {};

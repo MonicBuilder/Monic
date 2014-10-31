@@ -21,4 +21,4 @@ gulp.task('watch', function () {
 	gulp.watch('./lib/*.es6', ['es6-transpiler', 'bump']);
 });
 
-gulp.task('default', ['es6-transpiler', 'bump', 'watch']);
+gulp.task('default', ['es6-transpiler', 'bump']);
