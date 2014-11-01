@@ -1,7 +1,7 @@
 ## v1.0.6
 
 - [x] Исправление ошибок;
-- [x] Добавлена интеграция coveralls и istanbul;
+- [x] Добавлена интеграция [coveralls](https://github.com/cainus/node-coveralls) и [istanbul](https://github.com/gotwarlost/istanbul);
 - [x] Улучшено описание.
 
 ## v1.0.5
