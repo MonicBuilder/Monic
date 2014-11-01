@@ -7,6 +7,7 @@ Monic — сборщик JS-файлов ([форк Jossy](https://github.com/Ko
 [![NPM version](http://img.shields.io/npm/v/monic.svg?style=flat)](http://badge.fury.io/js/monic)
 [![NPM dependencies](http://img.shields.io/david/kobezzza/Monic.svg?style=flat)](https://david-dm.org/kobezzza/monic)
 [![Build Status](http://img.shields.io/travis/kobezzza/Monic.svg?style=flat&branch=master)](https://travis-ci.org/kobezzza/Monic)
+[![Coverage Status](http://img.shields.io/coveralls/kobezzza/Monic.svg?style=flat)](https://coveralls.io/r/kobezzza/Monic?branch=master)
 
 ## Использование
 ### Сборка из командной строки
