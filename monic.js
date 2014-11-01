@@ -1,7 +1,7 @@
 var Parser = require('./build/parser');
 
 /** @type {!Array} */
-exports.VERSION = [1, 0, 7];
+exports.VERSION = [1, 0, 8];
 
 /**
  * Обработать указанный файл
