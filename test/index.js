@@ -1,4 +1,4 @@
-var basePath = 'tests',
+var basePath = 'test',
 	monic = require('../monic');
 
 var fs = require('fs'),

@@ -1,7 +1,7 @@
 {
   "name": "monic",
   "description": "Сборщик JavaScript файлов.",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "homepage": "https://github.com/kobezzza/Monic",
   "author": {
     "name": "Kobezzza",
@@ -29,8 +29,8 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "test": "node tests",
-    "test-travis": "istanbul cover tests"
+    "test": "node test",
+    "test-travis": "istanbul cover test"
   },
   "dependencies": {
     "async": "^0.9.0",
