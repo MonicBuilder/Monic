@@ -26,7 +26,7 @@ fs.readdir(basePath, function (err, dirs) {
 			}
 
 			if (stat.isDirectory()) {
-				monic.compile(path.join(dirPath, 'test.js'), {lineSeparator: nl}, function (err, res) {
+				function test(err, res) {
 					if (err) {
 						throw err;
 					}
@@ -56,7 +56,25 @@ fs.readdir(basePath, function (err, dirs) {
 					if (error) {
 						process.exit(1);
 					}
-				});
+				}
+
+				var src = path.join(dirPath, 'test.js');
+				var replacers = [
+					function (text) {
+						return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
+					}
+				];
+
+				monic.compile(src, {
+					lineSeparator: nl,
+					replacers: replacers
+				}, test);
+
+				monic.compile(src, {
+					lineSeparator: nl,
+					replacers: replacers,
+					content: fs.readFileSync(src)
+				}, test);
 			}
 		});
 	});

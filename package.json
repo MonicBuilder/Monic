@@ -1,7 +1,7 @@
 {
   "name": "monic",
   "description": "Сборщик JavaScript файлов.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "homepage": "https://github.com/kobezzza/Monic",
   "author": {
     "name": "Kobezzza",
@@ -29,7 +29,8 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "test": "node tests"
+    "test": "node tests",
+    "test-travis": "istanbul cover tests"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -37,11 +38,15 @@
     "glob": "^4.0.6"
   },
   "keywords": [
-    "files builder"
+    "files builder",
+    "filesbuilder",
+    "include"
   ],
   "devDependencies": {
+    "coveralls": "^2.11.2",
     "gulp": "^3.8.9",
     "gulp-bump": "^0.1.11",
-    "gulp-es6-transpiler": "^1.0.0"
+    "gulp-es6-transpiler": "^1.0.0",
+    "istanbul": "^0.3.2"
   }
 }

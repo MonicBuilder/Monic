@@ -19,7 +19,7 @@ var async = require('async'),
  */
 function Parser(params) {
 	this.nl = params.lineSeparator;
-	this.replacers = params.replacers || [];
+	this.replacers = params.replacers || /* istanbul ignore next */ [];
 	this.realpathCache = {};
 	this.cache = {};
 }
@@ -46,6 +46,7 @@ Parser.prototype.normalizePath = function (file, callback) {var this$0 = this;
 			},
 
 			function(exists, callback)  {
+				/* istanbul ignore if */
 				if (!exists) {
 					return callback(new Error((("File \"" + file) + "\" not found")));
 				}
@@ -56,6 +57,7 @@ Parser.prototype.normalizePath = function (file, callback) {var this$0 = this;
 			},
 
 			function(stat, callback)  {
+				/* istanbul ignore if */
 				if (!stat.isFile()) {
 					return callback(new Error((("\"" + file) + "\" is not a file")));
 				}
@@ -77,6 +79,7 @@ Parser.prototype.normalizePath = function (file, callback) {var this$0 = this;
  */
 Parser.prototype.parseFile = function (file, callback) {var this$0 = this;
 	this.normalizePath(file, function(err, src)  {
+		/* istanbul ignore if */
 		if (err) {
 			return callback(err);
 		}
@@ -86,6 +89,7 @@ Parser.prototype.parseFile = function (file, callback) {var this$0 = this;
 		}
 
 		fs.readFile(src, 'utf8', function(err, content)  {
+			/* istanbul ignore if */
 			if (err) {
 				return callback(err);
 			}
@@ -104,6 +108,7 @@ Parser.prototype.parseFile = function (file, callback) {var this$0 = this;
  * @param {function(Error, FileStructure=, string=)} callback - функция обратного вызова
  */
 Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
+	/* istanbul ignore next */
 	if (this.cache[file]) {
 		return callback(null, this.cache[file], file);
 	}
@@ -117,6 +122,7 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 			actions.push(function(callback)  {
 				var parts = src.split('::');
 				glob(path.join(dirname, parts[0]), null, function(err, files)  {
+					/* istanbul ignore else */
 					if (files) {
 						content = content.replace(sstr, files.reduce(function(res, el)  {
 							parts[0] = path.relative(dirname, el);
@@ -134,6 +140,7 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 	});
 
 	async.parallel(actions, function(err)  {
+		/* istanbul ignore if */
 		if (err) {
 			return callback(err);
 		}
@@ -154,6 +161,7 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 			var errors = [],
 				i;
 
+			/* istanbul ignore next */
 			function appendError(err) {
 				var msg = err.message,
 					line = i + 1;
@@ -163,6 +171,7 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 			}
 
 			function asyncParseCallback(err) {
+				/* istanbul ignore if */
 				if (err) {
 					appendError(err);
 				}
@@ -174,6 +183,7 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 				var line = lines[i];
 
 				if (line.match(/^\s*\/\/#(.*)/)) {
+					/* istanbul ignore else */
 					if (RegExp.$1) {
 						var command = RegExp.$1.split(' '),
 							dir = String(command.shift());
@@ -184,15 +194,18 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 						if (/^(include|without)$/.test(dir)) {
 							return this$0[key](fileStructure, params, asyncParseCallback);
 
+						/* istanbul ignore else */
 						} else if (/^(label|endlabel|if|endif|set|unset)$/.test(dir)) {
 							try {
 								this$0[key](fileStructure, params);
 
 							} catch (err) {
+								/* istanbul ignore next */
 								appendError(err);
 							}
 
 						} else {
+							/* istanbul ignore next */
 							appendError(new Error(("Unknown directive " + dir)));
 						}
 					}
@@ -228,6 +241,7 @@ Parser.prototype._include = function (file, params, callback) {
 	if (includeFileName) {
 		var src = file.getRelativePathOf(includeFileName);
 		this.parseFile(src, function(err, includeFile)  {
+			/* istanbul ignore if */
 			if (err) {
 				return callback(err);
 			}
@@ -238,6 +252,7 @@ Parser.prototype._include = function (file, params, callback) {
 
 	} else {
 		for (var key in paramsParts) {
+			/* istanbul ignore if */
 			if (!paramsParts.hasOwnProperty(key)) {
 				continue;
 			}
@@ -266,6 +281,7 @@ Parser.prototype._without = function (file, value, callback) {
 	}, {});
 
 	this.parseFile(includeFname, function(err, includeFile)  {
+		/* istanbul ignore if */
 		if (err) {
 			return callback(err);
 		}
@@ -300,6 +316,7 @@ Parser.prototype._endlabel = function (file) {
  * @param {string} value - значение директивы
  */
 Parser.prototype._if = function (file, value) {
+	/* istanbul ignore if */
 	if (!value.trim()) {
 		throw new Error('Bad "if" directive');
 	}
@@ -330,6 +347,7 @@ Parser.prototype._endif = function (file) {
  * @param {string} value - значение директивы
  */
 Parser.prototype._set = function (file, value) {
+	/* istanbul ignore if */
 	if (!value.trim()) {
 		throw new Error('Bad set directive');
 	}
@@ -344,6 +362,7 @@ Parser.prototype._set = function (file, value) {
  * @param {string} value - значение директивы
  */
 Parser.prototype._unset = function (file, value) {
+	/* istanbul ignore if */
 	if (!value.trim()) {
 		throw new Error('Bad unset directive');
 	}

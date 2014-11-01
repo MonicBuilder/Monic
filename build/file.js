@@ -141,6 +141,7 @@ FileStructure.prototype.beginIf = function (flag, value) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.endIf = function () {
+	/* istanbul ignore if */
 	if (this.currentBlock.type != 'if') {
 		throw new Error('Attempt to close an unopened block "#if"');
 	}
@@ -174,6 +175,7 @@ FileStructure.prototype.beginLabel = function (label) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.endLabel = function () {
+	/* istanbul ignore if */
 	if (this.currentBlock.type !== 'label') {
 		throw new Error('Attempt to close an unopened block "#label"');
 	}
@@ -181,6 +183,8 @@ FileStructure.prototype.endLabel = function () {
 	this.currentBlock = this.currentBlock.parent;
 	return this;
 };
+
+/* istanbul ignore next */
 
 /**
  * Добавить ошибку в структуру файла
@@ -194,27 +198,6 @@ FileStructure.prototype.error = function (msg) {
 };
 
 /**
- * Закрыть структуру файла
- * @return {!FileStructure}
- */
-FileStructure.prototype.close = function () {
-	if (this.currentBlock.type !== 'root') {
-		throw new Error('Unexpected end of file');
-	}
-
-	return this;
-};
-
-/**
- * Сбросить структуру файла
- * @return {!FileStructure}
- */
-FileStructure.prototype.reset = function () {
-	this._resetBlock(this.root);
-	return this;
-};
-
-/**
  * Компилировать структуру файла
  *
  * @param {Array=} [opt_labels] - таблица заданных меток
@@ -222,8 +205,10 @@ FileStructure.prototype.reset = function () {
  * @return {string}
  */
 FileStructure.prototype.compile = function (opt_labels, opt_flags) {
+	/* istanbul ignore else */
 	if (opt_labels) {
 		for (var key in opt_labels) {
+			/* istanbul ignore if */
 			if (!opt_labels.hasOwnProperty(key)) {
 				continue;
 			}
@@ -232,7 +217,7 @@ FileStructure.prototype.compile = function (opt_labels, opt_flags) {
 		}
 	}
 
-	return this._compileBlock(this.root, this.root.labels, opt_flags || {});
+	return this._compileBlock(this.root, this.root.labels, opt_flags || /* istanbul ignore next */ {});
 };
 
 /**
@@ -243,35 +228,7 @@ FileStructure.prototype.compile = function (opt_labels, opt_flags) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.without = function (opt_labels, opt_flags) {
-	this._compileBlock(this.root, opt_labels || {}, opt_flags || {});
-	return this;
-};
-
-/**
- * Сбросить структуру файла
- *
- * @private
- * @param {Object} block - объект структуры файла
- * @return {!FileStructure}
- */
-FileStructure.prototype._resetBlock = function (block) {
-	switch (block.type) {
-		case 'code': {
-			block.included = false;
-		} break;
-
-		case 'include':
-		case 'without': {
-			block.fileStructure.reset();
-		} break;
-
-		default: {
-			if (block.content) {
-				block.content.forEach(this._resetBlock, this);
-			}
-		}
-	}
-
+	this._compileBlock(this.root, opt_labels || /* istanbul ignore next */ {}, opt_flags || /* istanbul ignore next */ {});
 	return this;
 };
 
@@ -286,19 +243,21 @@ FileStructure.prototype._resetBlock = function (block) {
  */
 FileStructure.prototype._compileBlock = function (block, labels, flags) {var this$0 = this;
 	switch (block.type) {
-		case 'code': {
+		case 'code':
 			if (!block.included) {
 				block.included = true;
 				return block.code;
 			}
-		} break;
 
-		case 'include': {
+			break;
+
+		case 'include':
 			var cacheKey = block.fileStructure.fname +
 				'@' + Object.keys(block.labels).sort() +
 				'@' + Object.keys(flags).sort();
 
 			for (var key in labels) {
+				/* istanbul ignore if */
 				if (!labels.hasOwnProperty(key)) {
 					continue;
 				}
@@ -311,23 +270,22 @@ FileStructure.prototype._compileBlock = function (block, labels, flags) {var thi
 				return block.fileStructure.compile(block.labels, flags);
 			}
 
-		} break;
+			break;
 
-		case 'without': {
+		case 'without':
 			block.fileStructure.without(block.labels, flags);
-		} break;
+			break;
 
-		case 'set': {
+		case 'set':
 			flags[block.varName] = block.value;
-		} break;
+			break;
 
-		default: {
+		default:
 			if (this._isValidContentBlock(block, labels, flags)) {
 				return block.content
 					.map(function(block)  {return this$0._compileBlock(block, labels, flags)})
 					.join('');
 			}
-		}
 	}
 
 	return '';
@@ -344,18 +302,16 @@ FileStructure.prototype._compileBlock = function (block, labels, flags) {var thi
  */
 FileStructure.prototype._isValidContentBlock = function (block, labels, flags) {
 	switch (block.type) {
-		case 'root': {
+		case 'root':
 			return true;
-		}
 
-		case 'if': {
+		case 'if':
 			return Boolean(flags[block.varName]) === Boolean(block.value);
-		}
 
-		case 'label': {
+		case 'label':
 			return Boolean(!Object.keys(labels).length || labels[block.label]);
-		}
 	}
 
+	/* istanbul ignore next */
 	return false;
 };

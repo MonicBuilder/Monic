@@ -1,5 +1,7 @@
 module.exports = MonicError;
 
+/* istanbul ignore next */
+
 /**
  * Объект ошибки Monic
  *
@@ -13,6 +15,8 @@ function MonicError(msg, file, line) {
 	this.file = file;
 	this.line = line;
 }
+
+/* istanbul ignore next */
 
 /**
  * Преобразовать объект ошибки в строку

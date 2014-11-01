@@ -2,8 +2,8 @@ var gulp = require('gulp');
 var es6 = require('gulp-es6-transpiler'),
 	bump = require('gulp-bump');
 
-gulp.task('es6-transpiler', function () {
-	gulp.src('./lib/*.js')
+gulp.task('build', function () {
+	gulp.src('./src/*.js')
 		.pipe(es6({disallowUnknownReferences: false}))
 		.pipe(gulp.dest('./build/'));
 });
@@ -18,7 +18,7 @@ gulp.task('bump', function () {
 });
 
 gulp.task('watch', function () {
-	gulp.watch('./lib/*.es6', ['es6-transpiler', 'bump']);
+	gulp.watch('./src/*.es6', ['build', 'bump']);
 });
 
-gulp.task('default', ['es6-transpiler', 'bump']);
+gulp.task('default', ['build', 'bump']);

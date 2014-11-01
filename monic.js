@@ -1,7 +1,7 @@
 var Parser = require('./build/parser');
 
 /** @type {!Array} */
-exports.VERSION = [1, 0, 5];
+exports.VERSION = [1, 0, 6];
 
 /**
  * Обработать указанный файл
@@ -16,13 +16,14 @@ exports.VERSION = [1, 0, 5];
  * @param {function(Error, string=, string=)} callback - функция обратного вызова
  */
 exports.compile = function (file, params, callback) {
-	params = params || {};
+	params = params || /* istanbul ignore next */ {};
 	params.flags = params.flags || {};
 	params.labels = params.labels || {};
-	params.lineSeparator = params.lineSeparator || '\n';
-	params.replacers = params.replacers || [];
+	params.lineSeparator = params.lineSeparator || /* istanbul ignore next */ '\n';
+	params.replacers = params.replacers || /* istanbul ignore next */ [];
 
 	function finish(err, fileStructure, path) {
+		/* istanbul ignore if */
 		if (err) {
 			return callback(err);
 		}
@@ -35,10 +36,19 @@ exports.compile = function (file, params, callback) {
 		replacers: params.replacers
 	};
 
+	var parser = new Parser(p);
+
 	if (params.content != null) {
-		new Parser(p).parse(file, String(params.content), finish);
+		parser.normalizePath(file, function (err, file) {
+			/* istanbul ignore if */
+			if (err) {
+				return callback(err);
+			}
+
+			parser.parse(file, String(params.content), finish);
+		})
 
 	} else {
-		new Parser(p).parseFile(file, finish);
+		parser.parseFile(file, finish);
 	}
 };
