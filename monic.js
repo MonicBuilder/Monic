@@ -46,7 +46,7 @@ exports.compile = function (file, params, callback) {
 			}
 
 			parser.parse(file, String(params.content), finish);
-		})
+		});
 
 	} else {
 		parser.parseFile(file, finish);
