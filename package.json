@@ -1,7 +1,7 @@
 {
   "name": "monic",
   "description": "Сборщик JavaScript файлов.",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "homepage": "https://github.com/kobezzza/Monic",
   "author": {
     "name": "Kobezzza",
