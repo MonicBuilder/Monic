@@ -23,7 +23,8 @@ gulp.task('bump', function () {
 });
 
 gulp.task('watch', function () {
-	gulp.watch('./lib/*.es6', ['build', 'bump']);
+	gulp.watch('./lib/*.js', ['build']);
+	gulp.watch('./monic.js', ['bump']);
 });
 
 gulp.task('default', ['build', 'bump']);
