@@ -127,7 +127,7 @@ monic.compile(
 	{
 		replacers: [
 			// Замена require конструкций на #include
-			function (text) {
+			function (text, file) {
 				return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
 			}
 		]
