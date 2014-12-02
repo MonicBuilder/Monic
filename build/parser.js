@@ -147,7 +147,7 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 
 		// Обработка перегрузок
 		content = this$0.replacers.reduce(function(content, el)  {
-			content = el(content);
+			content = el(content, file);
 			return content;
 
 		}, content);
