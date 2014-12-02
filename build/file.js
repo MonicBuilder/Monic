@@ -193,7 +193,7 @@ FileStructure.prototype.endLabel = function () {
  * @return {!FileStructure}
  */
 FileStructure.prototype.error = function (msg) {
-	this.addCode((("throw new Error(" + (JSON.stringify(("fileBuilder error: " + msg)))) + (");" + (this.nl)) + ""));
+	this.addCode((("throw new Error(" + (JSON.stringify(("Monic error: " + msg)))) + (");" + (this.nl)) + ""));
 	return this;
 };
 

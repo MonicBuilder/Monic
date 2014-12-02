@@ -116,6 +116,13 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 	var actions = [],
 		dirname = path.dirname(file);
 
+	// Обработка перегрузок
+	content = this.replacers.reduce(function(content, el)  {
+		content = el(content, file);
+		return content;
+
+	}, content);
+
 	// Обработка масок URL
 	content = content.replace(/^(\s*\/\/(?:#include|without)\s+)(.*)/gm, function(sstr, decl, src)  {
 		if (/\*/.test(src)) {
@@ -144,13 +151,6 @@ Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
 		if (err) {
 			return callback(err);
 		}
-
-		// Обработка перегрузок
-		content = this$0.replacers.reduce(function(content, el)  {
-			content = el(content, file);
-			return content;
-
-		}, content);
 
 		var fileStructure = new FileStructure(file, this$0.nl),
 			lines = content.split(/\r?\n|\r/);
