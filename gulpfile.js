@@ -1,15 +1,10 @@
-// https://github.com/termi/es6-transpiler/issues/66
-String.prototype.contains = String.prototype.contains || function (str, opt_pos) {
-	return String.prototype.indexOf.apply(this, arguments) !== -1;
-};
-
 var gulp = require('gulp');
-var es6 = require('gulp-es6-transpiler'),
+var to5 = require('gulp-6to5'),
 	bump = require('gulp-bump');
 
 gulp.task('build', function () {
 	gulp.src('./lib/*.js')
-		.pipe(es6({disallowUnknownReferences: false}))
+		.pipe(to5())
 		.pipe(gulp.dest('./build/'));
 });
 

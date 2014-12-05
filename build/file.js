@@ -1,5 +1,7 @@
+"use strict";
+
 module.exports = FileStructure;
-var path = require('path');
+var path = require("path");
 
 /**
  * Объект структуры файла
@@ -9,17 +11,17 @@ var path = require('path');
  * @param {string} lineSeparator - символ перевода строки
  */
 function FileStructure(src, lineSeparator) {
-	this.fname = src;
-	this.nl = lineSeparator;
+  this.fname = src;
+  this.nl = lineSeparator;
 
-	this.root = {
-		type: 'root',
-		content: [],
-		labels: {}
-	};
+  this.root = {
+    type: "root",
+    content: [],
+    labels: {}
+  };
 
-	this.currentBlock = this.root;
-	this.included = {};
+  this.currentBlock = this.root;
+  this.included = {};
 }
 
 /**
@@ -29,7 +31,7 @@ function FileStructure(src, lineSeparator) {
  * @return {string}
  */
 FileStructure.prototype.getRelativePathOf = function (src) {
-	return path.normalize(path.resolve(path.dirname(this.fname), src));
+  return path.normalize(path.resolve(path.dirname(this.fname), src));
 };
 
 /**
@@ -39,13 +41,13 @@ FileStructure.prototype.getRelativePathOf = function (src) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.addCode = function (code) {
-	this.currentBlock.content.push({
-		type: 'code',
-		code: code,
-		included: false
-	});
+  this.currentBlock.content.push({
+    type: "code",
+    code: code,
+    included: false
+  });
 
-	return this;
+  return this;
 };
 
 /**
@@ -56,13 +58,13 @@ FileStructure.prototype.addCode = function (code) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.addInclude = function (fileStructure, labels) {
-	this.currentBlock.content.push({
-		type: 'include',
-		fileStructure: fileStructure,
-		labels: labels
-	});
+  this.currentBlock.content.push({
+    type: "include",
+    fileStructure: fileStructure,
+    labels: labels
+  });
 
-	return this;
+  return this;
 };
 
 /**
@@ -73,13 +75,13 @@ FileStructure.prototype.addInclude = function (fileStructure, labels) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.addWithout = function (fileStructure, labels) {
-	this.currentBlock.content.push({
-		type: 'without',
-		fileStructure: fileStructure,
-		labels: labels
-	});
+  this.currentBlock.content.push({
+    type: "without",
+    fileStructure: fileStructure,
+    labels: labels
+  });
 
-	return this;
+  return this;
 };
 
 /**
@@ -89,13 +91,13 @@ FileStructure.prototype.addWithout = function (fileStructure, labels) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.addSet = function (flag) {
-	this.currentBlock.content.push({
-		type: 'set',
-		varName: flag,
-		value: true
-	});
+  this.currentBlock.content.push({
+    type: "set",
+    varName: flag,
+    value: true
+  });
 
-	return this;
+  return this;
 };
 
 /**
@@ -105,13 +107,13 @@ FileStructure.prototype.addSet = function (flag) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.addUnset = function (flag) {
-	this.currentBlock.content.push({
-		type: 'set',
-		varName: flag,
-		value: false
-	});
+  this.currentBlock.content.push({
+    type: "set",
+    varName: flag,
+    value: false
+  });
 
-	return this;
+  return this;
 };
 
 /**
@@ -122,18 +124,18 @@ FileStructure.prototype.addUnset = function (flag) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.beginIf = function (flag, value) {
-	var ifBlock = {
-		parent: this.currentBlock,
-		type: 'if',
-		varName: flag,
-		value: value,
-		content: []
-	};
+  var ifBlock = {
+    parent: this.currentBlock,
+    type: "if",
+    varName: flag,
+    value: value,
+    content: []
+  };
 
-	this.currentBlock.content.push(ifBlock);
-	this.currentBlock = ifBlock;
+  this.currentBlock.content.push(ifBlock);
+  this.currentBlock = ifBlock;
 
-	return this;
+  return this;
 };
 
 /**
@@ -141,13 +143,13 @@ FileStructure.prototype.beginIf = function (flag, value) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.endIf = function () {
-	/* istanbul ignore if */
-	if (this.currentBlock.type != 'if') {
-		throw new Error('Attempt to close an unopened block "#if"');
-	}
+  /* istanbul ignore if */
+  if (this.currentBlock.type != "if") {
+    throw new Error("Attempt to close an unopened block \"#if\"");
+  }
 
-	this.currentBlock = this.currentBlock.parent;
-	return this;
+  this.currentBlock = this.currentBlock.parent;
+  return this;
 };
 
 /**
@@ -157,17 +159,17 @@ FileStructure.prototype.endIf = function () {
  * @return {!FileStructure}
  */
 FileStructure.prototype.beginLabel = function (label) {
-	var labelBlock = {
-		parent: this.currentBlock,
-		type: 'label',
-		label: label,
-		content: []
-	};
+  var labelBlock = {
+    parent: this.currentBlock,
+    type: "label",
+    label: label,
+    content: []
+  };
 
-	this.currentBlock.content.push(labelBlock);
-	this.currentBlock = labelBlock;
+  this.currentBlock.content.push(labelBlock);
+  this.currentBlock = labelBlock;
 
-	return this;
+  return this;
 };
 
 /**
@@ -175,13 +177,13 @@ FileStructure.prototype.beginLabel = function (label) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.endLabel = function () {
-	/* istanbul ignore if */
-	if (this.currentBlock.type !== 'label') {
-		throw new Error('Attempt to close an unopened block "#label"');
-	}
+  /* istanbul ignore if */
+  if (this.currentBlock.type !== "label") {
+    throw new Error("Attempt to close an unopened block \"#label\"");
+  }
 
-	this.currentBlock = this.currentBlock.parent;
-	return this;
+  this.currentBlock = this.currentBlock.parent;
+  return this;
 };
 
 /* istanbul ignore next */
@@ -193,8 +195,8 @@ FileStructure.prototype.endLabel = function () {
  * @return {!FileStructure}
  */
 FileStructure.prototype.error = function (msg) {
-	this.addCode((("throw new Error(" + (JSON.stringify(("Monic error: " + msg)))) + (");" + (this.nl)) + ""));
-	return this;
+  this.addCode("throw new Error(" + JSON.stringify("Monic error: " + msg) + ");" + this.nl);
+  return this;
 };
 
 /**
@@ -205,19 +207,19 @@ FileStructure.prototype.error = function (msg) {
  * @return {string}
  */
 FileStructure.prototype.compile = function (opt_labels, opt_flags) {
-	/* istanbul ignore else */
-	if (opt_labels) {
-		for (var key in opt_labels) {
-			/* istanbul ignore if */
-			if (!opt_labels.hasOwnProperty(key)) {
-				continue;
-			}
+  /* istanbul ignore else */
+  if (opt_labels) {
+    for (var key in opt_labels) {
+      /* istanbul ignore if */
+      if (!opt_labels.hasOwnProperty(key)) {
+        continue;
+      }
 
-			this.root.labels[key] = true;
-		}
-	}
+      this.root.labels[key] = true;
+    }
+  }
 
-	return this._compileBlock(this.root, this.root.labels, opt_flags || /* istanbul ignore next */ {});
+  return this._compileBlock(this.root, this.root.labels, opt_flags || /* istanbul ignore next */{});
 };
 
 /**
@@ -228,8 +230,8 @@ FileStructure.prototype.compile = function (opt_labels, opt_flags) {
  * @return {!FileStructure}
  */
 FileStructure.prototype.without = function (opt_labels, opt_flags) {
-	this._compileBlock(this.root, opt_labels || /* istanbul ignore next */ {}, opt_flags || /* istanbul ignore next */ {});
-	return this;
+  this._compileBlock(this.root, opt_labels || /* istanbul ignore next */{}, opt_flags || /* istanbul ignore next */{});
+  return this;
 };
 
 /**
@@ -241,54 +243,53 @@ FileStructure.prototype.without = function (opt_labels, opt_flags) {
  * @param {!Object} flags - таблица заданных флагов
  * @return {string}
  */
-FileStructure.prototype._compileBlock = function (block, labels, flags) {var this$0 = this;
-	switch (block.type) {
-		case 'code':
-			if (!block.included) {
-				block.included = true;
-				return block.code;
-			}
+FileStructure.prototype._compileBlock = function (block, labels, flags) {
+  var _this = this;
+  switch (block.type) {
+    case "code":
+      if (!block.included) {
+        block.included = true;
+        return block.code;
+      }
 
-			break;
+      break;
 
-		case 'include':
-			var cacheKey = block.fileStructure.fname +
-				'@' + Object.keys(block.labels).sort() +
-				'@' + Object.keys(flags).sort();
+    case "include":
+      var cacheKey = block.fileStructure.fname + "@" + Object.keys(block.labels).sort() + "@" + Object.keys(flags).sort();
 
-			for (var key in labels) {
-				/* istanbul ignore if */
-				if (!labels.hasOwnProperty(key)) {
-					continue;
-				}
+      for (var key in labels) {
+        /* istanbul ignore if */
+        if (!labels.hasOwnProperty(key)) {
+          continue;
+        }
 
-				block.labels[key] = true;
-			}
+        block.labels[key] = true;
+      }
 
-			if (!this.included[cacheKey]) {
-				this.included[cacheKey] = true;
-				return block.fileStructure.compile(block.labels, flags);
-			}
+      if (!this.included[cacheKey]) {
+        this.included[cacheKey] = true;
+        return block.fileStructure.compile(block.labels, flags);
+      }
 
-			break;
+      break;
 
-		case 'without':
-			block.fileStructure.without(block.labels, flags);
-			break;
+    case "without":
+      block.fileStructure.without(block.labels, flags);
+      break;
 
-		case 'set':
-			flags[block.varName] = block.value;
-			break;
+    case "set":
+      flags[block.varName] = block.value;
+      break;
 
-		default:
-			if (this._isValidContentBlock(block, labels, flags)) {
-				return block.content
-					.map(function(block)  {return this$0._compileBlock(block, labels, flags)})
-					.join('');
-			}
-	}
+    default:
+      if (this._isValidContentBlock(block, labels, flags)) {
+        return block.content.map(function (block) {
+          return _this._compileBlock(block, labels, flags);
+        }).join("");
+      }
+  }
 
-	return '';
+  return "";
 };
 
 /**
@@ -301,17 +302,17 @@ FileStructure.prototype._compileBlock = function (block, labels, flags) {var thi
  * @return {boolean}
  */
 FileStructure.prototype._isValidContentBlock = function (block, labels, flags) {
-	switch (block.type) {
-		case 'root':
-			return true;
+  switch (block.type) {
+    case "root":
+      return true;
 
-		case 'if':
-			return Boolean(flags[block.varName]) === Boolean(block.value);
+    case "if":
+      return Boolean(flags[block.varName]) === Boolean(block.value);
 
-		case 'label':
-			return Boolean(!Object.keys(labels).length || labels[block.label]);
-	}
+    case "label":
+      return Boolean(!Object.keys(labels).length || labels[block.label]);
+  }
 
-	/* istanbul ignore next */
-	return false;
+  /* istanbul ignore next */
+  return false;
 };
