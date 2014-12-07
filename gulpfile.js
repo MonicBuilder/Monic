@@ -1,10 +1,14 @@
 var gulp = require('gulp');
-var to5 = require('gulp-6to5'),
+var es6 = require('gulp-es6-transpiler'),
 	bump = require('gulp-bump');
 
 gulp.task('build', function () {
 	gulp.src('./lib/*.js')
-		.pipe(to5())
+		.pipe(es6({
+			disallowDuplicated: false,
+			disallowUnknownReferences: false
+		}))
+
 		.pipe(gulp.dest('./build/'));
 });
 

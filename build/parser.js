@@ -1,12 +1,13 @@
-"use strict";
-
 module.exports = Parser;
 
-var FileStructure = require("./file"), MonicError = require("./error");
+var FileStructure = require('./file'),
+	MonicError = require('./error');
 
-var fs = require("fs"), path = require("path");
+var fs = require('fs'),
+	path = require('path');
 
-var async = require("async"), glob = require("glob");
+var async = require('async'),
+	glob = require('glob');
 
 /**
  * Объект парсера файла
@@ -17,10 +18,10 @@ var async = require("async"), glob = require("glob");
  * @param {!Array} params.replacers - массив функций трансформации
  */
 function Parser(params) {
-  this.nl = params.lineSeparator;
-  this.replacers = params.replacers || /* istanbul ignore next */[];
-  this.realpathCache = {};
-  this.cache = {};
+	this.nl = params.lineSeparator;
+	this.replacers = params.replacers || /* istanbul ignore next */ [];
+	this.realpathCache = {};
+	this.cache = {};
 }
 
 /**
@@ -30,36 +31,43 @@ function Parser(params) {
  * @param {string} file - адрес файла
  * @param {function(Error, string=)} callback - функция обратного вызова
  */
-Parser.prototype.normalizePath = function (file, callback) {
-  var _this = this;
-  file = path.normalize(path.resolve(file));
+Parser.prototype.normalizePath = function (file, callback) {var this$0 = this;
+	file = path.normalize(path.resolve(file));
 
-  if (this.realpathCache[file]) {
-    callback(null, file);
-  } else {
-    async.waterfall([function (callback) {
-      fs.exists(file, function (exists) {
-        callback(null, exists);
-      });
-    }, function (exists, callback) {
-      /* istanbul ignore if */
-      if (!exists) {
-        return callback(new Error("File \"" + file + "\" not found"));
-      }
+	if (this.realpathCache[file]) {
+		callback(null, file);
 
-      fs.stat(file, function (err, stat) {
-        callback(err, stat);
-      });
-    }, function (stat, callback) {
-      /* istanbul ignore if */
-      if (!stat.isFile()) {
-        return callback(new Error("\"" + file + "\" is not a file"));
-      }
+	} else {
+		async.waterfall([
+			function(callback)  {
+				fs.exists(file, function(exists)  {
+					callback(null, exists);
+				});
+			},
 
-      _this.realpathCache[file] = true;
-      callback(null, file);
-    }], callback);
-  }
+			function(exists, callback)  {
+				/* istanbul ignore if */
+				if (!exists) {
+					return callback(new Error((("File \"" + file) + "\" not found")));
+				}
+
+				fs.stat(file, function(err, stat)  {
+					callback(err, stat);
+				});
+			},
+
+			function(stat, callback)  {
+				/* istanbul ignore if */
+				if (!stat.isFile()) {
+					return callback(new Error((("\"" + file) + "\" is not a file")));
+				}
+
+				this$0.realpathCache[file] = true;
+				callback(null, file);
+			}
+
+		], callback);
+	}
 };
 
 /**
@@ -69,27 +77,26 @@ Parser.prototype.normalizePath = function (file, callback) {
  * @param {string} file - адрес файла
  * @param {function(Error, FileStructure=, string=)} callback - функция обратного вызова
  */
-Parser.prototype.parseFile = function (file, callback) {
-  var _this2 = this;
-  this.normalizePath(file, function (err, src) {
-    /* istanbul ignore if */
-    if (err) {
-      return callback(err);
-    }
+Parser.prototype.parseFile = function (file, callback) {var this$0 = this;
+	this.normalizePath(file, function(err, src)  {
+		/* istanbul ignore if */
+		if (err) {
+			return callback(err);
+		}
 
-    if (_this2.cache[src]) {
-      return callback(null, _this2.cache[src], src);
-    }
+		if (this$0.cache[src]) {
+			return callback(null, this$0.cache[src], src);
+		}
 
-    fs.readFile(src, "utf8", function (err, content) {
-      /* istanbul ignore if */
-      if (err) {
-        return callback(err);
-      }
+		fs.readFile(src, 'utf8', function(err, content)  {
+			/* istanbul ignore if */
+			if (err) {
+				return callback(err);
+			}
 
-      _this2.parse(src, content, callback);
-    });
-  });
+			this$0.parse(src, content, callback);
+		});
+	});
 };
 
 /**
@@ -100,110 +107,119 @@ Parser.prototype.parseFile = function (file, callback) {
  * @param {string} content - содержимое файла
  * @param {function(Error, FileStructure=, string=)} callback - функция обратного вызова
  */
-Parser.prototype.parse = function (file, content, callback) {
-  var _this3 = this;
-  /* istanbul ignore next */
-  if (this.cache[file]) {
-    return callback(null, this.cache[file], file);
-  }
+Parser.prototype.parse = function (file, content, callback) {var this$0 = this;
+	/* istanbul ignore next */
+	if (this.cache[file]) {
+		return callback(null, this.cache[file], file);
+	}
 
-  var actions = [], dirname = path.dirname(file);
+	var actions = [],
+		dirname = path.dirname(file);
 
-  // Обработка перегрузок
-  content = this.replacers.reduce(function (content, el) {
-    content = el(content, file);
-    return content;
-  }, content);
+	// Обработка перегрузок
+	content = this.replacers.reduce(function(content, el)  {
+		content = el(content, file);
+		return content;
 
-  // Обработка масок URL
-  content = content.replace(/^(\s*\/\/(?:#include|without)\s+)(.*)/gm, function (sstr, decl, src) {
-    if (/\*/.test(src)) {
-      actions.push(function (callback) {
-        var parts = src.split("::");
-        glob(path.join(dirname, parts[0]), null, function (err, files) {
-          /* istanbul ignore else */
-          if (files) {
-            content = content.replace(sstr, files.reduce(function (res, el) {
-              parts[0] = path.relative(dirname, el);
-              res += decl + parts.join("::") + _this3.nl;
-              return res;
-            }, ""));
-          }
+	}, content);
 
-          callback(err, files);
-        });
-      });
-    }
+	// Обработка масок URL
+	content = content.replace(/^(\s*\/\/(?:#include|without)\s+)(.*)/gm, function(sstr, decl, src)  {
+		if (/\*/.test(src)) {
+			actions.push(function(callback)  {
+				var parts = src.split('::');
+				glob(path.join(dirname, parts[0]), null, function(err, files)  {
+					/* istanbul ignore else */
+					if (files) {
+						content = content.replace(sstr, files.reduce(function(res, el)  {
+							parts[0] = path.relative(dirname, el);
+							res += decl + parts.join('::') + this$0.nl;
+							return res;
+						}, ''));
+					}
 
-    return sstr;
-  });
+					callback(err, files);
+				});
+			});
+		}
 
-  async.parallel(actions, function (err) {
-    /* istanbul ignore if */
-    if (err) {
-      return callback(err);
-    }
+		return sstr;
+	});
 
-    var fileStructure = new FileStructure(file, _this3.nl), lines = content.split(/\r?\n|\r/);
+	async.parallel(actions, function(err)  {
+		/* istanbul ignore if */
+		if (err) {
+			return callback(err);
+		}
 
-    _this3.cache[file] = fileStructure;
+		var fileStructure = new FileStructure(file, this$0.nl),
+			lines = content.split(/\r?\n|\r/);
 
-    var parseLines = function (start) {
-      var errors = [], i;
+		this$0.cache[file] = fileStructure;
 
-      /* istanbul ignore next */
-      function appendError(err) {
-        var msg = err.message, line = i + 1;
+		var parseLines = function(start)  {
+			var errors = [],
+				i;
 
-        errors.push(new MonicError(msg, file, line));
-        fileStructure.error(msg);
-      }
+			/* istanbul ignore next */
+			function appendError(err) {
+				var msg = err.message,
+					line = i + 1;
 
-      function asyncParseCallback(err) {
-        /* istanbul ignore if */
-        if (err) {
-          appendError(err);
-        }
+				errors.push(new MonicError(msg, file, line));
+				fileStructure.error(msg);
+			}
 
-        parseLines(i + 1);
-      }
+			function asyncParseCallback(err) {
+				/* istanbul ignore if */
+				if (err) {
+					appendError(err);
+				}
 
-      for (i = start; i < lines.length; i++) {
-        var line = lines[i];
+				parseLines(i + 1);
+			}
 
-        if (line.match(/^\s*\/\/#(.*)/)) {
-          /* istanbul ignore else */
-          if (RegExp.$1) {
-            var command = RegExp.$1.split(" "), dir = String(command.shift());
+			for (i = start; i < lines.length; i++) {
+				var line = lines[i];
 
-            var key = "_" + dir, params = command.join(" ");
+				if (line.match(/^\s*\/\/#(.*)/)) {
+					/* istanbul ignore else */
+					if (RegExp.$1) {
+						var command = RegExp.$1.split(' '),
+							dir = String(command.shift());
 
-            if (/^(include|without)$/.test(dir)) {
-              return _this3[key](fileStructure, params, asyncParseCallback);
+						var key = '_' + dir,
+							params = command.join(' ');
 
-              /* istanbul ignore else */
-            } else if (/^(label|endlabel|if|endif|set|unset)$/.test(dir)) {
-              try {
-                _this3[key](fileStructure, params);
-              } catch (err) {
-                /* istanbul ignore next */
-                appendError(err);
-              }
-            } else {
-              /* istanbul ignore next */
-              appendError(new Error("Unknown directive " + dir));
-            }
-          }
-        } else {
-          fileStructure.addCode(line + (i < lines.length - 1 ? _this3.nl : ""));
-        }
-      }
+						if (/^(include|without)$/.test(dir)) {
+							return this$0[key](fileStructure, params, asyncParseCallback);
 
-      callback(null, fileStructure, file);
-    };
+						/* istanbul ignore else */
+						} else if (/^(label|endlabel|if|endif|set|unset)$/.test(dir)) {
+							try {
+								this$0[key](fileStructure, params);
 
-    parseLines(0);
-  });
+							} catch (err) {
+								/* istanbul ignore next */
+								appendError(err);
+							}
+
+						} else {
+							/* istanbul ignore next */
+							appendError(new Error(("Unknown directive " + dir)));
+						}
+					}
+
+				} else {
+					fileStructure.addCode(line + (i < lines.length - 1 ? this$0.nl : ''));
+				}
+			}
+
+			callback(null, fileStructure, file);
+		};
+
+		parseLines(0);
+	});
 };
 
 /**
@@ -214,36 +230,38 @@ Parser.prototype.parse = function (file, content, callback) {
  * @param {function(Error=)} callback - функция обратного вызова
  */
 Parser.prototype._include = function (file, params, callback) {
-  var paramsParts = params.split("::"), includeFileName = paramsParts.shift();
+	var paramsParts = params.split('::'),
+		includeFileName = paramsParts.shift();
 
-  paramsParts = paramsParts.reduce(function (res, el) {
-    res[el] = true;
-    return res;
-  }, {});
+	paramsParts = paramsParts.reduce(function(res, el)  {
+		res[el] = true;
+		return res;
+	}, {});
 
-  if (includeFileName) {
-    var src = file.getRelativePathOf(includeFileName);
-    this.parseFile(src, function (err, includeFile) {
-      /* istanbul ignore if */
-      if (err) {
-        return callback(err);
-      }
+	if (includeFileName) {
+		var src = file.getRelativePathOf(includeFileName);
+		this.parseFile(src, function(err, includeFile)  {
+			/* istanbul ignore if */
+			if (err) {
+				return callback(err);
+			}
 
-      file.addInclude(includeFile, paramsParts);
-      callback();
-    });
-  } else {
-    for (var key in paramsParts) {
-      /* istanbul ignore if */
-      if (!paramsParts.hasOwnProperty(key)) {
-        continue;
-      }
+			file.addInclude(includeFile, paramsParts);
+			callback();
+		});
 
-      file.root.labels[key] = true;
-    }
+	} else {
+		for (var key in paramsParts) {
+			/* istanbul ignore if */
+			if (!paramsParts.hasOwnProperty(key)) {
+				continue;
+			}
 
-    callback();
-  }
+			file.root.labels[key] = true;
+		}
+
+		callback();
+	}
 };
 
 /**
@@ -254,22 +272,23 @@ Parser.prototype._include = function (file, params, callback) {
  * @param {function(Error=)} callback - функция обратного вызова
  */
 Parser.prototype._without = function (file, value, callback) {
-  var paramsParts = value.split("::"), includeFname = file.getRelativePathOf(paramsParts.shift());
+	var paramsParts = value.split('::'),
+		includeFname = file.getRelativePathOf(paramsParts.shift());
 
-  paramsParts = paramsParts.reduce(function (res, el) {
-    res[el] = true;
-    return res;
-  }, {});
+	paramsParts = paramsParts.reduce(function(res, el)  {
+		res[el] = true;
+		return res;
+	}, {});
 
-  this.parseFile(includeFname, function (err, includeFile) {
-    /* istanbul ignore if */
-    if (err) {
-      return callback(err);
-    }
+	this.parseFile(includeFname, function(err, includeFile)  {
+		/* istanbul ignore if */
+		if (err) {
+			return callback(err);
+		}
 
-    file.addWithout(includeFile, paramsParts);
-    callback();
-  });
+		file.addWithout(includeFile, paramsParts);
+		callback();
+	});
 };
 
 /**
@@ -279,7 +298,7 @@ Parser.prototype._without = function (file, value, callback) {
  * @param {string} value - значение директивы
  */
 Parser.prototype._label = function (file, value) {
-  file.beginLabel(value);
+	file.beginLabel(value);
 };
 
 /**
@@ -287,7 +306,7 @@ Parser.prototype._label = function (file, value) {
  * @param {!FileStructure} file - структура файла
  */
 Parser.prototype._endlabel = function (file) {
-  file.endLabel();
+	file.endLabel();
 };
 
 /**
@@ -297,19 +316,20 @@ Parser.prototype._endlabel = function (file) {
  * @param {string} value - значение директивы
  */
 Parser.prototype._if = function (file, value) {
-  /* istanbul ignore if */
-  if (!value.trim()) {
-    throw new Error("Bad \"if\" directive");
-  }
+	/* istanbul ignore if */
+	if (!value.trim()) {
+		throw new Error('Bad "if" directive');
+	}
 
-  var args = value.split(/\s+/), res = true;
+	var args = value.split(/\s+/),
+		res = true;
 
-  if (args.length > 1 && args[0] === "not") {
-    res = false;
-    args.shift();
-  }
+	if (args.length > 1 && args[0] === 'not') {
+		res = false;
+		args.shift();
+	}
 
-  file.beginIf(args[0], res);
+	file.beginIf(args[0], res);
 };
 
 /**
@@ -317,7 +337,7 @@ Parser.prototype._if = function (file, value) {
  * @param {!FileStructure} file - структура файла
  */
 Parser.prototype._endif = function (file) {
-  file.endIf();
+	file.endIf();
 };
 
 /**
@@ -327,12 +347,12 @@ Parser.prototype._endif = function (file) {
  * @param {string} value - значение директивы
  */
 Parser.prototype._set = function (file, value) {
-  /* istanbul ignore if */
-  if (!value.trim()) {
-    throw new Error("Bad set directive");
-  }
+	/* istanbul ignore if */
+	if (!value.trim()) {
+		throw new Error('Bad set directive');
+	}
 
-  file.addSet(value.split(/\s+/)[0]);
+	file.addSet(value.split(/\s+/)[0]);
 };
 
 /**
@@ -342,10 +362,10 @@ Parser.prototype._set = function (file, value) {
  * @param {string} value - значение директивы
  */
 Parser.prototype._unset = function (file, value) {
-  /* istanbul ignore if */
-  if (!value.trim()) {
-    throw new Error("Bad unset directive");
-  }
+	/* istanbul ignore if */
+	if (!value.trim()) {
+		throw new Error('Bad unset directive');
+	}
 
-  file.addUnset(value.split(/\s+/)[0]);
+	file.addUnset(value.split(/\s+/)[0]);
 };

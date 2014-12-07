@@ -1,3 +1,7 @@
+## v1.1.3
+
+- [x] Возврат на [es6-transpiler](https://github.com/termi/es6-transpiler).
+
 ## v1.1.2
 
 - [x] Переход на [6to5](https://github.com/6to5/6to5).

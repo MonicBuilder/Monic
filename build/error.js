@@ -1,5 +1,3 @@
-"use strict";
-
 module.exports = MonicError;
 
 /* istanbul ignore next */
@@ -13,9 +11,9 @@ module.exports = MonicError;
  * @param {number} line - номер строки, на которой произошла ошибка
  */
 function MonicError(msg, file, line) {
-  this.message = msg;
-  this.file = file;
-  this.line = line;
+	this.message = msg;
+	this.file = file;
+	this.line = line;
 }
 
 /* istanbul ignore next */
@@ -25,5 +23,5 @@ function MonicError(msg, file, line) {
  * @return {string}
  */
 MonicError.prototype.toString = function () {
-  return "Error: " + this.message + " (" + this.file + ": " + this.line + ")";
+	return (("Error: " + (this.message)) + (" (" + (this.file)) + (": " + (this.line)) + ")");
 };
