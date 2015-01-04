@@ -1,12 +1,12 @@
 {
   "name": "monic",
-  "description": "Сборщик JavaScript файлов.",
+  "description": "File builder for JavaScript.",
   "version": "1.1.3",
   "homepage": "https://github.com/kobezzza/Monic",
   "author": {
-    "name": "Kobezzza",
+    "name": "kobezzza",
     "email": "kobezzza@mail.ru",
-    "url": "https://github.com/kobezzza/"
+    "url": "https://github.com/kobezzza"
   },
   "repository": {
     "type": "git",
@@ -38,15 +38,17 @@
     "glob": "^4.0.6"
   },
   "keywords": [
-    "files builder",
-    "filesbuilder",
+    "filebuilder",
     "include"
   ],
   "devDependencies": {
     "coveralls": "^2.11.2",
     "gulp": "^3.8.9",
     "gulp-bump": "^0.1.11",
+    "gulp-eol": "^0.1.1",
     "gulp-es6-transpiler": "^1.0.1",
-    "istanbul": "^0.3.2"
+    "gulp-run": "^1.6.5",
+    "istanbul": "^0.3.5",
+    "yaspeller": "^0.5.1"
   }
 }

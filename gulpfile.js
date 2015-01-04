@@ -1,6 +1,12 @@
 var gulp = require('gulp');
 var es6 = require('gulp-es6-transpiler'),
-	bump = require('gulp-bump');
+	bump = require('gulp-bump'),
+	eol = require('gulp-eol'),
+	run = require('gulp-run');
+
+gulp.task('yaspeller', function () {
+	run('node node_modules/yaspeller/bin/cli.js ./').exec();
+});
 
 gulp.task('build', function () {
 	gulp.src('./lib/*.js')
@@ -9,6 +15,7 @@ gulp.task('build', function () {
 			disallowUnknownReferences: false
 		}))
 
+		.pipe(eol())
 		.pipe(gulp.dest('./build/'));
 });
 
@@ -18,6 +25,7 @@ gulp.task('bump', function () {
 
 	gulp.src('./*.json')
 		.pipe(bump({version: v}))
+		.pipe(eol())
 		.pipe(gulp.dest('./'));
 });
 

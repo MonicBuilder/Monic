@@ -282,7 +282,7 @@ String.escapeHTML = function () {
 //#endlabel escapeHTML
 ```
 
-Теперь, если нам нужна только функция `escapeHTML`, то при подлючении файла String.js пишем
+Теперь, если нам нужна только функция `escapeHTML`, то при подключении файла String.js пишем
 
 ```js
 //#include String.js::escapeHTML
