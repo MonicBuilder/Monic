@@ -65,9 +65,7 @@ echo '//#include foo/*.js' | monic -f myFile.js
 ```
 
 ### [Использование с Grunt](https://github.com/kobezzza/grunt-monic)
-
 ### [Использование с Gulp](https://github.com/kobezzza/gulp-monic)
-
 ### Использование сборщика из NodeJS
 
 ```js
