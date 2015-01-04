@@ -1,7 +1,7 @@
 var Parser = require('./build/parser');
 
 /** @type {!Array} */
-exports.VERSION = [1, 1, 3];
+exports.VERSION = [1, 1, 4];
 
 /**
  * Обработать указанный файл
@@ -16,14 +16,13 @@ exports.VERSION = [1, 1, 3];
  * @param {function(Error, string=, string=)} callback - функция обратного вызова
  */
 exports.compile = function (file, params, callback) {
-	params = params || /* istanbul ignore next */ {};
+	params = params || {};
 	params.flags = params.flags || {};
 	params.labels = params.labels || {};
-	params.lineSeparator = params.lineSeparator || /* istanbul ignore next */ '\n';
-	params.replacers = params.replacers || /* istanbul ignore next */ [];
+	params.lineSeparator = params.lineSeparator || '\n';
+	params.replacers = params.replacers || [];
 
 	function finish(err, fileStructure, path) {
-		/* istanbul ignore if */
 		if (err) {
 			return callback(err);
 		}
