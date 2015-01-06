@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var es6 = require('gulp-es6-transpiler'),
+var to5 = require('gulp-6to5'),
 	bump = require('gulp-bump'),
 	eol = require('gulp-eol'),
 	run = require('gulp-run');
@@ -10,11 +10,7 @@ gulp.task('yaspeller', function () {
 
 gulp.task('build', function () {
 	gulp.src('./lib/*.js')
-		.pipe(es6({
-			disallowDuplicated: false,
-			disallowUnknownReferences: false
-		}))
-
+		.pipe(to5())
 		.pipe(eol())
 		.pipe(gulp.dest('./build/'));
 });

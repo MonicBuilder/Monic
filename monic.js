@@ -1,7 +1,7 @@
 var Parser = require('./build/parser');
 
 /** @type {!Array} */
-exports.VERSION = [1, 1, 6];
+exports.VERSION = [1, 1, 7];
 
 /**
  * Обработать указанный файл
@@ -39,7 +39,6 @@ exports.compile = function (file, params, callback) {
 
 	if (params.content != null) {
 		parser.normalizePath(file, function (err, file) {
-			/* istanbul ignore if */
 			if (err) {
 				return callback(err);
 			}
