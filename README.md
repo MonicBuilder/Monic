@@ -352,6 +352,6 @@ String.truncate = function () {
 Кроме этого, `#without` тоже смотрит на эти области. Поэтому, например, `escapeHTML` может попасть в common.js,
 а `truncate` — в feature.js.
 
-## [License](https://github.com/kobezzza/Monic/blob/master/LICENSE)
+## [Лицензия](https://github.com/kobezzza/Monic/blob/master/LICENSE)
 
 The MIT License.
