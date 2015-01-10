@@ -49,6 +49,6 @@
     "gulp-eol": "^0.1.1",
     "gulp-run": "^1.6.5",
     "istanbul": "^0.3.5",
-    "yaspeller": "^0.5.1"
+    "yaspeller": "^0.7.2"
   }
 }

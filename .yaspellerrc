@@ -1,0 +1,30 @@
+{
+  "lang": "ru",
+
+  "fileExtensions": [
+    "md",
+    "js"
+  ],
+
+  "excludeFiles": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "demo",
+    "coverage",
+    "dist",
+    "predefs"
+  ],
+
+  "dictionary": [
+    "форк",
+    "фреймворков",
+    "пересобирать",
+    "виджет",
+    "виджетов",
+    "виджета",
+    "виджете",
+    "виджеты",
+    "булевые"
+  ]
+}
