@@ -2,9 +2,9 @@
   "esnext": true,
   "fileExtensions": [".js"],
   "excludeFiles": [
+    "monic.js",
     "gulpfile.js",
     "build/*",
-    "spec/**/*",
     "node_modules/**/*"
   ],
 

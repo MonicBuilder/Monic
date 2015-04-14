@@ -1,24 +1,25 @@
 var Parser = require('./build/parser');
 
 /** @type {!Array} */
-exports.VERSION = [1, 1, 8];
+exports.VERSION = [1, 2, 0];
 
 /**
  * Обработать указанный файл
  *
  * @param {string} file - адрес файла
  * @param {{
- *     flags: (Object|undefined),
- *     labels: (Object|undefined),
- *     content: (?string|undefined),
- *     lineSeparator: (?string|undefined),
- *     replacers: (Array|undefined)
+ *   flags: (Object|undefined),
+ *   labels: (Object|undefined),
+ *   content: (?string|undefined),
+ *   lineSeparator: (?string|undefined),
+ *   replacers: (Array|undefined)
  * }} [params] - дополнительные параметры операции:
- *     *) [params.flags] - таблица заданных флагов
- *     *) [params.labels] - таблица заданных меток
- *     *) [params.content] - текст файла
- *     *) [params.lineSeparator] - символ перевода строки
- *     *) [params.replacers] - массив функций трансформации
+ *
+ *   *) [params.flags] - таблица заданных флагов
+ *   *) [params.labels] - таблица заданных меток
+ *   *) [params.content] - текст файла
+ *   *) [params.lineSeparator] - символ перевода строки
+ *   *) [params.replacers] - массив функций трансформации
  *
  * @param {function(Error, string=, string=)} callback - функция обратного вызова
  */

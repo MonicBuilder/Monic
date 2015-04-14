@@ -1,17 +1,15 @@
-var gulp = require('gulp');
-var to5 = require('gulp-6to5'),
-	bump = require('gulp-bump'),
-	eol = require('gulp-eol'),
-	run = require('gulp-run');
+var
+	gulp = require('gulp');
 
-gulp.task('yaspeller', function () {
-	run('node node_modules/yaspeller/bin/cli.js ./').exec();
-});
+var
+	babel = require('gulp-babel'),
+	bump = require('gulp-bump');
 
 gulp.task('build', function () {
 	gulp.src('./lib/*.js')
-		.pipe(to5())
-		.pipe(eol())
+		.pipe(babel({
+			loose: 'all'
+		}))
 		.pipe(gulp.dest('./build/'));
 });
 
