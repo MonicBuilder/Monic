@@ -3,6 +3,7 @@
   "fileExtensions": [".js"],
   "excludeFiles": [
     "gulpfile.js",
+    "build/*",
     "spec/**/*",
     "node_modules/**/*"
   ],
