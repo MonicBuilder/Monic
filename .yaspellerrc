@@ -1,9 +1,8 @@
 {
-  "lang": "ru",
+  "lang": "en,ru",
 
   "fileExtensions": [
-    "md",
-    "js"
+    ".md"
   ],
 
   "excludeFiles": [
