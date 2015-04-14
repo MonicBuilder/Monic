@@ -19,7 +19,6 @@ gulp.task('bump', function () {
 
 	gulp.src('./*.json')
 		.pipe(bump({version: v}))
-		.pipe(eol())
 		.pipe(gulp.dest('./'));
 });
 
