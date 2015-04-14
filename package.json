@@ -39,7 +39,13 @@
   },
   "keywords": [
     "filebuilder",
-    "include"
+    "include",
+    "package",
+    "module",
+    "require",
+    "build",
+    "builder",
+    "pack"
   ],
   "devDependencies": {
     "coveralls": "^2.11.2",
