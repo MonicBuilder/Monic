@@ -1,11 +1,14 @@
-var basePath = 'test',
-	monic = require('../monic');
-
-var fs = require('fs'),
+var
+	fs = require('fs'),
 	path = require('path'),
 	nl = require('os').EOL;
 
-var logPath = path.join(__dirname, 'error.txt'),
+var
+	basePath = __dirname.split(path.sep).slice(-1).join(),
+	monic = require('../monic');
+
+var
+	logPath = path.join(__dirname, 'error.txt'),
 	log = '';
 
 if (fs.existsSync(logPath)) {
