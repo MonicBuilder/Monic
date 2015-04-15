@@ -6,16 +6,19 @@
   ],
 
   "excludeFiles": [
+    ".git",
     "node_modules",
-    "bower_components",
-    "test",
-    "demo",
     "coverage",
-    "dist",
-    "predefs"
+    "build"
   ],
 
   "dictionary": [
+    "/js/i",
+    "/jossy/i",
+    "/monic/i",
+    "/node.?js/i",
+    "/ie/i",
+    "/f\\d+/",
     "форк",
     "фреймворков",
     "пересобирать",

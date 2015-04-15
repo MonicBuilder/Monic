@@ -8,7 +8,13 @@ var
 gulp.task('build', function () {
 	gulp.src('./lib/*.js')
 		.pipe(babel({
-			loose: 'all'
+			compact: false,
+			highlightCode: false,
+			auxiliaryComment: 'istanbul ignore next',
+			loose: 'all',
+			optional: [
+				'spec.undefinedToVoid'
+			]
 		}))
 		.pipe(gulp.dest('./build/'));
 });
