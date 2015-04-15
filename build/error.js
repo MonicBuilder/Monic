@@ -1,25 +1,45 @@
+/*!
+ * Monic v1.2.0
+ * https://github.com/MonicBuilder/Monic
+ *
+ * Released under the MIT license
+ * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
+ *
+ * Date: Wed, 15 Apr 2015 05:49:45 GMT
+ */
+
+// istanbul ignore next
 "use strict";
 
-module.exports = MonicError;
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
+exports.__esModule = true;
 /**
- * Объект ошибки Monic
- *
- * @constructor
- * @param {string} msg - текст ошибки
- * @param {string} file - адрес файла, в котором произошла ошибка
- * @param {number} line - номер строки, на которой произошла ошибка
+ * Standart Monic error
  */
-function MonicError(msg, file, line) {
-  this.message = msg;
-  this.file = file;
-  this.line = line;
-}
 
-/**
- * Преобразовать объект ошибки в строку
- * @return {string}
- */
-MonicError.prototype.toString = function () {
-  return "Error: " + this.message + " (" + this.file + ": " + this.line + ")";
-};
+var MonicError = (function () {
+	/**
+  * @param {string} msg - an error text
+  * @param {string} file - a path to a file in which the error occurred
+  * @param {number} line - a line number where the error occurred
+  */
+
+	function MonicError(msg, file, line) {
+		_classCallCheck(this, MonicError);
+
+		this.message = msg;
+		this.file = file;
+		this.line = line;
+	}
+
+	/** @return {string} */
+
+	MonicError.prototype.toString = function toString() {
+		return "Error: " + this.message + " (" + this.file + ": " + this.line + ")";
+	};
+
+	return MonicError;
+})();
+
+exports.MonicError = MonicError;

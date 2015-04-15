@@ -1,310 +1,349 @@
-"use strict";
-
-module.exports = FileStructure;
-var path = require("path");
-
-/**
- * Объект структуры файла
+/*!
+ * Monic v1.2.0
+ * https://github.com/MonicBuilder/Monic
  *
- * @constructor
- * @param {string} src - путь к файлу
- * @param {string} lineSeparator - символ перевода строки
- */
-function FileStructure(src, lineSeparator) {
-  this.fname = src;
-  this.nl = lineSeparator;
-
-  this.root = {
-    type: "root",
-    content: [],
-    labels: {}
-  };
-
-  this.currentBlock = this.root;
-  this.included = {};
-}
-
-/**
- * Вернуть адрес указанного файла относительно базовой папки
+ * Released under the MIT license
+ * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * @param {string} src - путь к файлу
- * @return {string}
+ * Date: Wed, 15 Apr 2015 05:49:45 GMT
  */
-FileStructure.prototype.getRelativePathOf = function (src) {
-  return path.normalize(path.resolve(path.dirname(this.fname), src));
-};
+
+// istanbul ignore next
+'use strict';
+
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+
+// istanbul ignore next
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
+
+var _path = require('path');
+
+var _path2 = _interopRequireWildcard(_path);
+
+var _$C = require('collection.js');
 
 /**
- * Добавить произвольный JavaScript в структуру файла
- *
- * @param {string} code - добавляемый код
- * @return {!FileStructure}
+ * File structure class
  */
-FileStructure.prototype.addCode = function (code) {
-  this.currentBlock.content.push({
-    type: "code",
-    code: code,
-    included: false
-  });
 
-  return this;
-};
+var FileStructure = (function () {
+	/**
+  * @param {string} src - a path to a file
+  * @param {string} lineSeparator - EOL symbol
+  */
 
-/**
- * Добавить другой файл в структуру файла
- *
- * @param {!FileStructure} fileStructure - структура добавляемого файла
- * @param {!Object} labels - таблица заданных меток
- * @return {!FileStructure}
- */
-FileStructure.prototype.addInclude = function (fileStructure, labels) {
-  this.currentBlock.content.push({
-    type: "include",
-    fileStructure: fileStructure,
-    labels: labels
-  });
+	function FileStructure(src, lineSeparator) {
+		_classCallCheck(this, FileStructure);
 
-  return this;
-};
+		this.fname = src;
+		this.nl = lineSeparator;
 
-/**
- * Добавить исключение файла в структуру файла
- *
- * @param {!FileStructure} fileStructure - структура добавляемого файла
- * @param {!Object} labels - таблица заданных меток
- * @return {!FileStructure}
- */
-FileStructure.prototype.addWithout = function (fileStructure, labels) {
-  this.currentBlock.content.push({
-    type: "without",
-    fileStructure: fileStructure,
-    labels: labels
-  });
+		this.root = {
+			type: 'root',
+			content: [],
+			labels: {}
+		};
 
-  return this;
-};
+		this.currentBlock = this.root;
+		this.included = {};
+	}
 
-/**
- * Установить флаг
- *
- * @param {string} flag - название флага
- * @return {!FileStructure}
- */
-FileStructure.prototype.addSet = function (flag) {
-  this.currentBlock.content.push({
-    type: "set",
-    varName: flag,
-    value: true
-  });
+	/**
+  * Returns a file path relative to the base folder
+  *
+  * @param {string} src - the file path
+  * @return {string}
+  */
 
-  return this;
-};
+	FileStructure.prototype.getRelativePathOf = function getRelativePathOf(src) {
+		return _path2['default'].normalize(_path2['default'].resolve(_path2['default'].dirname(this.fname), src));
+	};
 
-/**
- * Отменить флаг
- *
- * @param {string} flag - название флага
- * @return {!FileStructure}
- */
-FileStructure.prototype.addUnset = function (flag) {
-  this.currentBlock.content.push({
-    type: "set",
-    varName: flag,
-    value: false
-  });
+	/**
+  * Adds custom JavaScript to the structure
+  *
+  * @param {string} code - some JavaScript code
+  * @return {!FileStructure}
+  */
 
-  return this;
-};
+	FileStructure.prototype.addCode = function addCode(code) {
+		this.currentBlock.content.push({
+			type: 'code',
+			code: code,
+			included: false
+		});
 
-/**
- * Установить условие
- *
- * @param {string} flag - название флага
- * @param {boolean} value - значение флага
- * @return {!FileStructure}
- */
-FileStructure.prototype.beginIf = function (flag, value) {
-  var ifBlock = {
-    parent: this.currentBlock,
-    type: "if",
-    varName: flag,
-    value: value,
-    content: []
-  };
+		return this;
+	};
 
-  this.currentBlock.content.push(ifBlock);
-  this.currentBlock = ifBlock;
+	/**
+  * Adds a file to the structure
+  *
+  * @param {!FileStructure} fileStructure - the structure of the adding file
+  * @param {!Object} labels - a map of labels
+  * @return {!FileStructure}
+  */
 
-  return this;
-};
+	FileStructure.prototype.addInclude = function addInclude(fileStructure, labels) {
+		this.currentBlock.content.push({
+			type: 'include',
+			fileStructure: fileStructure,
+			labels: labels
+		});
 
-/**
- * Закончить условие
- * @return {!FileStructure}
- */
-FileStructure.prototype.endIf = function () {
-  if (this.currentBlock.type != "if") {
-    throw new Error("Attempt to close an unopened block \"#if\"");
-  }
+		return this;
+	};
 
-  this.currentBlock = this.currentBlock.parent;
-  return this;
-};
+	/**
+  * Adds expulsion to the structure
+  *
+  * @param {!FileStructure} fileStructure - the structure of the expulsion file
+  * @param {!Object} labels - a map of labels
+  * @return {!FileStructure}
+  */
 
-/**
- * Установить метку
- *
- * @param {string} label - название метки
- * @return {!FileStructure}
- */
-FileStructure.prototype.beginLabel = function (label) {
-  var labelBlock = {
-    parent: this.currentBlock,
-    type: "label",
-    label: label,
-    content: []
-  };
+	FileStructure.prototype.addWithout = function addWithout(fileStructure, labels) {
+		this.currentBlock.content.push({
+			type: 'without',
+			fileStructure: fileStructure,
+			labels: labels
+		});
 
-  this.currentBlock.content.push(labelBlock);
-  this.currentBlock = labelBlock;
+		return this;
+	};
 
-  return this;
-};
+	/**
+  * Sets a flag
+  *
+  * @param {string} flag - the flag name
+  * @return {!FileStructure}
+  */
 
-/**
- * Закончить метку
- * @return {!FileStructure}
- */
-FileStructure.prototype.endLabel = function () {
-  if (this.currentBlock.type !== "label") {
-    throw new Error("Attempt to close an unopened block \"#label\"");
-  }
+	FileStructure.prototype.addSet = function addSet(flag) {
+		this.currentBlock.content.push({
+			type: 'set',
+			varName: flag,
+			value: true
+		});
 
-  this.currentBlock = this.currentBlock.parent;
-  return this;
-};
+		return this;
+	};
 
-/**
- * Добавить ошибку в структуру файла
- *
- * @param {string} msg - текст ошибки
- * @return {!FileStructure}
- */
-FileStructure.prototype.error = function (msg) {
-  this.addCode("throw new Error(" + JSON.stringify("Monic error: " + msg) + ");" + this.nl);
-  return this;
-};
+	/**
+  * Cancels a flag
+  *
+  * @param {string} flag - the flag name
+  * @return {!FileStructure}
+  */
 
-/**
- * Компилировать структуру файла
- *
- * @param {Array=} [opt_labels] - таблица заданных меток
- * @param {Object=} [opt_flags] - таблица заданных флагов
- * @return {string}
- */
-FileStructure.prototype.compile = function (opt_labels, opt_flags) {
-  if (opt_labels) {
-    for (var key in opt_labels) {
-      if (!opt_labels.hasOwnProperty(key)) {
-        continue;
-      }
+	FileStructure.prototype.addUnset = function addUnset(flag) {
+		this.currentBlock.content.push({
+			type: 'set',
+			varName: flag,
+			value: false
+		});
 
-      this.root.labels[key] = true;
-    }
-  }
+		return this;
+	};
 
-  return this._compileBlock(this.root, this.root.labels, opt_flags || {});
-};
+	/**
+  * Sets a condition
+  *
+  * @param {string} flag - the condition
+  * @param {boolean} value - a value of the condition
+  * @return {!FileStructure}
+  */
 
-/**
- * Компилировать исключение файла
- *
- * @param {Array=} [opt_labels] - таблица заданных меток
- * @param {Object=} [opt_flags] - таблица заданных флагов
- * @return {!FileStructure}
- */
-FileStructure.prototype.without = function (opt_labels, opt_flags) {
-  this._compileBlock(this.root, opt_labels || {}, opt_flags || {});
-  return this;
-};
+	FileStructure.prototype.beginIf = function beginIf(flag, value) {
+		var ifBlock = {
+			parent: this.currentBlock,
+			type: 'if',
+			varName: flag,
+			value: value,
+			content: []
+		};
 
-/**
- * Компилировать структуру файла
- *
- * @private
- * @param {Object} block - объект структуры файла
- * @param {!Object} labels - таблица заданных меток
- * @param {!Object} flags - таблица заданных флагов
- * @return {string}
- */
-FileStructure.prototype._compileBlock = function (block, labels, flags) {
-  var _this = this;
-  switch (block.type) {
-    case "code":
-      if (!block.included) {
-        block.included = true;
-        return block.code;
-      }
+		this.currentBlock.content.push(ifBlock);
+		this.currentBlock = ifBlock;
 
-      break;
+		return this;
+	};
 
-    case "include":
-      var cacheKey = block.fileStructure.fname + "@" + Object.keys(block.labels).sort() + "@" + Object.keys(flags).sort();
+	/**
+  * Ends a condition
+  * @return {!FileStructure}
+  */
 
-      for (var key in labels) {
-        if (!labels.hasOwnProperty(key)) {
-          continue;
-        }
+	FileStructure.prototype.endIf = function endIf() {
+		if (this.currentBlock.type != 'if') {
+			throw new Error('Attempt to close an unopened block "#if"');
+		}
 
-        block.labels[key] = true;
-      }
+		this.currentBlock = this.currentBlock.parent;
+		return this;
+	};
 
-      if (!this.included[cacheKey]) {
-        this.included[cacheKey] = true;
-        return block.fileStructure.compile(block.labels, flags);
-      }
+	/**
+  * Sets a label
+  *
+  * @param {string} label - the label name
+  * @return {!FileStructure}
+  */
 
-      break;
+	FileStructure.prototype.beginLabel = function beginLabel(label) {
+		var labelBlock = {
+			parent: this.currentBlock,
+			type: 'label',
+			label: label,
+			content: []
+		};
 
-    case "without":
-      block.fileStructure.without(block.labels, flags);
-      break;
+		this.currentBlock.content.push(labelBlock);
+		this.currentBlock = labelBlock;
 
-    case "set":
-      flags[block.varName] = block.value;
-      break;
+		return this;
+	};
 
-    default:
-      if (this._isValidContentBlock(block, labels, flags)) {
-        return block.content.map(function (block) {
-          return _this._compileBlock(block, labels, flags);
-        }).join("");
-      }
-  }
+	/**
+  * Ends a label
+  * @return {!FileStructure}
+  */
 
-  return "";
-};
+	FileStructure.prototype.endLabel = function endLabel() {
+		if (this.currentBlock.type !== 'label') {
+			throw new Error('Attempt to close an unopened block "#label"');
+		}
 
-/**
- * Вернуть true, если заданный объект структуры файла валидный
- *
- * @private
- * @param {Object} block - объект структуры файла
- * @param {!Object} labels - таблица заданных меток
- * @param {!Object} flags - таблица заданных флагов
- * @return {boolean}
- */
-FileStructure.prototype._isValidContentBlock = function (block, labels, flags) {
-  switch (block.type) {
-    case "root":
-      return true;
+		this.currentBlock = this.currentBlock.parent;
+		return this;
+	};
 
-    case "if":
-      return Boolean(flags[block.varName]) === Boolean(block.value);
+	/**
+  * Adds an error to the structure
+  *
+  * @param {string} msg - the error text
+  * @return {!FileStructure}
+  */
 
-    case "label":
-      return Boolean(!Object.keys(labels).length || labels[block.label]);
-  }
+	FileStructure.prototype.error = function error(msg) {
+		this.addCode('throw new Error(' + JSON.stringify('Monic error: ' + msg) + ');' + this.nl);
+		return this;
+	};
 
-  return false;
-};
+	/**
+  * Compiles the structure
+  *
+  * @param {Array=} [opt_labels] - a map of labels
+  * @param {Object=} [opt_flags] - a map of flags
+  * @return {string}
+  */
+
+	FileStructure.prototype.compile = function compile(opt_labels, opt_flags) {
+		var _this = this;
+
+		_$C.$C(opt_labels).forEach(function (el, key) {
+			_this.root.labels[key] = true;
+		});
+
+		return this._compileBlock(this.root, this.root.labels, opt_flags || {});
+	};
+
+	/**
+  * Compiles expulsion of a file
+  *
+  * @param {Array=} [opt_labels] - a map of labels
+  * @param {Object=} [opt_flags] - a map of flags
+  * @return {!FileStructure}
+  */
+
+	FileStructure.prototype.without = function without(opt_labels, opt_flags) {
+		this._compileBlock(this.root, opt_labels || {}, opt_flags || {});
+		return this;
+	};
+
+	/**
+  * Compiles some file structure
+  *
+  * @private
+  * @param {!Object} block - the structure object
+  * @param {!Object} labels - a map of labels
+  * @param {!Object} flags - a map of flags
+  * @return {string}
+  */
+
+	FileStructure.prototype._compileBlock = function _compileBlock(block, labels, flags) {
+		var _this2 = this;
+
+		switch (block.type) {
+			case 'code':
+				if (!block.included) {
+					block.included = true;
+					return block.code;
+				}
+
+				break;
+
+			case 'include':
+				var cacheKey = block.fileStructure.fname + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
+
+				_$C.$C(labels).forEach(function (el, key) {
+					block.labels[key] = true;
+				});
+
+				if (!this.included[cacheKey]) {
+					this.included[cacheKey] = true;
+					return block.fileStructure.compile(block.labels, flags);
+				}
+
+				break;
+
+			case 'without':
+				block.fileStructure.without(block.labels, flags);
+				break;
+
+			case 'set':
+				flags[block.varName] = block.value;
+				break;
+
+			default:
+				if (FileStructure.isValidContentBlock(block, labels, flags)) {
+					return block.content.map(function (block) {
+						return _this2._compileBlock(block, labels, flags);
+					}).join('');
+				}
+		}
+
+		return '';
+	};
+
+	/**
+  * Returns true if an object is valid file structure
+  *
+  * @param {!Object} block - the structure object
+  * @param {!Object} labels - a map of labels
+  * @param {!Object} flags - a map of flags
+  * @return {boolean}
+  */
+
+	FileStructure.isValidContentBlock = function isValidContentBlock(block, labels, flags) {
+		switch (block.type) {
+			case 'root':
+				return true;
+
+			case 'if':
+				return Boolean(flags[block.varName]) === Boolean(block.value);
+
+			case 'label':
+				return Boolean(!Object.keys(labels).length || labels[block.label]);
+		}
+
+		return false;
+	};
+
+	return FileStructure;
+})();
+
+exports.FileStructure = FileStructure;
