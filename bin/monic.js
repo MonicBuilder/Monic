@@ -1,26 +1,30 @@
 #!/usr/bin/env node
 
-var monic = require('../monic'),
+var
+	monic = require('../monic'),
 	program = require('commander');
 
-var path = require('path'),
+var
+	path = require('path'),
 	fs = require('fs');
 
 program
 	.version(monic.VERSION.join('.'))
 	.usage('[options] [file ...]')
 
-	.option('-f, --file [src]', 'path to the file (meta-information)')
-	.option('--line-separator [char]', 'the newline character')
-	.option('--flags [list]', 'list of flags separated by commas')
-	.option('--labels [list]', 'list of labels separated by commas')
+	.option('-f, --file [src]', 'Set a path to a file (meta-information)')
+	.option('--line-separator [char]', 'Set a newline character (eol)')
+	.option('--flags [list]', 'Set a list of flags separated by commas')
+	.option('--labels [list]', 'Set a list of labels separated by commas')
 
 	.parse(process.argv);
 
-var args = program['args'],
+var
+	args = program['args'],
 	input;
 
-var file = program['source'],
+var
+	file = program['source'],
 	out = program['output'];
 
 if (!file && args.length) {
@@ -60,21 +64,22 @@ function action(file, input) {
 }
 
 if (!file && input == null) {
-	var buf = '';
-	var stdin = process.stdin,
+	var
+		buf = '',
+		stdin = process.stdin,
 		stdout = process.stdout;
 
 	stdin.setEncoding('utf8');
-	stdin.on('data', function (chunk)  {
+	stdin.on('data', function (chunk) {
 		buf += chunk;
 	});
 
-	stdin.on('end', function ()  {
+	stdin.on('end', function () {
 		action(program['file'], buf);
 	}).resume();
 
 	var nl = program['lineSeparator'] || '\n';
-	process.on('SIGINT', function ()  {
+	process.on('SIGINT', function () {
 		stdout.write(nl);
 		stdin.emit('end');
 		stdout.write(nl);
