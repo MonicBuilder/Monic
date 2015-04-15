@@ -5,6 +5,7 @@
     "monic.js",
     "gulpfile.js",
     "build/*",
+    "bin/*",
     "spec/**/*",
     "node_modules/**/*"
   ],

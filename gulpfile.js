@@ -3,9 +3,26 @@ var
 
 var
 	babel = require('gulp-babel'),
-	bump = require('gulp-bump');
+	bump = require('gulp-bump'),
+	header = require('gulp-header');
+
+function getVersion() {
+	delete require.cache[require.resolve('./monic')];
+	return require('./monic').VERSION.join('.');
+}
 
 gulp.task('build', function () {
+	var head =
+		'/*!\n' +
+		' * Monic v' + getVersion() + '\n' +
+		' * https://github.com/MonicBuilder/Monic\n' +
+		' *\n' +
+		' * Released under the MIT license\n' +
+		' * https://github.com/MonicBuilder/Monic/blob/master/LICENSE\n' +
+		' *\n' +
+		' * Date: ' + new Date().toUTCString() + '\n' +
+		' */\n\n';
+
 	gulp.src('./lib/*.js')
 		.pipe(babel({
 			compact: false,
@@ -16,15 +33,14 @@ gulp.task('build', function () {
 				'spec.undefinedToVoid'
 			]
 		}))
+
+		.pipe(header(head))
 		.pipe(gulp.dest('./build/'));
 });
 
 gulp.task('bump', function () {
-	delete require.cache[require.resolve('./monic')];
-	var v = require('./monic').VERSION.join('.');
-
 	gulp.src('./*.json')
-		.pipe(bump({version: v}))
+		.pipe(bump({version: getVersion()}))
 		.pipe(gulp.dest('./'));
 });
 

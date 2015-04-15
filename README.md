@@ -5,10 +5,10 @@ Monic — сборщик JS-файлов ([форк Jossy](https://github.com/Ko
 но и также легко пересобирать их при изменении принципов сборки.
 
 [![NPM version](http://img.shields.io/npm/v/monic.svg?style=flat)](http://badge.fury.io/js/monic)
-[![NPM dependencies](http://img.shields.io/david/kobezzza/Monic.svg?style=flat)](https://david-dm.org/kobezzza/Monic#info=dependencies&view=table)
-[![NPM devDependencies](http://img.shields.io/david/dev/kobezzza/Monic.svg?style=flat)](https://david-dm.org/kobezzza/Monic#info=devDependencies&view=table)
-[![Build Status](http://img.shields.io/travis/kobezzza/Monic.svg?style=flat&branch=master)](https://travis-ci.org/kobezzza/Monic)
-[![Coverage Status](http://img.shields.io/coveralls/kobezzza/Monic.svg?style=flat)](https://coveralls.io/r/kobezzza/Monic?branch=master)
+[![NPM dependencies](http://img.shields.io/david/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic#info=dependencies&view=table)
+[![NPM devDependencies](http://img.shields.io/david/dev/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic#info=devDependencies&view=table)
+[![Build Status](http://img.shields.io/travis/MonicBuilder/Monic.svg?style=flat&branch=master)](https://travis-ci.org/MonicBuilder/Monic)
+[![Coverage Status](http://img.shields.io/coveralls/MonicBuilder/Monic.svg?style=flat)](https://coveralls.io/r/MonicBuilder/Monic?branch=master)
 
 ## Использование
 ### Сборка из командной строки
@@ -67,8 +67,8 @@ echo '//#include foo/*.js' | monic -f myFile.js
 
 ### Плагины
 
-* [Gulp](https://github.com/kobezzza/gulp-monic)
-* [Grunt](https://github.com/kobezzza/grunt-monic)
+* [Gulp](https://github.com/MonicBuilder/gulp-monic)
+* [Grunt](https://github.com/MonicBuilder/grunt-monic)
 
 ### Использование сборщика из NodeJS
 
@@ -353,6 +353,6 @@ String.truncate = function () {
 Кроме этого, `#without` тоже смотрит на эти области. Поэтому, например, `escapeHTML` может попасть в common.js,
 а `truncate` — в feature.js.
 
-## [Лицензия](https://github.com/kobezzza/Monic/blob/master/LICENSE)
+## [Лицензия](https://github.com/MonicBuilder/Monic/blob/master/LICENSE)
 
 The MIT License.
