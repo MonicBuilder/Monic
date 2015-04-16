@@ -13,7 +13,7 @@ program
 	.usage('[options] [file ...]')
 
 	.option('-f, --file [src]', 'Set a path to a file (meta-information)')
-	.option('--line-separator [char]', 'Set a newline character (eol)')
+	.option('--line-separator [char]', 'Set a newline character (EOL)')
 	.option('--flags [list]', 'Set a list of flags separated by commas')
 	.option('--labels [list]', 'Set a list of labels separated by commas')
 
