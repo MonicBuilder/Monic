@@ -4,24 +4,24 @@ var Parser = require('./build/parser');
 exports.VERSION = [1, 2, 0];
 
 /**
- * Обработать указанный файл
+ * Builds a file
  *
- * @param {string} file - адрес файла
+ * @param {string} file - the file path
  * @param {{
  *   flags: (Object|undefined),
  *   labels: (Object|undefined),
  *   content: (?string|undefined),
  *   lineSeparator: (?string|undefined),
  *   replacers: (Array|undefined)
- * }} [params] - дополнительные параметры операции:
+ * }} [params] - additional parameters:
  *
- *   *) [params.flags] - таблица заданных флагов
- *   *) [params.labels] - таблица заданных меток
- *   *) [params.content] - текст файла
- *   *) [params.lineSeparator] - символ перевода строки
- *   *) [params.replacers] - массив функций трансформации
+ *   *) [params.flags] - a map of flags
+ *   *) [params.labels] - a map of labels
+ *   *) [params.content] - the file text
+ *   *) [params.lineSeparator] - EOL symbol
+ *   *) [params.replacers] - an array of transform functions
  *
- * @param {function(Error, string=, string=)} callback - функция обратного вызова
+ * @param {function(Error, string=, string=)} callback - a callback function
  */
 exports.compile = function (file, params, callback) {
 	params = params || {};
