@@ -3,7 +3,7 @@ Monic
 
 Monic is a JavaScript file builder ([fork of Jossy](https://github.com/Kolyaj/Jossy)) to one or several files.
 When it used properly, allows not only easy to build modules but also easy to rebuild them when changing the principles
-of the assembly.
+of the build.
 
 [Russian documentation](https://github.com/MonicBuilder/Monic/blob/master/README.ru.md)
 
