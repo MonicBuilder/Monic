@@ -145,3 +145,56 @@ monic.compile(
 	}
 );
 ```
+
+## The syntax and capabilities
+### Including files
+
+To include an external file into the current need to use the `#include` directive
+
+```js
+//#include file.js
+```
+
+The file path is relative to the location of the current file, but also you can use an absolute path.
+In the file path can also be used [templates](https://github.com/isaacs/node-glob).
+
+```js
+//#include lib/*.js
+```
+
+Technically, the line with the directive is simply replaced to a text of the attached file.
+However, if the specified file is already included in the current module before, then it won't be included again.
+For example,
+
+**f1.js**
+
+```js
+alert(1);
+```
+
+**f2.js**
+
+```js
+//#include f1.js
+alert(2);
+```
+
+**f3.js**
+
+```js
+//#include f1.js
+//#include f2.js
+```
+
+**Build f3.js**
+
+```bash
+monic f3.js > result.js
+```
+
+**result.js**
+
+```js
+alert(1);
+alert(2);
+```
