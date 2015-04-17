@@ -149,7 +149,7 @@ monic.compile(
 ## The syntax and capabilities
 ### Including files
 
-To include an external file into the current need to use the `#include` directive
+To include an external file into the current need to use the `#include` directive.
 
 ```js
 //#include file.js
@@ -198,3 +198,36 @@ monic f3.js > result.js
 alert(1);
 alert(2);
 ```
+
+### Excluding files
+
+The `#without` indicates Monic exclude from the build all the files that are used in the specified
+(including specified, of course).
+
+**Example**
+
+The project has several dozen widgets. The code for each widget is in a separate file.
+Each widget indicated its dependence with the `#include`.
+Some widgets are used on most pages, and is logical to place their code in a separate file *common.js*.
+Select frequently-used widgets, create the file *common.js* and write back:
+
+```js
+//#include widget1.js
+//#include widget2.js
+//#include widget3.js
+```
+
+On one of the pages the widget is used, large enough not to include it in the *common.js*,
+let's call it *big widget*. In the file *big-widget.js* its dependencies, and many of those who
+already in the *common.js*. If we will simply build the *big-widget.js* we will get a lot of duplicated code.
+Therefore, next to the *common.js* create a file *feature.js* with the code:
+
+```js
+//#without common.js
+//#include big-widget.js
+```
+
+Now the code in the *common.js*, misses the *feature.js*.
+Most importantly don't forget to connect to a page not only the *feature.js*, but the *common.js* too.
+
+The path format in the directive is the same as in the `#include`.
