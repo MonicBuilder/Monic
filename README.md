@@ -231,3 +231,48 @@ Now the code in the *common.js*, misses the *feature.js*.
 Most importantly don't forget to connect to a page not only the *feature.js*, but the *common.js* too.
 
 The path format in the directive is the same as in the `#include`.
+
+### Conditional build
+
+In the build process can be defined boolean flags that define whether or not to include selected sections of code.
+
+```js
+//#set flag
+
+//#if flag
+alert('flag');
+//#endif
+
+//#if not flag
+alert('not flag');
+//#endif
+
+//#unset flag
+```
+
+All the flags are declared globally. Указать их можно не только в коде директивами `#set` и `#unset`, но при запуске сборщика
+(о запуске сборщика ниже).
+
+**file.js**
+
+```js
+//#if ie
+alert('IE only');
+//#endif
+```
+
+**common.js**
+
+```js
+//#include file.js
+```
+
+**common-ie.js**
+
+```js
+//#set ie
+//#include file.js
+```
+
+Точно также можно создать флаг debug и писать отладочные строки только внутри `//#if debug ... //#endif`,
+тогда отладочный код никогда не попадёт на боевые сервера.
