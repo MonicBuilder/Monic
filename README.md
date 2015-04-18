@@ -206,7 +206,7 @@ The `#without` indicates Monic exclude from the build all the files that are use
 
 **Example**
 
-The project has several dozen widgets. The code for each widget is in a separate file.
+Our project has several dozen widgets. The code for each widget is in a separate file.
 Each widget indicated its dependence with the `#include`.
 Some widgets are used on most pages, and is logical to place their code in a separate file *common.js*.
 Select frequently-used widgets, create the file *common.js* and write back:
