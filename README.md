@@ -250,8 +250,8 @@ alert('not flag');
 //#unset flag
 ```
 
-All the flags are declared globally. Указать их можно не только в коде директивами `#set` и `#unset`, но при запуске сборщика
-(о запуске сборщика ниже).
+All the flags are declared globally. To set them in your code, you should use the directives `#set` and `#unset`,
+and also you can specify them when you run Monic. For example,
 
 **file.js**
 
@@ -274,5 +274,5 @@ alert('IE only');
 //#include file.js
 ```
 
-Точно также можно создать флаг debug и писать отладочные строки только внутри `//#if debug ... //#endif`,
-тогда отладочный код никогда не попадёт на боевые сервера.
+Similarly, you can create a debug flag and write debug code within `//#if debug ... //#endif`,
+that code never gets to production server.
