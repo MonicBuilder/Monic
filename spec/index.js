@@ -76,7 +76,7 @@ fs.readdir(basePath, function (err, dirs) {
 				monic.compile(src, {
 					lineSeparator: nl,
 					replacers: replacers,
-					content: fs.readFileSync(src)
+					content: String(fs.readFileSync(src))
 				}, test);
 			}
 		});
