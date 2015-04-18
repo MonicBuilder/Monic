@@ -365,7 +365,7 @@ String.truncate = function () {
 };
 ```
 
-Therefore, don't use `# label` inside functions and expressions because it can break your JavaScript.
+Therefore, don't use `#label` inside functions and expressions because it can break your JavaScript.
 
 In addition, `#without` also watching for these areas. So, for example, `escapeHTML` can get into *common.js* and
 `truncate` into *feature.js*.
