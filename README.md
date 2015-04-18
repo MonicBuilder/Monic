@@ -276,3 +276,100 @@ alert('IE only');
 
 Similarly, you can create a debug flag and write debug code within `//#if debug ... //#endif`,
 that code never gets to production server.
+
+### Including chunks of files
+
+This functionality is very useful useful for development of libraries and frameworks.
+For example, in our library there is a file *String.js* containing several dozens of functions for working with strings.
+Isolate each function in a separate file somehow wrong, but attach a few hundred lines of code for only one function
+is also not desirable. To solve this problem Monic can can mark the file *String.js* on specific areas.
+Names in areas can be arbitrary, but it is better to coincide with the names of functions.
+
+```js
+var String = {};
+
+//#label truncate
+String.truncate = function () {
+
+};
+//#endlabel truncate
+
+//#label escapeHTML
+String.escapeHTML = function () {
+
+};
+//#endlabel escapeHTML
+```
+
+Now, if we only need the `escapeHTML`, when you include a file *String.js* write
+
+```js
+//#include String.js::escapeHTML
+```
+
+As a result, the build will get only
+
+```js
+var String = {};
+
+String.escapeHTML = function () {
+
+};
+```
+
+If you want to include several areas, you need to write something like this
+
+```js
+//#include String.js::trim::truncate
+```
+
+If you want to include everything except the marked areas (for example, we need only String namespace), then
+
+```js
+//#include String.js::
+```
+
+If some area needed another area of the current file, use the `#include` without specifying a file.
+
+```js
+//#label truncate
+//#include ::trim
+String.truncate = function () {};
+//#endlabel truncate
+```
+
+Please note that the marked-thus the area of the file in builded code can change the order between them and may
+receive another code.
+
+For example,
+
+```js
+//#include String.js::escapeHTML
+alert(1);
+//#include String.js::truncate
+```
+
+After build will receive
+
+```js
+var String = {};
+
+String.escapeHTML = function () {
+
+};
+
+alert(1);
+
+String.truncate = function () {
+
+};
+```
+
+Therefore, don't use `# label` inside functions and expressions because it can break your JavaScript.
+
+In addition, `#without` also watching for these areas. So, for example, `escapeHTML` can get into *common.js* and
+`truncate` into *feature.js*.
+
+## [License](https://github.com/MonicBuilder/Monic/blob/master/LICENSE)
+
+The MIT License.
