@@ -1,3 +1,5 @@
+import { SourceMapGenerator } from 'source-map';
+
 var
 	Parser = require('./build/parser'),
 	path = require('path');
@@ -37,7 +39,7 @@ exports.compile = function (file, params, callback) {
 			return callback(err);
 		}
 
-		callback(null, fileStructure.compile(params.labels, params.flags), path);
+		callback(null, fileStructure.compile(params.labels, params.flags, new SourceMapGenerator()), path);
 	}
 
 	var p = {
