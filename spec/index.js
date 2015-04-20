@@ -5,7 +5,7 @@ var
 
 var
 	basePath = __dirname.split(path.sep).slice(-1).join(),
-	monic = require('../monic');
+	monic = require('../');
 
 var
 	logPath = path.join(__dirname, 'error.txt'),
@@ -21,7 +21,7 @@ fs.readdir(basePath, function (err, dirs) {
 	}
 
 	dirs.forEach(function (dir) {
-		var dirPath = path.join(basePath, dir);
+		var dirPath = path.resolve(basePath, dir);
 
 		fs.stat(dirPath, function (err, stat) {
 			if (err) {
