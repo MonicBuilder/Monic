@@ -17,11 +17,11 @@ exports.VERSION = [1, 2, 0];
  *   replacers: (Array|undefined)
  * }} [params] - additional parameters:
  *
- *   *) [params.flags] - a map of flags
- *   *) [params.labels] - a map of labels
- *   *) [params.content] - the file text
- *   *) [params.lineSeparator] - EOL symbol
- *   *) [params.replacers] - an array of transform functions
+ *   *) [params.flags] - a map of flags;
+ *   *) [params.labels] - a map of labels;
+ *   *) [params.content] - the file text;
+ *   *) [params.lineSeparator] - EOL symbol;
+ *   *) [params.replacers] - an array of transform functions.
  *
  * @param {function(Error, string=, string=)} callback - a callback function
  */
