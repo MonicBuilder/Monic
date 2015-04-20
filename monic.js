@@ -1,4 +1,6 @@
-var Parser = require('./build/parser');
+var
+	Parser = require('./build/parser'),
+	path = require('path');
 
 /** @type {!Array} */
 exports.VERSION = [1, 2, 0];
@@ -44,6 +46,10 @@ exports.compile = function (file, params, callback) {
 	};
 
 	var parser = new Parser(p);
+	file = path.normalize(
+		path.resolve(module.parent ?
+			path.dirname(module.parent.filename) : '', file)
+	);
 
 	if (params.content != null) {
 		parser.normalizePath(file, function (err, file) {
