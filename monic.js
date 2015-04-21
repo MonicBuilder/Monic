@@ -1,4 +1,6 @@
-import { SourceMapGenerator } from 'source-map';
+var
+	sourceMap = require('source-map'),
+	SourceMapGenerator = sourceMap.SourceMapGenerator;
 
 var
 	Parser = require('./build/parser'),
