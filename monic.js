@@ -75,7 +75,7 @@ exports.compile = function (file, params, callback) {
 			tasks.push(function (cb) {
 				if (sourceMapName) {
 					result +=
-						(new Array(2 + (result[result.length - 1] !== nl ? 1 : 0)).join(nl)) +
+						(new Array(1 + (result[result.length - 1] !== nl ? 1 : 0)).join(nl)) +
 						'//# sourceMappingURL=' +
 
 						path.join(
