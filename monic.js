@@ -4,7 +4,13 @@ var
 
 var
 	Parser = require('./build/parser'),
-	path = require('path');
+	path = require('path'),
+	fs = require('fs');
+
+var collection = require('collection.js');
+
+global.Collection = collection.Collection;
+global.$C = collection.$C;
 
 /** @type {!Array} */
 exports.VERSION = [1, 2, 0];
@@ -18,14 +24,16 @@ exports.VERSION = [1, 2, 0];
  *   labels: (Object|undefined),
  *   content: (?string|undefined),
  *   lineSeparator: (?string|undefined),
- *   replacers: (Array|undefined)
+ *   replacers: (Array|undefined),
+ *   sourceMaps: (?boolean|undefined)
  * }} [params] - additional parameters:
  *
  *   *) [params.flags] - a map of flags;
  *   *) [params.labels] - a map of labels;
  *   *) [params.content] - the file text;
  *   *) [params.lineSeparator] - EOL symbol;
- *   *) [params.replacers] - an array of transform functions.
+ *   *) [params.replacers] - an array of transform functions;
+ *   *) [params.sourceMaps] - if is true, then will be enabled support for source maps.
  *
  * @param {function(Error, string=, string=)} callback - a callback function
  */
@@ -35,21 +43,29 @@ exports.compile = function (file, params, callback) {
 	params.labels = params.labels || {};
 	params.lineSeparator = params.lineSeparator || '\n';
 	params.replacers = params.replacers || [];
+	params.sourceMaps = Boolean(params.sourceMaps);
 
 	function finish(err, fileStructure, path) {
 		if (err) {
 			return callback(err);
 		}
 
-		callback(null, fileStructure.compile(params.labels, params.flags, new SourceMapGenerator()), path);
+		var map = params.sourceMaps ? new SourceMapGenerator() : null;
+		callback(null, fileStructure.compile(params.labels, params.flags, map), path);
 	}
 
-	var p = {
-		lineSeparator: params.lineSeparator,
-		replacers: params.replacers
-	};
+	var parser = new Parser({
+		nl: params.lineSeparator,
+		replacers: params.replacers,
+		sourceMaps: params.sourceMaps
+	});
 
-	var parser = new Parser(p);
+	Parser.cursor = 1;
+	Parser.diff = 0;
+	Parser.tmpDiff = 0;
+	Parser.diffMap = {};
+	Parser.current = null;
+
 	file = path.normalize(
 		path.resolve(module.parent ?
 			path.dirname(module.parent.filename) : '', file)
