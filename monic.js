@@ -77,13 +77,10 @@ exports.compile = function (file, params, callback) {
 					result +=
 						(new Array(1 + (result[result.length - 1] !== nl ? 1 : 0)).join(nl)) +
 						'//# sourceMappingURL=' +
-
 						path.join(
 							path.relative(path.dirname(sourceFileName), path.dirname(sourceMapName)),
 							path.basename(sourceMapName)
-						) +
-
-						nl;
+						);
 				}
 
 				fs.writeFile(sourceFileName, result, cb);
