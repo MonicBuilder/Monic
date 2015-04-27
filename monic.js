@@ -43,7 +43,7 @@ exports.compile = function (file, params, callback) {
 
 	file = url(file);
 	const
-		sourceMapName = params.sourceMapName && url(params.sourceMapName),
+		sourceMapName = params.sourceMaps && params.sourceMapName && url(params.sourceMapName),
 		sourceFileName = params.sourceFileName ?
 			url(params.sourceFileName) : file;
 
@@ -70,16 +70,18 @@ exports.compile = function (file, params, callback) {
 
 		if (params.sourceFileName) {
 			tasks.push(function (cb) {
-				result +=
-					params.lineSeparator +
-					'//# sourceMappingURL=' +
+				if (sourceMapName) {
+					result +=
+						params.lineSeparator +
+						'//# sourceMappingURL=' +
 
-					path.join(
-						path.relative(path.dirname(sourceFileName), path.dirname(sourceMapName)),
-						path.basename(sourceMapName)
-					) +
+						path.join(
+							path.relative(path.dirname(sourceFileName), path.dirname(sourceMapName)),
+							path.basename(sourceMapName)
+						) +
 
-					params.lineSeparator;
+						params.lineSeparator;
+				}
 
 				fs.writeFile(sourceFileName, result, cb);
 			});
