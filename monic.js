@@ -5,7 +5,8 @@ var
 var
 	Parser = require('./build/parser'),
 	path = require('path'),
-	fs = require('fs');
+	fs = require('fs'),
+	async = require('async');
 
 var collection = require('collection.js');
 
@@ -41,31 +42,52 @@ exports.compile = function (file, params, callback) {
 	params.sourceMaps = Boolean(params.sourceMaps);
 
 	file = url(file);
-	params.sourceMapName = params.sourceMapName && url(params.sourceMapName);
-	params.sourceFileName = params.sourceFileName ?
-		url(params.sourceFileName) : file;
+	const
+		sourceMapName = params.sourceMapName && url(params.sourceMapName),
+		sourceFileName = params.sourceFileName ?
+			url(params.sourceFileName) : file;
 
-	function finish(err, fileStructure, path) {
+	function finish(err, fileStructure, src) {
 		if (err) {
 			return callback(err);
 		}
 
 		var map = params.sourceMaps ?
 			new SourceMapGenerator({
-				file: params.sourceFileName,
+				file: sourceFileName,
 				sourceRoot: params.sourceRoot
 			}) : null;
 
-		var result = fileStructure.compile(params.labels, params.flags, map);
+		var
+			result = fileStructure.compile(params.labels, params.flags, map),
+			tasks = [];
 
-		if (params.sourceMapName) {
-			fs.writeFile(params.sourceMapName, String(map), function (err) {
-				callback(err, result, path, map);
+		if (sourceMapName) {
+			tasks.push(function (cb) {
+				fs.writeFile(sourceMapName, String(map), cb);
 			});
-
-		} else {
-			callback(null, result, path, map);
 		}
+
+		if (params.sourceFileName) {
+			tasks.push(function (cb) {
+				result +=
+					params.lineSeparator +
+					'//# sourceMappingURL=' +
+
+					path.join(
+						path.relative(path.dirname(sourceFileName), path.dirname(sourceMapName)),
+						path.basename(sourceMapName)
+					) +
+
+					params.lineSeparator;
+
+				fs.writeFile(sourceFileName, result, cb);
+			});
+		}
+
+		async.parallel(tasks, function () {
+			callback(err, result, src, map);
+		})
 	}
 
 	function url(url) {
