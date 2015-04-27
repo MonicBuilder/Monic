@@ -37,7 +37,10 @@ exports.compile = function (file, params, callback) {
 
 	params.flags = params.flags || {};
 	params.labels = params.labels || {};
-	params.lineSeparator = params.lineSeparator || '\n';
+
+	var
+		nl = params.lineSeparator || '\n';
+
 	params.replacers = params.replacers || [];
 	params.sourceMaps = Boolean(params.sourceMaps);
 
@@ -72,7 +75,7 @@ exports.compile = function (file, params, callback) {
 			tasks.push(function (cb) {
 				if (sourceMapName) {
 					result +=
-						params.lineSeparator +
+						(result[result.length - 1] !== nl ? nl : '') +
 						'//# sourceMappingURL=' +
 
 						path.join(
@@ -80,7 +83,7 @@ exports.compile = function (file, params, callback) {
 							path.basename(sourceMapName)
 						) +
 
-						params.lineSeparator;
+						nl;
 				}
 
 				fs.writeFile(sourceFileName, result, cb);
@@ -100,7 +103,7 @@ exports.compile = function (file, params, callback) {
 	}
 
 	var parser = new Parser({
-		nl: params.lineSeparator,
+		nl: nl,
 		replacers: params.replacers,
 		sourceMaps: params.sourceMaps
 	});
