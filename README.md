@@ -42,7 +42,7 @@ monic [options] [file ...]
 --labels [list]              Set a list of labels separated by commas
 -s, --source-maps [string]   [true|false|inline]
 --source-map [string]        Set a path to save the generated source map
---source-root [string]       Set the source map root from which all sources are relative
+--source-root [string]       Set the root for all URLs in the generated source map
 ```
 
 ### Addition
@@ -131,7 +131,7 @@ monic.compile(
     // The path to the generated source map (optional, by default ${file}.map)
     sourceMap: '',
 
-    // The root for all relative URLs in the source map (optional)
+    // The root for all URLs in the generated source map (optional)
     sourceRoot: 'myDir/'
   },
 

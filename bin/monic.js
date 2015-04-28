@@ -21,7 +21,7 @@ program
 	.option('--labels [list]', 'Set a list of labels separated by commas')
 	.option('-s, --source-maps [string]', '[true|false|inline]')
 	.option('--source-map [string]', 'Set a path to save the generated source map')
-	.option('--source-root [string]', 'Set the source map root from which all sources are relative')
+	.option('--source-root [string]', 'Set the root for all URLs in the generated source map')
 
 	.parse(process.argv);
 

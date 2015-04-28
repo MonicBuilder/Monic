@@ -40,7 +40,7 @@ monic [options] [file ...]
 --labels [list]                        Задать список меток через запятую
 -s, --source-maps [string]             [true|false|inline]
 --source-map [string]                  Задать путь для сохранения SourceMap
---source-root [string]                 Задать SourceMap корень для всех относительных ссылок
+--source-root [string]                 Задать корень для всех ссылок в SourceMap
 ```
 
 ### Дополнение
@@ -130,7 +130,7 @@ monic.compile(
     // Путь к сгенерированному source map (опционально, по умолчанию ${file}.map)
     sourceMap: '',
 
-    // SourceMap корень для всех относительных ссылок (опционально)
+    // Корень для всех ссылок в SourceMap (опционально)
     sourceRoot: 'myDir/'
   },
 

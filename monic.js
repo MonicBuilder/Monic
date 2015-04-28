@@ -31,7 +31,7 @@ exports.VERSION = [2, 0, 0];
  * @param {?string=} [params.file] - a path to the generated file
  * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
  * @param {?string=} [params.sourceMap] - a path to the generated source map
- * @param {?string=} [params.sourceRoot] - the root for all relative URLs in the source map
+ * @param {?string=} [params.sourceRoot] - the root for all URLs in the generated source map
  * @param {function(Error, string=, string=, SourceMapGenerator=, string=, string=)} callback - a callback function
  */
 exports.compile = function (file, params, callback) {
