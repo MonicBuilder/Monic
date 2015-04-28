@@ -58,7 +58,7 @@ function action(file, input) {
 	}
 
 	function line(opt_error) {
-		console[opt_error ? 'error' : 'log'](new Array(80).join('~'));
+		console[opt_error ? 'error' : 'log'](new Array(80).join(opt_error ? '!' : '~'));
 	}
 
 	monic.compile(file, {
