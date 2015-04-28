@@ -13,13 +13,13 @@ program
 	.usage('[options] [file ...]')
 
 	.option('-f, --file [string]', 'Set a path to a file (meta-information)')
-	.option('-o, --output-file-name [string]', 'Set a filename of the generated file')
+	.option('-o, --output-file-name [string]', 'Set a filename of a generated file')
 
 	.option('--eol [char]', 'Set a newline character')
 	.option('--flags [list]', 'Set a list of flags separated by commas')
 	.option('--labels [list]', 'Set a list of labels separated by commas')
 	.option('-s, --source-maps [string]', '[true|false|inline]')
-	.option('--source-map-name [string]', 'Set a filename of the generated source map')
+	.option('--source-map-name [string]', 'Set a filename of a generated source map')
 	.option('--source-root [string]', 'Set the root from which all sources are relative')
 
 	.parse(process.argv);
