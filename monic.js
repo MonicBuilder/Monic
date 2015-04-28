@@ -76,7 +76,7 @@ exports.compile = function (file, params, callback) {
 					var sourceMapUrl;
 
 					if (params.sourceMaps === 'inline') {
-						sourceMapUrl = `data:application\/json;base64,${new Buffer(map.toString()).toString('base64')}`;
+						sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
 
 					} else {
 						sourceMapUrl = path.join(
@@ -87,7 +87,7 @@ exports.compile = function (file, params, callback) {
 
 					result +=
 						(new Array(1 + (result[result.length - 1] !== nl ? 1 : 0)).join(nl)) +
-						`//# sourceMappingURL=${sourceMapUrl}`;
+						'//# sourceMappingURL=' + sourceMapUrl;
 				}
 
 				fs.writeFile(sourceFileName, result, cb);
