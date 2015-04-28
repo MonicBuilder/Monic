@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 18:49:47 GMT
+ * Date: Tue, 28 Apr 2015 19:00:55 GMT
  */
 
 // istanbul ignore next
@@ -68,26 +68,26 @@ var Parser = (function () {
 	}
 
 	/**
-  * Normalizes URL
+  * Normalizes path
   *
-  * @param {string} url
+  * @param {string} src
   * @return {string}
   */
 
-	Parser.normalizeUrl = function normalizeUrl(url) {
-		return _path2['default'].normalize(url).split(_path2['default'].sep).join(_path2['default'].posix.sep);
+	Parser.normalizePath = function normalizePath(src) {
+		return _path2['default'].normalize(src).split(_path2['default'].sep).join(_path2['default'].posix.sep);
 	};
 
 	/**
-  * Solves the relative path from from (dir) to to (file)
+  * Solves the relative path from fromto to
   *
   * @param {string} from
   * @param {string} to
   * @return {string}
   */
 
-	Parser.relativeUrl = function relativeUrl(from, to) {
-		return Parser.normalizeUrl(_path2['default'].relative(from, to));
+	Parser.getRelativePath = function getRelativePath(from, to) {
+		return Parser.normalizePath(_path2['default'].relative(from, to));
 	};
 
 	/**
@@ -101,7 +101,7 @@ var Parser = (function () {
 	Parser.prototype.testFile = function testFile(file, callback) {
 		var _this = this;
 
-		file = Parser.normalizeUrl(_path2['default'].resolve(file));
+		file = Parser.normalizePath(_path2['default'].resolve(file));
 
 		if (this.realpathCache[file]) {
 			callback(null, file);
@@ -299,10 +299,10 @@ var Parser = (function () {
 
 								$C(originalMap).forEach(function (el) {
 									if (el.source === src) {
-										el.source = Parser.normalizeUrl(_path2['default'].resolve(el.source));
+										el.source = Parser.normalizePath(_path2['default'].resolve(el.source));
 
 										if (_this3.sourceRoot) {
-											el.source = Parser.relativeUrl(_this3.sourceRoot, el.source);
+											el.source = Parser.getRelativePath(_this3.sourceRoot, el.source);
 										}
 
 										el.sourcesContent = content;
@@ -334,7 +334,7 @@ var Parser = (function () {
 									column: 0
 								},
 
-								source: _this3.sourceRoot ? Parser.relativeUrl(_this3.sourceRoot, file) : file,
+								source: _this3.sourceRoot ? Parser.getRelativePath(_this3.sourceRoot, file) : file,
 
 								sourcesContent: content || _this3.eol,
 								line: line

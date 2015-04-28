@@ -62,7 +62,7 @@ exports.compile = function (file, params, callback) {
 
 		var map = sourceMaps ?
 			new SourceMapGenerator({
-				file: Parser.relativeUrl(path.dirname(sourceMapFile), fileToSave),
+				file: Parser.getRelativePath(path.dirname(sourceMapFile), fileToSave),
 				sourceRoot: sourceRoot
 			}) : null;
 
@@ -78,7 +78,7 @@ exports.compile = function (file, params, callback) {
 			sourceMapDecl = '//# sourceMappingURL=';
 
 			if (externalSourceMap) {
-				sourceMapUrl = Parser.relativeUrl(path.dirname(fileToSave), sourceMapFile);
+				sourceMapUrl = Parser.getRelativePath(path.dirname(fileToSave), sourceMapFile);
 
 			} else {
 				sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
@@ -121,7 +121,7 @@ exports.compile = function (file, params, callback) {
 			url = path.resolve(module.parent ? path.dirname(module.parent.filename) : '', url);
 		}
 
-		return Parser.normalizeUrl(url);
+		return Parser.normalizePath(url);
 	}
 
 	var parser = new Parser({

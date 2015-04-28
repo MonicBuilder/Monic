@@ -56,7 +56,7 @@ function action(file, input) {
 	}
 
 	function url(url) {
-		return Parser.relativeUrl(root, path.resolve(url));
+		return Parser.getRelativePath(root, path.resolve(url));
 	}
 
 	function line(opt_error) {
