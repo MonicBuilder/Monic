@@ -39,7 +39,7 @@ monic [options] [file ...]
 --flags [list]                         Задать список флагов через запятую
 --labels [list]                        Задать список меток через запятую
 -s, --source-maps [string]             [true|false|inline]
---source-map [string]                  Задать путь для сохранения SourceMap
+--source-map-file [string]             Задать путь для сохранения SourceMap
 --source-root [string]                 Задать корень для всех ссылок в SourceMap
 ```
 
@@ -128,7 +128,7 @@ monic.compile(
     sourceMaps: true,
 
     // Путь к сгенерированному source map (опционально, по умолчанию ${file}.map)
-    sourceMap: '',
+    sourceMapFile: 'myFiled.map',
 
     // Корень для всех ссылок в SourceMap (опционально)
     sourceRoot: 'myDir/'

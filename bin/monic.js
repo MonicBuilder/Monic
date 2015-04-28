@@ -20,7 +20,7 @@ program
 	.option('--flags [list]', 'Set a list of flags separated by commas')
 	.option('--labels [list]', 'Set a list of labels separated by commas')
 	.option('-s, --source-maps [string]', '[true|false|inline]')
-	.option('--source-map [string]', 'Set a path to save the generated source map')
+	.option('--source-map-file [string]', 'Set a path to save the generated source map')
 	.option('--source-root [string]', 'Set the root for all URLs in the generated source map')
 
 	.parse(process.argv);
@@ -106,7 +106,7 @@ function action(file, input) {
 		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
 		file: out,
 		sourceMaps: parse(program['sourceMaps']),
-		sourceMap: program['sourceMap'] || (out || file) + '.map',
+		sourceMapFile: program['sourceMapFile'] || (out || file) + '.map',
 		sourceRoot: program['sourceRoot']
 
 	}, function (err, data) {

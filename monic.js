@@ -1,6 +1,6 @@
 var
-	sourceMap = require('source-map'),
-	SourceMapGenerator = sourceMap.SourceMapGenerator;
+	sourceMapFile = require('source-map'),
+	SourceMapGenerator = sourceMapFile.SourceMapGenerator;
 
 var
 	Parser = require('./build/parser'),
@@ -30,7 +30,7 @@ exports.VERSION = [2, 0, 0];
  * @param {?boolean=} [params.saveFiles=false] - if is true, then generated files will be saved
  * @param {?string=} [params.file] - a path to the generated file
  * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
- * @param {?string=} [params.sourceMap] - a path to the generated source map
+ * @param {?string=} [params.sourceMapFile] - a path to the generated source map
  * @param {?string=} [params.sourceRoot] - the root for all URLs in the generated source map
  * @param {function(Error, string=, string=, SourceMapGenerator=, string=, string=)} callback - a callback function
  */
@@ -52,7 +52,7 @@ exports.compile = function (file, params, callback) {
 			url(params.file) : file;
 
 	var
-		sourceMapFile = sourceMaps && (params.sourceMap ? url(params.sourceMap) : fileToSave + '.map'),
+		sourceMapFile = sourceMaps && (params.sourceMapFile ? url(params.sourceMapFile) : fileToSave + '.map'),
 		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
 	function finish(err, fileStructure, src) {

@@ -41,7 +41,7 @@ monic [options] [file ...]
 --flags [list]               Set a list of flags separated by commas
 --labels [list]              Set a list of labels separated by commas
 -s, --source-maps [string]   [true|false|inline]
---source-map [string]        Set a path to save the generated source map
+--source-map-file [string]   Set a path to save the generated source map
 --source-root [string]       Set the root for all URLs in the generated source map
 ```
 
@@ -129,7 +129,7 @@ monic.compile(
     sourceMaps: true,
 
     // The path to the generated source map (optional, by default ${file}.map)
-    sourceMap: '',
+    sourceMapFile: 'myFiled.map',
 
     // The root for all URLs in the generated source map (optional)
     sourceRoot: 'myDir/'
