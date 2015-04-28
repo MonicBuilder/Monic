@@ -105,6 +105,10 @@ monic.compile(
   'myFile.js',
 
   {
+    // Путь к директории исполнения
+    // (опционально, по умолчанию dirname(module.parent.filename))
+    params.root: 'myDir/',
+
     // Символ перевода строки (опционально, по умолчанию \n)
     eol: '\r\n',
 
@@ -124,7 +128,8 @@ monic.compile(
     // Путь к сгенерированному файлу (опционально)
     file: 'myFiled-compiled.js',
 
-    // Если true или 'inline', то будет сгенерирован source map (опционально, по умолчанию false)
+    // Если true или 'inline', то будет сгенерирован source map
+    // (опционально, по умолчанию false)
     sourceMaps: true,
 
     // Путь к сгенерированному source map (опционально, по умолчанию ${file}.map)

@@ -106,6 +106,10 @@ monic.compile(
   'myFile.js',
 
   {
+    // The path to the exec directory
+    // (optional, by default dirname(module.parent.filename))
+    params.root: 'myDir/',
+
     // The newline character (optional, by default \n)
     eol: '\r\n',
 
@@ -119,13 +123,15 @@ monic.compile(
       ie: true
     },
 
-    // If is true, then generated files will be saved (optional, by default false)
+    // If is true, then generated files will be saved
+    // (optional, by default false)
     saveFiles: true,
 
     // The path to the generated file (optional)
     file: 'myFiled-compiled.js',
 
-    // If is true or 'inline', then will be generated a source map (optional, by default false)
+    // If is true or 'inline', then will be generated a source map
+    // (optional, by default false)
     sourceMaps: true,
 
     // The path to the generated source map (optional, by default ${file}.map)
