@@ -29,11 +29,11 @@ var
 	input;
 
 var
-	file = program['file'],
+	file,
 	out = program['outputFile'],
 	root = process.cwd();
 
-if (!file && args.length) {
+if (args.length) {
 	input = args.join(' ');
 
 	if (fs.existsSync(input)) {
