@@ -1,17 +1,17 @@
 /*!
- * Monic v1.2.0
+ * Monic v2.0.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Wed, 15 Apr 2015 05:49:45 GMT
+ * Date: Tue, 28 Apr 2015 08:45:34 GMT
  */
 
 // istanbul ignore next
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 // istanbul ignore next
 
@@ -19,11 +19,17 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
 exports.__esModule = true;
 
+var _uid = require('uid');
+
+var _uid2 = _interopRequireDefault(_uid);
+
 var _path = require('path');
 
-var _path2 = _interopRequireWildcard(_path);
+var _path2 = _interopRequireDefault(_path);
 
-var _$C = require('collection.js');
+var _Parser = require('./parser');
+
+var _Parser2 = _interopRequireDefault(_Parser);
 
 /**
  * File structure class
@@ -31,15 +37,18 @@ var _$C = require('collection.js');
 
 var FileStructure = (function () {
 	/**
-  * @param {string} src - a path to a file
-  * @param {string} lineSeparator - EOL symbol
+  * @param {string} file - a path to a file
+  * @param {string} eol - EOL symbol
   */
 
-	function FileStructure(src, lineSeparator) {
+	function FileStructure(_ref) {
+		var file = _ref.file;
+		var eol = _ref.eol;
+
 		_classCallCheck(this, FileStructure);
 
-		this.fname = src;
-		this.nl = lineSeparator;
+		this.file = file;
+		this.eol = eol;
 
 		this.root = {
 			type: 'root',
@@ -47,6 +56,7 @@ var FileStructure = (function () {
 			labels: {}
 		};
 
+		this.uid = _uid2['default']();
 		this.currentBlock = this.root;
 		this.included = {};
 	}
@@ -59,21 +69,23 @@ var FileStructure = (function () {
   */
 
 	FileStructure.prototype.getRelativePathOf = function getRelativePathOf(src) {
-		return _path2['default'].normalize(_path2['default'].resolve(_path2['default'].dirname(this.fname), src));
+		return _path2['default'].normalize(_path2['default'].resolve(_path2['default'].dirname(this.file), src));
 	};
 
 	/**
-  * Adds custom JavaScript to the structure
+  * Adds custom code to the structure
   *
-  * @param {string} code - some JavaScript code
+  * @param {string} code - some code
+  * @param {Object=} [opt_info] - an information object for a source map
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.addCode = function addCode(code) {
+	FileStructure.prototype.addCode = function addCode(code, opt_info) {
 		this.currentBlock.content.push({
 			type: 'code',
-			code: code,
-			included: false
+			included: false,
+			info: opt_info,
+			code: code
 		});
 
 		return this;
@@ -161,9 +173,9 @@ var FileStructure = (function () {
 		var ifBlock = {
 			parent: this.currentBlock,
 			type: 'if',
+			content: [],
 			varName: flag,
-			value: value,
-			content: []
+			value: value
 		};
 
 		this.currentBlock.content.push(ifBlock);
@@ -197,8 +209,8 @@ var FileStructure = (function () {
 		var labelBlock = {
 			parent: this.currentBlock,
 			type: 'label',
-			label: label,
-			content: []
+			content: [],
+			label: label
 		};
 
 		this.currentBlock.content.push(labelBlock);
@@ -225,11 +237,12 @@ var FileStructure = (function () {
   * Adds an error to the structure
   *
   * @param {string} msg - the error text
+  * @param {Object=} [opt_info] - an information object for a source map
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.error = function error(msg) {
-		this.addCode('throw new Error(' + JSON.stringify('Monic error: ' + msg) + ');' + this.nl);
+	FileStructure.prototype.error = function error(msg, opt_info) {
+		this.addCode('throw new Error(' + JSON.stringify('MonicError: ' + msg) + ');' + this.eol, opt_info);
 		return this;
 	};
 
@@ -238,17 +251,18 @@ var FileStructure = (function () {
   *
   * @param {Array=} [opt_labels] - a map of labels
   * @param {Object=} [opt_flags] - a map of flags
+  * @param {SourceMapGenerator=} [opt_sourceMap] - a source map object
   * @return {string}
   */
 
-	FileStructure.prototype.compile = function compile(opt_labels, opt_flags) {
+	FileStructure.prototype.compile = function compile(opt_labels, opt_flags, opt_sourceMap) {
 		var _this = this;
 
-		_$C.$C(opt_labels).forEach(function (el, key) {
+		$C(opt_labels).forEach(function (el, key) {
 			_this.root.labels[key] = true;
 		});
 
-		return this._compileBlock(this.root, this.root.labels, opt_flags || {});
+		return this._compileBlock(this.root, this.root.labels, opt_flags || {}, opt_sourceMap);
 	};
 
 	/**
@@ -256,11 +270,12 @@ var FileStructure = (function () {
   *
   * @param {Array=} [opt_labels] - a map of labels
   * @param {Object=} [opt_flags] - a map of flags
+  * @param {SourceMapGenerator=} [opt_sourceMap] - a source map object
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.without = function without(opt_labels, opt_flags) {
-		this._compileBlock(this.root, opt_labels || {}, opt_flags || {});
+	FileStructure.prototype.without = function without(opt_labels, opt_flags, opt_sourceMap) {
+		this._compileBlock(this.root, opt_labels || {}, opt_flags || {}, opt_sourceMap);
 		return this;
 	};
 
@@ -271,10 +286,11 @@ var FileStructure = (function () {
   * @param {!Object} block - the structure object
   * @param {!Object} labels - a map of labels
   * @param {!Object} flags - a map of flags
+  * @param {SourceMapGenerator=} [opt_sourceMap] - a source map object
   * @return {string}
   */
 
-	FileStructure.prototype._compileBlock = function _compileBlock(block, labels, flags) {
+	FileStructure.prototype._compileBlock = function _compileBlock(block, labels, flags, opt_sourceMap) {
 		var _this2 = this;
 
 		switch (block.type) {
@@ -287,15 +303,15 @@ var FileStructure = (function () {
 				break;
 
 			case 'include':
-				var cacheKey = block.fileStructure.fname + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
+				var cacheKey = block.fileStructure.file + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
 
-				_$C.$C(labels).forEach(function (el, key) {
+				$C(labels).forEach(function (el, key) {
 					block.labels[key] = true;
 				});
 
 				if (!this.included[cacheKey]) {
 					this.included[cacheKey] = true;
-					return block.fileStructure.compile(block.labels, flags);
+					return block.fileStructure.compile(block.labels, flags, opt_sourceMap);
 				}
 
 				break;
@@ -310,8 +326,42 @@ var FileStructure = (function () {
 
 			default:
 				if (FileStructure.isValidContentBlock(block, labels, flags)) {
-					return block.content.map(function (block) {
-						return _this2._compileBlock(block, labels, flags);
+					return $C(block.content).map(function (block) {
+						if (!_Parser2['default'].current || _this2.uid !== _Parser2['default'].current) {
+							_Parser2['default'].current = _this2.uid;
+						}
+
+						var info = block.info;
+
+						var compiledBlock = _this2._compileBlock(block, labels, flags, opt_sourceMap);
+
+						if (opt_sourceMap && info && compiledBlock) {
+							if (!info.ignore) {
+								(function () {
+									var test = {},
+									    selfMap = Boolean(info.source);
+
+									$C(selfMap ? [info] : info).forEach(function (info) {
+										if (selfMap) {
+											info.generated.line = _Parser2['default'].cursor;
+										} else {
+											info.generated.line += _Parser2['default'].cursor - info.generated.line;
+										}
+
+										opt_sourceMap.addMapping(info);
+
+										if (!test[info.source]) {
+											test[info.source] = true;
+											opt_sourceMap.setSourceContent(info.source, info.sourcesContent);
+										}
+									});
+								})();
+							}
+
+							_Parser2['default'].cursor++;
+						}
+
+						return compiledBlock;
 					}).join('');
 				}
 		}
