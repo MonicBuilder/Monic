@@ -73,6 +73,19 @@ monic myFile.js
 monic myFile.js > myNewFile.js
 ```
 
+**Builds a file and saves result to a new file with SourceMap**
+
+```bash
+# SourceMap will be saved as "myFile-compiled.map.js"
+monic myFile.js -s -o myFile-compiled.js
+
+# SourceMap will be saved as "myFile-map.js"
+monic myFile.js -s -o myFile-compiled.js --source-map myFile-map.js
+
+# SourceMap will be saved into "myFile-compiled.js"
+monic myFile.js -s inline -o myFile-compiled.js
+```
+
 **Builds a text and returns the result to `stdout`**
 
 ```bash
