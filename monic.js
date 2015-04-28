@@ -14,7 +14,7 @@ global.Collection = collection.Collection;
 global.$C = collection.$C;
 
 /** @type {!Array} */
-exports.VERSION = [1, 2, 0];
+exports.VERSION = [2, 0, 0];
 
 /**
  * Builds a file
