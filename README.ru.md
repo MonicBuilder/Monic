@@ -72,7 +72,7 @@ monic myFile.js
 monic myFile.js > myNewFile.js
 ```
 
-**Cборка с созданием SourceMap**
+**Сборка с созданием SourceMap**
 
 ```bash
 # SourceMap сохранится как "myFile-compiled.js.map"
