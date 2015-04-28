@@ -102,30 +102,42 @@ echo '//#include foo/*.js' | monic -f myFile.js
 ```js
 var monic = require('monic');
 monic.compile(
-	'myFile.js',
+  'myFile.js',
 
-	{
-		// Символ перевода строки (опционально, по умолчанию \n)
-		lineSeparator: '\r\n',
+  {
+    // Символ перевода строки (опционально, по умолчанию \n)
+    eol: '\r\n',
 
-		// Таблица задаваемых меток (опционально)
-		labels: {
-			escapeHTML: true
-		},
+    // Таблица задаваемых меток (опционально)
+    labels: {
+      escapeHTML: true
+    },
 
-		// Таблица задаваемых флагов (опционально)
-		flags: {
-			ie: true
-		}
-	},
+    // Таблица задаваемых флагов (опционально)
+    flags: {
+      ie: true
+    },
 
-	function (err, result) {
-		if (err) {
-			throw err;
-		}
+    // Путь к сгенерированному файлу (опционально)
+    file: 'myFiled-compiled.js',
 
-		console.log(result);
-	}
+    // Если true или 'inline', то будет сгенерирован source map (опционально, по умолчанию false)
+    sourceMaps: true,
+
+    // Путь к сгенерированному source map (опционально, по умолчанию ${file}.map)
+    sourceMap: '',
+
+    // SourceMap корень для всех внешних ссылок (опционально)
+    sourceRoot: 'myDir/'
+  },
+
+  function (err, result, sourceFileURL, sourceMapGenerator) {
+    if (err) {
+      throw err;
+    }
+
+    console.log(result);
+  }
 );
 ```
 
@@ -134,15 +146,15 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile(
-	'myFile.js',
+  'myFile.js',
 
-	{
-		content: '...'
-	},
+  {
+    content: '...'
+  },
 
-	function (err, result) {
-		...
-	}
+  function (err, result) {
+    ...
+  }
 );
 ```
 
@@ -151,20 +163,20 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile(
-	'myFile.js',
+  'myFile.js',
 
-	{
-		replacers: [
-			// Замена require конструкций на #include
-			function (text, file) {
-				return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
-			}
-		]
-	},
+  {
+    replacers: [
+      // Замена require конструкций на #include
+      function (text, file) {
+        return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
+      }
+    ]
+  },
 
-	function (err, result) {
-		...
-	}
+  function (err, result) {
+    ...
+  }
 );
 ```
 

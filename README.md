@@ -103,30 +103,42 @@ echo '//#include foo/*.js' | monic -f myFile.js
 ```js
 var monic = require('monic');
 monic.compile(
-	'myFile.js',
+  'myFile.js',
 
-	{
-		// EOL (optional, by default \n)
-		lineSeparator: '\r\n',
+  {
+    // The newline character (optional, by default \n)
+    eol: '\r\n',
 
-		// A map of labels (optional)
-		labels: {
-			escapeHTML: true
-		},
+    // The map of labels (optional)
+    labels: {
+      escapeHTML: true
+    },
 
-		// A map of flags (optional)
-		flags: {
-			ie: true
-		}
-	},
+    // The map of flags (optional)
+    flags: {
+      ie: true
+    },
 
-	function (err, result) {
-		if (err) {
-			throw err;
-		}
+    // The path to save the generated file (optional)
+    file: 'myFiled-compiled.js',
 
-		console.log(result);
-	}
+    // If is true or 'inline', then will be generated a source map (optional, by default false)
+    sourceMaps: true,
+
+    // The path to save the generated source map (optional, by default ${file}.map)
+    sourceMap: '',
+
+    // The root for all relative URLs in the source map (optional)
+    sourceRoot: 'myDir/'
+  },
+
+  function (err, result, sourceFileURL, sourceMapGenerator) {
+    if (err) {
+      throw err;
+    }
+
+    console.log(result);
+  }
 );
 ```
 
@@ -135,15 +147,15 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile(
-	'myFile.js',
+  'myFile.js',
 
-	{
-		content: '...'
-	},
+  {
+    content: '...'
+  },
 
-	function (err, result) {
-		...
-	}
+  function (err, result) {
+    ...
+  }
 );
 ```
 
@@ -152,20 +164,20 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile(
-	'myFile.js',
+  'myFile.js',
 
-	{
-		replacers: [
-			// Replaces require to #include
-			function (text, file) {
-				return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
-			}
-		]
-	},
+  {
+    replacers: [
+      // Replaces require to #include
+      function (text, file) {
+        return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
+      }
+    ]
+  },
 
-	function (err, result) {
-		...
-	}
+  function (err, result) {
+    ...
+  }
 );
 ```
 

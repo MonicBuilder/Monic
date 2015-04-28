@@ -21,7 +21,7 @@ exports.VERSION = [2, 0, 0];
  *
  * @param {string} file - the file path
  * @param {Object} params - additional parameters
- * @param {Object=} [params.root] - a path to the root directory (by default, dirname(module.parent.filename))
+ * @param {Object=} [params.root] - a path to the exec directory (by default, dirname(module.parent.filename))
  * @param {Object=} [params.flags] - a map of flags
  * @param {Object=} [params.labels] - a map of labels
  * @param {?string=} [params.content] - the file text
