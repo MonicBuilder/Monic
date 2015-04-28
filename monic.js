@@ -23,13 +23,13 @@ exports.VERSION = [1, 2, 0];
  * @param {Object} params - additional parameters
  * @param {Object=} [params.flags] - a map of flags
  * @param {Object=} [params.labels] - a map of labels
- * @param {?string} [params.content] - the file text
- * @param {?string} [params.lineSeparator] - EOL symbol
+ * @param {?string=} [params.content] - the file text
+ * @param {?string=} [params.lineSeparator] - EOL symbol
  * @param {Array=} [params.replacers] - an array of transform functions
- * @param {?boolean} [params.sourceMaps] - if is true, then will be generated a source map
- * @param {?string} [params.sourceMapName] - a filename of the source map
- * @param {?string} [params.sourceFileName] - a filename of the generated file that this source map is associated with
- * @param {?string} [params.sourceRoot] - a root for all relative URLs in this source map
+ * @param {(boolean|string|null)=} [params.sourceMaps] - if is true or 'inline', then will be generated a source map
+ * @param {?string=} [params.sourceMapName] - a filename of the source map
+ * @param {?string=} [params.sourceFileName] - a filename of the generated file that this source map is associated with
+ * @param {?string=} [params.sourceRoot] - a root for all relative URLs in this source map
  * @param {function(Error, string=, string=, SourceMapGenerator=)} callback - a callback function
  */
 exports.compile = function (file, params, callback) {
@@ -42,9 +42,8 @@ exports.compile = function (file, params, callback) {
 		nl = params.lineSeparator || '\n';
 
 	params.replacers = params.replacers || [];
-	params.sourceMaps = Boolean(params.sourceMaps);
-
 	file = url(file);
+
 	const
 		sourceMapName = params.sourceMaps && params.sourceMapName && url(params.sourceMapName),
 		sourceFileName = params.sourceFileName ?
@@ -65,22 +64,30 @@ exports.compile = function (file, params, callback) {
 			result = fileStructure.compile(params.labels, params.flags, map),
 			tasks = [];
 
-		if (sourceMapName) {
+		if (sourceMapName && params.sourceMaps !== 'inline') {
 			tasks.push(function (cb) {
-				fs.writeFile(sourceMapName, String(map), cb);
+				fs.writeFile(sourceMapName, map.toString(), cb);
 			});
 		}
 
 		if (params.sourceFileName) {
 			tasks.push(function (cb) {
 				if (sourceMapName) {
-					result +=
-						(new Array(1 + (result[result.length - 1] !== nl ? 1 : 0)).join(nl)) +
-						'//# sourceMappingURL=' +
-						path.join(
+					let sourceMapUrl;
+
+					if (params.sourceMaps === 'inline') {
+						sourceMapUrl = `data:application\/json;base64,${new Buffer(map.toString()).toString('base64')}`;
+
+					} else {
+						sourceMapUrl = path.join(
 							path.relative(path.dirname(sourceFileName), path.dirname(sourceMapName)),
 							path.basename(sourceMapName)
 						);
+					}
+
+					result +=
+						(new Array(1 + (result[result.length - 1] !== nl ? 1 : 0)).join(nl)) +
+						`//# sourceMappingURL=${sourceMapUrl}`;
 				}
 
 				fs.writeFile(sourceFileName, result, cb);
@@ -102,7 +109,7 @@ exports.compile = function (file, params, callback) {
 	var parser = new Parser({
 		nl: nl,
 		replacers: params.replacers,
-		sourceMaps: params.sourceMaps
+		sourceMaps: Boolean(params.sourceMaps)
 	});
 
 	Parser.cursor = 1;
