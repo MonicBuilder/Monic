@@ -28,8 +28,8 @@ exports.VERSION = [1, 2, 0];
  * @param {Array=} [params.replacers] - an array of transform functions
  * @param {(boolean|string|null)=} [params.sourceMaps] - if is true or 'inline', then will be generated a source map
  * @param {?string=} [params.sourceMapName] - a filename of the source map
- * @param {?string=} [params.sourceFileName] - a filename of the generated file that this source map is associated with
- * @param {?string=} [params.sourceRoot] - a root for all relative URLs in this source map
+ * @param {?string=} [params.sourceFileName] - a filename of the generated file that the source map is associated with
+ * @param {?string=} [params.sourceRoot] - a root for all relative URLs in the source map
  * @param {function(Error, string=, string=, SourceMapGenerator=)} callback - a callback function
  */
 exports.compile = function (file, params, callback) {
