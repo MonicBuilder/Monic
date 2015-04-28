@@ -12,10 +12,14 @@ program
 	.version(monic.VERSION.join('.'))
 	.usage('[options] [file ...]')
 
-	.option('-f, --file [src]', 'Set a path to a file (meta-information)')
-	.option('--line-separator [char]', 'Set a newline character (EOL)')
+	.option('-f, --file [string]', 'Set a path to a file (meta-information)')
+	.option('--eol [char]', 'Set a newline character')
 	.option('--flags [list]', 'Set a list of flags separated by commas')
 	.option('--labels [list]', 'Set a list of labels separated by commas')
+	.option('-s, --source-maps [string]', '[true|false|inline]')
+	.option('--source-file-name [string]', 'Set a filename of the generated file that the source map is associated with')
+	.option('--source-map-name [string]', 'Set a filename of the source map')
+	.option('--source-root [string]', 'Set the root from which all sources are relative')
 
 	.parse(process.argv);
 
@@ -32,7 +36,7 @@ if (!file && args.length) {
 
 	if (fs.existsSync(input)) {
 		file = input;
-		input = void 0;
+		input = undefined;
 	}
 }
 
@@ -49,9 +53,13 @@ function action(file, input) {
 
 	monic.compile(file, {
 		content: input,
-		lineSeparator: program['lineSeparator'],
+		eol: program['eol'],
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
-		labels: (program['labels'] || '').split(',').reduce(toObj, {})
+		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
+		sourceMaps: program['sourceMaps'],
+		sourceFileName: program['sourceFileName'],
+		sourceMapName: program['sourceMapName'],
+		sourceRoot: program['sourceRoot']
 
 	}, function (err, data) {
 		if (err) {
@@ -78,11 +86,11 @@ if (!file && input == null) {
 		action(program['file'], buf);
 	}).resume();
 
-	var nl = program['lineSeparator'] || '\n';
+	var eol = program['eol'] || '\n';
 	process.on('SIGINT', function () {
-		stdout.write(nl);
+		stdout.write(eol);
 		stdin.emit('end');
-		stdout.write(nl);
+		stdout.write(eol);
 		process.exit();
 	});
 
