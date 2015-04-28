@@ -73,19 +73,19 @@ exports.compile = function (file, params, callback) {
 
 		if (params.fileName) {
 			tasks.push(function (cb) {
-				if (sourceMapName) {
-					var sourceMapUrl;
+				var sourceMapUrl;
 
-					if (params.sourceMaps === 'inline') {
-						sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
+				if (params.sourceMaps === 'inline') {
+					sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
 
-					} else {
-						sourceMapUrl = path.join(
-							path.relative(path.dirname(fileName), path.dirname(sourceMapName)),
-							path.basename(sourceMapName)
-						);
-					}
+				} else if (sourceMapName) {
+					sourceMapUrl = path.join(
+						path.relative(path.dirname(fileName), path.dirname(sourceMapName)),
+						path.basename(sourceMapName)
+					);
+				}
 
+				if (sourceMapUrl) {
 					result +=
 						(new Array(1 + (result[result.length - 1] !== eol ? 1 : 0)).join(eol)) +
 						'//# sourceMappingURL=' + sourceMapUrl;
