@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 18:12:23 GMT
+ * Date: Tue, 28 Apr 2015 18:42:03 GMT
  */
 
 // istanbul ignore next
@@ -210,7 +210,7 @@ var Parser = (function () {
 
 		var sourceMap = void 0;
 		if (this.sourceMaps) {
-			content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/# sourceMappingURL=([^\r\n]*)\s*$/, function (sstr, url) {
+			content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*$/, function (sstr, url) {
 				actions.push(function (next) {
 					if (/data:application\/json;base64,(.*)/.exec(url)) {
 						parse(new Buffer(RegExp.$1, 'base64').toString());
