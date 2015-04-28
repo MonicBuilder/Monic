@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 19:02:50 GMT
+ * Date: Tue, 28 Apr 2015 19:37:22 GMT
  */
 
 // istanbul ignore next
@@ -70,7 +70,7 @@ var Parser = (function () {
 	/**
   * Normalizes path
   *
-  * @param {string} src
+  * @param {string} src - the path
   * @return {string}
   */
 
@@ -120,15 +120,15 @@ var Parser = (function () {
 	};
 
 	/**
-  * Parses URL string with glob
+  * Parses path with glob
   *
   * @param {string} base - a path to the base file
-  * @param {string} url
+  * @param {string} src - the path
   * @param {function(Error, Array=)} callback - a callback function
   */
 
-	Parser.prototype.parseURL = function parseURL(base, url, callback) {
-		var parts = url.split('::'),
+	Parser.prototype.parsePath = function parsePath(base, src, callback) {
+		var parts = src.split('::'),
 		    dirname = _path2['default'].dirname(base);
 
 		_glob2['default'](_path2['default'].join(dirname, parts[0]), null, function (err, files) {
@@ -386,7 +386,7 @@ var Parser = (function () {
 	Parser.prototype._include = function _include(struct, value, callback) {
 		var _this4 = this;
 
-		this.parseURL(struct.file, value, function (err, arr) {
+		this.parsePath(struct.file, value, function (err, arr) {
 			if (err) {
 				return callback(err);
 			}
@@ -441,7 +441,7 @@ var Parser = (function () {
 	Parser.prototype._without = function _without(struct, value, callback) {
 		var _this5 = this;
 
-		this.parseURL(struct.file, value, function (err, arr) {
+		this.parsePath(struct.file, value, function (err, arr) {
 			if (err) {
 				return callback(err);
 			}
