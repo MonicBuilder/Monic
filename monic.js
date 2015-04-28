@@ -62,7 +62,7 @@ exports.compile = function (file, params, callback) {
 
 		var map = sourceMaps ?
 			new SourceMapGenerator({
-				file: fileToSave,
+				file: path.basename(fileToSave),
 				sourceRoot: params.sourceRoot
 			}) : null;
 
@@ -98,6 +98,10 @@ exports.compile = function (file, params, callback) {
 
 			if (params.file) {
 				tasks.push(function (cb) {
+					if (externalSourceMap) {
+						result += sourceMapDecl + sourceMapUrl;
+					}
+
 					fs.writeFile(fileToSave, result, cb);
 				});
 			}
