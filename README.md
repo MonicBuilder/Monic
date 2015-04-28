@@ -35,7 +35,7 @@ monic [options] [file ...]
 ```bash
 -h, --help                   Call help
 -V, --version                Return Monic version
--f, --file [string]          Set a path to a file (meta-information)
+-f, --file [string]          Set a path to the source file (meta-information)
 -o, --output [string]        Set a path to save the generated file
 --eol [char]                 Set a newline character
 --flags [list]               Set a list of flags separated by commas

@@ -13,7 +13,7 @@ program
 	.version(monic.VERSION.join('.'))
 	.usage('[options] [file ...]')
 
-	.option('-f, --file [string]', 'Set a path to a file (meta-information)')
+	.option('-f, --file [string]', 'Set a path to the source file (meta-information)')
 	.option('-o, --output [string]', 'Set a path to save the generated file')
 
 	.option('--eol [char]', 'Set a newline character')
