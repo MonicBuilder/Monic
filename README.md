@@ -119,20 +119,23 @@ monic.compile(
       ie: true
     },
 
-    // The path to save the generated file (optional)
+    // If is true, then generated files will be saved (optional, by default false)
+    saveFiles: true,
+
+    // The path to the generated file (optional)
     file: 'myFiled-compiled.js',
 
     // If is true or 'inline', then will be generated a source map (optional, by default false)
     sourceMaps: true,
 
-    // The path to save the generated source map (optional, by default ${file}.map)
+    // The path to the generated source map (optional, by default ${file}.map)
     sourceMap: '',
 
     // The root for all relative URLs in the source map (optional)
     sourceRoot: 'myDir/'
   },
 
-  function (err, result, sourceFileURL, sourceMapGenerator) {
+  function (err, result, sourceFileURL, sourceMapGenerator, sourceMapDecl, sourceMapUrl) {
     if (err) {
       throw err;
     }

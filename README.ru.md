@@ -118,6 +118,9 @@ monic.compile(
       ie: true
     },
 
+    // Если true, то сгенерированные файлы будут сохранены (опционально, по умолчанию false)
+    saveFiles: true,
+
     // Путь к сгенерированному файлу (опционально)
     file: 'myFiled-compiled.js',
 
@@ -131,7 +134,7 @@ monic.compile(
     sourceRoot: 'myDir/'
   },
 
-  function (err, result, sourceFileURL, sourceMapGenerator) {
+  function (err, result, sourceFileURL, sourceMapGenerator, sourceMapDecl, sourceMapUrl) {
     if (err) {
       throw err;
     }
