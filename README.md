@@ -141,12 +141,12 @@ monic.compile(
     sourceRoot: 'myDir/'
   },
 
-  function (err, result, sourceFileURL, sourceMapGenerator, sourceMapDecl, sourceMapUrl) {
+  function (err, data, sourceFileURL, sourceMapGenerator, sourceMapDecl, sourceMapUrl) {
     if (err) {
       throw err;
     }
 
-    console.log(result);
+    console.log(data);
   }
 );
 ```

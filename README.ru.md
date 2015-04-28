@@ -122,7 +122,8 @@ monic.compile(
       ie: true
     },
 
-    // Если true, то сгенерированные файлы будут сохранены (опционально, по умолчанию false)
+    // Если true, то сгенерированные файлы будут сохранены
+    // (опционально, по умолчанию false)
     saveFiles: true,
 
     // Путь к сгенерированному файлу (опционально)
@@ -139,12 +140,12 @@ monic.compile(
     sourceRoot: 'myDir/'
   },
 
-  function (err, result, sourceFileURL, sourceMapGenerator, sourceMapDecl, sourceMapUrl) {
+  function (err, data, sourceFileURL, sourceMapGenerator, sourceMapDecl, sourceMapUrl) {
     if (err) {
       throw err;
     }
 
-    console.log(result);
+    console.log(data);
   }
 );
 ```
