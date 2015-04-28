@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 19:46:43 GMT
+ * Date: Tue, 28 Apr 2015 20:05:17 GMT
  */
 
 // istanbul ignore next
@@ -75,7 +75,7 @@ var Parser = (function () {
   */
 
 	Parser.normalizePath = function normalizePath(src) {
-		return _path2['default'].normalize(src).split(_path2['default'].sep).join(_path2['default'].posix.sep);
+		return _path2['default'].normalize(src).split(_path2['default'].sep).join('/');
 	};
 
 	/**
