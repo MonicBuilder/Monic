@@ -27,9 +27,9 @@ exports.VERSION = [1, 2, 0];
  * @param {?string=} [params.content] - the file text
  * @param {?string=} [params.eol] - EOL symbol
  * @param {Array=} [params.replacers] - an array of transform functions
- * @param {?string=} [params.fileName] - a filename of the generated file
+ * @param {?string=} [params.fileName] - a filename of a generated file
  * @param {(boolean|string|null)=} [params.sourceMaps] - if is true or 'inline', then will be generated a source map
- * @param {?string=} [params.sourceMapName] - a filename of the generated source map
+ * @param {?string=} [params.sourceMapName] - a filename of a generated source map
  * @param {?string=} [params.sourceRoot] - a root for all relative URLs in the source map
  * @param {function(Error, string=, string=, SourceMapGenerator=)} callback - a callback function
  */
