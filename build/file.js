@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 19:02:00 GMT
+ * Date: Tue, 28 Apr 2015 19:02:50 GMT
  */
 
 // istanbul ignore next
@@ -64,12 +64,12 @@ var FileStructure = (function () {
 	/**
   * Returns a file path relative to the base folder
   *
-  * @param {string} file - the file path
+  * @param {string} src - the file path
   * @return {string}
   */
 
-	FileStructure.prototype.getRelativePathOf = function getRelativePathOf(file) {
-		return _Parser2['default'].normalizePath(_path2['default'].resolve(_path2['default'].dirname(this.file), file));
+	FileStructure.prototype.getRelativePathOf = function getRelativePathOf(src) {
+		return _Parser2['default'].normalizePath(_path2['default'].resolve(_path2['default'].dirname(this.file), src));
 	};
 
 	/**
