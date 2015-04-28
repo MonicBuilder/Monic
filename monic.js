@@ -21,6 +21,7 @@ exports.VERSION = [1, 2, 0];
  *
  * @param {string} file - the file path
  * @param {Object} params - additional parameters
+ * @param {Object=} [params.root] - a path to the root directory (by default, dirname(module.parent.filename))
  * @param {Object=} [params.flags] - a map of flags
  * @param {Object=} [params.labels] - a map of labels
  * @param {?string=} [params.content] - the file text
@@ -100,10 +101,14 @@ exports.compile = function (file, params, callback) {
 	}
 
 	function url(url) {
-		return path.normalize(
-			path.resolve(module.parent ?
-				path.dirname(module.parent.filename) : '', url)
-		);
+		if (params.root) {
+			url = path.resolve(params.root, url);
+
+		} else {
+			url = path.resolve(module.parent ? path.dirname(module.parent.filename) : '', url);
+		}
+
+		return path.normalize(url);
 	}
 
 	var parser = new Parser({

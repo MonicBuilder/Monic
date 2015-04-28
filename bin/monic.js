@@ -52,6 +52,7 @@ function action(file, input) {
 	}
 
 	monic.compile(file, {
+		root: process.cwd(),
 		content: input,
 		eol: program['eol'],
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
