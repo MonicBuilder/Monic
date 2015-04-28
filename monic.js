@@ -44,10 +44,10 @@ exports.compile = function (file, params, callback) {
 		sourceMaps = params.sourceMaps,
 		eol = params.eol || '\n';
 
-	params.replacers = params.replacers || [];
 	file = url(file);
 
 	var
+		sourceRoot = url(params.sourceRoot),
 		fileToSave = params.file ?
 			url(params.file) : file;
 
@@ -62,8 +62,8 @@ exports.compile = function (file, params, callback) {
 
 		var map = sourceMaps ?
 			new SourceMapGenerator({
-				file: path.basename(fileToSave),
-				sourceRoot: params.sourceRoot
+				file: Parser.relativeUrl(path.dirname(sourceMapFile), fileToSave),
+				sourceRoot: sourceRoot
 			}) : null;
 
 		var
@@ -78,10 +78,7 @@ exports.compile = function (file, params, callback) {
 			sourceMapDecl = '//# sourceMappingURL=';
 
 			if (externalSourceMap) {
-				sourceMapUrl = path.join(
-					path.relative(path.dirname(fileToSave), path.dirname(sourceMapFile)),
-					path.basename(sourceMapFile)
-				);
+				sourceMapUrl = Parser.relativeUrl(path.dirname(fileToSave), fileToSave);
 
 			} else {
 				sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
@@ -114,7 +111,7 @@ exports.compile = function (file, params, callback) {
 
 	function url(url) {
 		if (!url) {
-			return '';
+			return undefined;
 		}
 
 		if (params.root) {
@@ -124,13 +121,14 @@ exports.compile = function (file, params, callback) {
 			url = path.resolve(module.parent ? path.dirname(module.parent.filename) : '', url);
 		}
 
-		return path.normalize(url);
+		return Parser.normalizeUrl(url);
 	}
 
 	var parser = new Parser({
 		eol: eol,
 		replacers: params.replacers,
-		sourceMaps: Boolean(sourceMaps)
+		sourceMaps: Boolean(sourceMaps),
+		sourceRoot: sourceRoot
 	});
 
 	Parser.cursor = 1;

@@ -2,6 +2,7 @@
 
 var
 	monic = require('../monic'),
+	Parser = require('../build/parser'),
 	program = require('commander');
 
 var
@@ -55,7 +56,7 @@ function action(file, input) {
 	}
 
 	function url(url) {
-		return path.normalize(path.relative(root, path.resolve(url)));
+		return Parser.relativeUrl(root, path.resolve(url));
 	}
 
 	function line(opt_error) {
