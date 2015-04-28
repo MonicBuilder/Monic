@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 19:37:22 GMT
+ * Date: Tue, 28 Apr 2015 19:43:04 GMT
  */
 
 // istanbul ignore next
@@ -124,7 +124,7 @@ var Parser = (function () {
   *
   * @param {string} base - a path to the base file
   * @param {string} src - the path
-  * @param {function(Error, Array=)} callback - a callback function
+  * @param {function(Error, !Array=)} callback - a callback function
   */
 
 	Parser.prototype.parsePath = function parsePath(base, src, callback) {
@@ -148,7 +148,7 @@ var Parser = (function () {
   * Parses a file and returns it structure
   *
   * @param {string} file - the file path
-  * @param {function(Error, FileStructure=, string=)} callback - a callback function
+  * @param {function(Error, !FileStructure=, string=)} callback - a callback function
   */
 
 	Parser.prototype.parseFile = function parseFile(file, callback) {
@@ -178,7 +178,7 @@ var Parser = (function () {
   *
   * @param {string} file - a path to a file
   * @param {string} content - the source text
-  * @param {function(Error, FileStructure=, string=)} callback - a callback function
+  * @param {function(Error, !FileStructure=, string=)} callback - a callback function
   */
 
 	Parser.prototype.parse = function parse(file, content, callback) {
