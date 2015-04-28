@@ -107,7 +107,7 @@ exports.compile = function (file, params, callback) {
 	}
 
 	var parser = new Parser({
-		eol,
+		eol: eol,
 		replacers: params.replacers,
 		sourceMaps: Boolean(params.sourceMaps)
 	});
