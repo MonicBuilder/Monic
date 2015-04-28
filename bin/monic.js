@@ -13,7 +13,7 @@ program
 	.usage('[options] [file ...]')
 
 	.option('-f, --file [string]', 'Set a path to a file (meta-information)')
-	.option('-o, --file-name [string]', 'Set a filename of the generated file')
+	.option('-o, --output-file-name [string]', 'Set a filename of the generated file')
 
 	.option('--eol [char]', 'Set a newline character')
 	.option('--flags [list]', 'Set a list of flags separated by commas')
@@ -29,8 +29,9 @@ var
 	input;
 
 var
-	file = program['source'],
-	out = program['output'];
+	file = program['file'],
+	out = program['outputFileName'],
+	root = process.cwd();
 
 if (!file && args.length) {
 	input = args.join(' ');
@@ -42,8 +43,12 @@ if (!file && args.length) {
 }
 
 function action(file, input) {
+	console.time('Time');
+
 	if (!file) {
+		line(true);
 		console.error('Invalid input data');
+		line(true);
 		process.exit(1);
 	}
 
@@ -52,24 +57,40 @@ function action(file, input) {
 		return res;
 	}
 
+	function line(opt_error) {
+		console[opt_error ? 'error' : 'log'](new Array(80).join('~'));
+	}
+
 	monic.compile(file, {
-		root: process.cwd(),
+		root: root,
 		content: input,
 		eol: program['eol'],
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
 		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
-		fileName: program['fileName'],
+		fileName: out,
 		sourceMaps: program['sourceMaps'],
-		sourceMapName: program['sourceMapName'],
+		sourceMapName: program['sourceMapName'] || (out || file) + '.map',
 		sourceRoot: program['sourceRoot']
 
 	}, function (err, data) {
 		if (err) {
+			line(true);
 			console.error(err.message);
+			line(true);
 			process.exit(1);
 		}
 
-		if (!program['fileName']) {
+		if (out) {
+			var
+				from = path.normalize(path.relative(root, path.resolve(file))),
+				to = path.normalize(path.relative(root, path.resolve(out)));
+
+			line();
+			console.log('File "' + from + '" has been successfully builded "' + to + '".');
+			console.timeEnd('Time');
+			line();
+
+		} else {
 			console.log(data);
 		}
 	});

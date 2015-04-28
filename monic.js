@@ -45,7 +45,7 @@ exports.compile = function (file, params, callback) {
 	params.replacers = params.replacers || [];
 	file = url(file);
 
-	const
+	var
 		sourceMapName = params.sourceMaps && params.sourceMapName && url(params.sourceMapName),
 		fileName = params.fileName ?
 			url(params.fileName) : file;
