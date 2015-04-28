@@ -52,7 +52,7 @@ exports.compile = function (file, params, callback) {
 			url(params.file) : file;
 
 	var
-		sourceMapFile = sourceMaps && (params.sourceMap ? url(params.sourceMap) : fileToSave),
+		sourceMapFile = sourceMaps && (params.sourceMap ? url(params.sourceMap) : fileToSave + '.map'),
 		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
 	function finish(err, fileStructure, src) {
