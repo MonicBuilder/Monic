@@ -61,6 +61,19 @@ function action(file, input) {
 		console[opt_error ? 'error' : 'log'](new Array(80).join(opt_error ? '!' : '~'));
 	}
 
+	function parse(val) {
+		switch (val) {
+			case 'true':
+				return true;
+
+			case 'false':
+				return false;
+
+			default:
+				return val;
+		}
+	}
+
 	monic.compile(file, {
 		root: root,
 		content: input,
@@ -68,7 +81,7 @@ function action(file, input) {
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
 		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
 		file: out,
-		sourceMaps: program['sourceMaps'],
+		sourceMaps: parse(program['sourceMaps']),
 		sourceMap: program['sourceMap'] || (out || file) + '.map',
 		sourceRoot: program['sourceRoot']
 
