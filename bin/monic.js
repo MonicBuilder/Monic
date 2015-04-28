@@ -46,10 +46,7 @@ function action(file, input) {
 	console.time('Time');
 
 	if (!file) {
-		line(true);
-		console.error('Invalid input data');
-		line(true);
-		process.exit(1);
+		error('Invalid input data');
 	}
 
 	function toObj(res, el) {
@@ -57,8 +54,33 @@ function action(file, input) {
 		return res;
 	}
 
+	function url(url) {
+		return path.normalize(path.relative(root, path.resolve(url)));
+	}
+
 	function line(opt_error) {
 		console[opt_error ? 'error' : 'log'](new Array(80).join(opt_error ? '!' : '~'));
+	}
+
+	function date(opt_error) {
+		console[opt_error ? 'error' : 'log']('[[ ' + new Date().toString() + ' ]]');
+	}
+
+	function error(err) {
+		line(true);
+		console.error(err.message || err);
+
+		if (err.file) {
+			console.error('File: ' + url(err.file));
+		}
+
+		if (err.line) {
+			console.error('Line: ' + err.line);
+		}
+
+		date(true);
+		line(true);
+		process.exit(1);
 	}
 
 	function parse(val) {
@@ -88,20 +110,14 @@ function action(file, input) {
 
 	}, function (err, data) {
 		if (err) {
-			line(true);
-			console.error(err.message);
-			line(true);
-			process.exit(1);
+			error(err);
 		}
 
 		if (out) {
-			var
-				from = path.normalize(path.relative(root, path.resolve(file))),
-				to = path.normalize(path.relative(root, path.resolve(out)));
-
 			line();
-			console.log('File "' + from + '" has been successfully builded "' + to + '".');
+			console.log('File "' + url(file) + '" has been successfully builded "' + url(out) + '"');
 			console.timeEnd('Time');
+			date();
 			line();
 
 		} else {
