@@ -70,12 +70,12 @@ function action(file, input) {
 		line(true);
 		console.error(err.message || err);
 
-		if (err.file) {
-			console.error('File: ' + url(err.file));
+		if (err.fileName) {
+			console.error('File: ' + url(err.fileName));
 		}
 
-		if (err.line) {
-			console.error('Line: ' + err.line);
+		if (err.lineNumber) {
+			console.error('Line: ' + err.lineNumber);
 		}
 
 		date(true);
