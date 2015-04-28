@@ -33,12 +33,16 @@ monic [options] [file ...]
 ### options
 
 ```bash
--h, --help               Call help
--V, --version            Return Monic version
--f, --file [src]         Set a path to a file (meta-information)
---line-separator         Set a newline character (EOL)
---flags [list]           Set a list of flags separated by commas
---labels [list]          Set a list of labels separated by commas
+-h, --help                       Call help
+-V, --version                    Return Monic version
+-f, --file [string]              Set a path to a file (meta-information)
+-o, --output-file [string]       Set a path to save the generated file
+--eol [char]                     Set a newline character
+--flags [list]                   Set a list of flags separated by commas
+--labels [list]                  Set a list of labels separated by commas
+-s, --source-maps [string]       [true|false|inline]
+--source-map [string]            Set a path to save the generated source map
+--source-root [string]           Set the source map root from which all sources are relative
 ```
 
 ### Addition
@@ -47,6 +51,12 @@ The build result will be outputed to `stdout`, so to save the file you need to t
 
 ```bash
 monic file.js --flags ie --labels escapeHTML > _file.js
+```
+
+Or we can use `--output-file-name`
+
+```bash
+monic file.js --flags ie --labels escapeHTML -o _file.js
 ```
 
 ### Examples

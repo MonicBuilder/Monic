@@ -31,12 +31,16 @@ monic [options] [file ...]
 ### options
 
 ```bash
--h, --help               Вызов справки
--V, --version            Вернуть версию Monic
--f, --file [src]         Задать путь к файлу (мета-информация)
---line-separator         Задать разделитель строки (EOL)
---flags [list]           Задать список флагов через запятую
---labels [list]          Задать список меток через запятую
+-h, --help                             Вызов справки
+-V, --version                          Вернуть версию Monic
+-f, --file [string]                    Задать путь к файлу (мета-информация)
+-o, --output-file [string]             Задать путь для сохранения сгенерированного файла
+--eol [char]                           Задать разделитель строки (EOL)
+--flags [list]                         Задать список флагов через запятую
+--labels [list]                        Задать список меток через запятую
+-s, --source-maps [string]             [true|false|inline]
+--source-map [string]                  Задать путь для сохранения SourceMap
+--source-root [string]                 Задать SourceMap корень для всех внешних ссылок
 ```
 
 ### Дополнение
@@ -46,6 +50,12 @@ monic [options] [file ...]
 
 ```bash
 monic file.js --flags ie --labels escapeHTML > _file.js
+```
+
+Или можно использовать `--output-file-name`
+
+```bash
+monic file.js --flags ie --labels escapeHTML -o _file.js
 ```
 
 ### Примеры

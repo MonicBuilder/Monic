@@ -27,9 +27,9 @@ exports.VERSION = [2, 0, 0];
  * @param {?string=} [params.content] - the file text
  * @param {?string=} [params.eol] - EOL symbol
  * @param {Array=} [params.replacers] - an array of transform functions
- * @param {?string=} [params.fileName] - a filename of a generated file
+ * @param {?string=} [params.file] - a path to save the generated file
  * @param {(boolean|string|null)=} [params.sourceMaps] - if is true or 'inline', then will be generated a source map
- * @param {?string=} [params.sourceMapName] - a filename of a generated source map
+ * @param {?string=} [params.sourceMap] - a path to save the generated source map
  * @param {?string=} [params.sourceRoot] - a root for all relative URLs in the source map
  * @param {function(Error, string=, string=, SourceMapGenerator=)} callback - a callback function
  */
@@ -46,9 +46,9 @@ exports.compile = function (file, params, callback) {
 	file = url(file);
 
 	var
-		sourceMapName = params.sourceMaps && params.sourceMapName && url(params.sourceMapName),
-		fileName = params.fileName ?
-			url(params.fileName) : file;
+		sourceMapName = params.sourceMaps && params.sourceMap && url(params.sourceMap),
+		fileToSave = params.file ?
+			url(params.file) : file;
 
 	function finish(err, fileStructure, src) {
 		if (err) {
@@ -57,7 +57,7 @@ exports.compile = function (file, params, callback) {
 
 		var map = params.sourceMaps ?
 			new SourceMapGenerator({
-				file: fileName,
+				file: fileToSave,
 				sourceRoot: params.sourceRoot
 			}) : null;
 
@@ -71,7 +71,7 @@ exports.compile = function (file, params, callback) {
 			});
 		}
 
-		if (params.fileName) {
+		if (params.file) {
 			tasks.push(function (cb) {
 				var sourceMapUrl;
 
@@ -80,7 +80,7 @@ exports.compile = function (file, params, callback) {
 
 				} else if (sourceMapName) {
 					sourceMapUrl = path.join(
-						path.relative(path.dirname(fileName), path.dirname(sourceMapName)),
+						path.relative(path.dirname(fileToSave), path.dirname(sourceMapName)),
 						path.basename(sourceMapName)
 					);
 				}
@@ -89,7 +89,7 @@ exports.compile = function (file, params, callback) {
 					result += '//# sourceMappingURL=' + sourceMapUrl;
 				}
 
-				fs.writeFile(fileName, result, cb);
+				fs.writeFile(fileToSave, result, cb);
 			});
 		}
 

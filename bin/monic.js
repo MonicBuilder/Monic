@@ -13,14 +13,14 @@ program
 	.usage('[options] [file ...]')
 
 	.option('-f, --file [string]', 'Set a path to a file (meta-information)')
-	.option('-o, --output-file-name [string]', 'Set a filename of a generated file')
+	.option('-o, --output-file [string]', 'Set a path to save the generated file')
 
 	.option('--eol [char]', 'Set a newline character')
 	.option('--flags [list]', 'Set a list of flags separated by commas')
 	.option('--labels [list]', 'Set a list of labels separated by commas')
 	.option('-s, --source-maps [string]', '[true|false|inline]')
-	.option('--source-map-name [string]', 'Set a filename of a generated source map')
-	.option('--source-root [string]', 'Set the root from which all sources are relative')
+	.option('--source-map [string]', 'Set a path to save the generated source map')
+	.option('--source-root [string]', 'Set the source map root from which all sources are relative')
 
 	.parse(process.argv);
 
@@ -30,7 +30,7 @@ var
 
 var
 	file = program['file'],
-	out = program['outputFileName'],
+	out = program['outputFile'],
 	root = process.cwd();
 
 if (!file && args.length) {
@@ -67,9 +67,9 @@ function action(file, input) {
 		eol: program['eol'],
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
 		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
-		fileName: out,
+		file: out,
 		sourceMaps: program['sourceMaps'],
-		sourceMapName: program['sourceMapName'] || (out || file) + '.map',
+		sourceMap: program['sourceMap'] || (out || file) + '.map',
 		sourceRoot: program['sourceRoot']
 
 	}, function (err, data) {
