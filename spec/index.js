@@ -1,7 +1,7 @@
 var
 	fs = require('fs'),
 	path = require('path'),
-	nl = require('os').EOL;
+	eol = '\n';
 
 var
 	basePath = __dirname.split(path.sep).slice(-1).join(),
@@ -69,12 +69,12 @@ fs.readdir(basePath, function (err, dirs) {
 				];
 
 				monic.compile(src, {
-					lineSeparator: nl,
+					eol: eol,
 					replacers: replacers
 				}, test);
 
 				monic.compile(src, {
-					lineSeparator: nl,
+					eol: eol,
 					replacers: replacers,
 					content: String(fs.readFileSync(src))
 				}, test);
