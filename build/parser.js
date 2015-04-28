@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 18:42:03 GMT
+ * Date: Tue, 28 Apr 2015 18:49:47 GMT
  */
 
 // istanbul ignore next
@@ -98,7 +98,7 @@ var Parser = (function () {
   * @param {function(Error, string=)} callback - a callback function
   */
 
-	Parser.prototype.normalizePath = function normalizePath(file, callback) {
+	Parser.prototype.testFile = function testFile(file, callback) {
 		var _this = this;
 
 		file = Parser.normalizeUrl(_path2['default'].resolve(file));
@@ -155,7 +155,7 @@ var Parser = (function () {
 		var _this2 = this;
 
 		_async2['default'].waterfall([function (next) {
-			return _this2.normalizePath(file, next);
+			return _this2.testFile(file, next);
 		}, function (src, next) {
 			if (_this2.cache[src]) {
 				return next(null, src, _this2.cache[src]);

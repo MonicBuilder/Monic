@@ -135,7 +135,7 @@ exports.compile = function (file, params, callback) {
 	Parser.current = null;
 
 	if (params.content != null) {
-		parser.normalizePath(file, function (err, file) {
+		parser.testFile(file, function (err, file) {
 			if (err) {
 				return callback(err);
 			}
