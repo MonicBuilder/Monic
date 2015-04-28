@@ -68,7 +68,7 @@ function action(file, input) {
 
 	function error(err) {
 		line(true);
-		console.error(err.message || err);
+		console.error(err.toString());
 
 		if (err.fileName) {
 			console.error('File: ' + url(err.fileName));
