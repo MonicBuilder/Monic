@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 09:42:11 GMT
+ * Date: Tue, 28 Apr 2015 18:05:33 GMT
  */
 
 // istanbul ignore next
@@ -69,11 +69,11 @@ var FileStructure = (function () {
   */
 
 	FileStructure.prototype.getRelativePathOf = function getRelativePathOf(src) {
-		return _path2['default'].normalize(_path2['default'].resolve(_path2['default'].dirname(this.file), src));
+		return _Parser2['default'].normalizeUrl(_path2['default'].resolve(_path2['default'].dirname(this.file), src));
 	};
 
 	/**
-  * Adds custom code to the structure
+  * Adds custom code (text) to the structure
   *
   * @param {string} code - some code
   * @param {Object=} [opt_info] - an information object for a source map
@@ -191,7 +191,7 @@ var FileStructure = (function () {
 
 	FileStructure.prototype.endIf = function endIf() {
 		if (this.currentBlock.type != 'if') {
-			throw new Error('Attempt to close an unopened block "#if"');
+			throw new SyntaxError('Attempt to close an unopened block "#if"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -226,23 +226,10 @@ var FileStructure = (function () {
 
 	FileStructure.prototype.endLabel = function endLabel() {
 		if (this.currentBlock.type !== 'label') {
-			throw new Error('Attempt to close an unopened block "#label"');
+			throw new SyntaxError('Attempt to close an unopened block "#label"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
-		return this;
-	};
-
-	/**
-  * Adds an error to the structure
-  *
-  * @param {string} msg - the error text
-  * @param {Object=} [opt_info] - an information object for a source map
-  * @return {!FileStructure}
-  */
-
-	FileStructure.prototype.error = function error(msg, opt_info) {
-		this.addCode('throw new Error(' + JSON.stringify('MonicError: ' + msg) + ');' + this.eol, opt_info);
 		return this;
 	};
 
@@ -339,7 +326,7 @@ var FileStructure = (function () {
 							if (!info.ignore) {
 								(function () {
 									var test = {},
-									    selfMap = Boolean(info.source);
+									    selfMap = info.source;
 
 									$C(selfMap ? [info] : info).forEach(function (info) {
 										if (selfMap) {
@@ -370,7 +357,7 @@ var FileStructure = (function () {
 	};
 
 	/**
-  * Returns true if an object is valid file structure
+  * Returns true if an object is a valid file structure
   *
   * @param {!Object} block - the structure object
   * @param {!Object} labels - a map of labels

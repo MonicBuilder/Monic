@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 09:42:11 GMT
+ * Date: Tue, 28 Apr 2015 18:05:33 GMT
  */
 
 // istanbul ignore next
@@ -35,8 +35,6 @@ var _async = require('async');
 
 var _async2 = _interopRequireDefault(_async);
 
-var _MonicError = require('./error');
-
 var _FileStructure = require('./file');
 
 var _SourceMapConsumer = require('source-map');
@@ -48,23 +46,49 @@ var _SourceMapConsumer = require('source-map');
 var Parser = (function () {
 	/**
   * @param {string} eol - EOL symbol
-  * @param {!Array} replacers - an array of transform functions
+  * @param {Array=} [replacers] - an array of transform functions
   * @param {boolean} sourceMaps - if is true, then will be enabled support for source maps
+  * @param {?string=} [sourceRoot] - the root for all URLs in the generated source map
   */
 
 	function Parser(_ref) {
 		var eol = _ref.eol;
 		var replacers = _ref.replacers;
 		var sourceMaps = _ref.sourceMaps;
+		var sourceRoot = _ref.sourceRoot;
 
 		_classCallCheck(this, Parser);
 
 		this.eol = eol;
 		this.replacers = replacers;
 		this.sourceMaps = sourceMaps;
+		this.sourceRoot = sourceRoot;
 		this.realpathCache = {};
 		this.cache = {};
 	}
+
+	/**
+  * Normalizes URL
+  *
+  * @param {string} url
+  * @return {string}
+  */
+
+	Parser.normalizeUrl = function normalizeUrl(url) {
+		return _path2['default'].normalize(url).split(_path2['default'].sep).join(_path2['default'].posix.sep);
+	};
+
+	/**
+  * Solves the relative path from from (dir) to to (file)
+  *
+  * @param {string} from
+  * @param {string} to
+  * @return {string}
+  */
+
+	Parser.relativeUrl = function relativeUrl(from, to) {
+		return Parser.normalizeUrl(_path2['default'].join(_path2['default'].relative(from, _path2['default'].dirname(to)), _path2['default'].basename(to)));
+	};
 
 	/**
   * Checks a file for existence
@@ -77,7 +101,7 @@ var Parser = (function () {
 	Parser.prototype.normalizePath = function normalizePath(file, callback) {
 		var _this = this;
 
-		file = _path2['default'].normalize(_path2['default'].resolve(file));
+		file = Parser.normalizeUrl(_path2['default'].resolve(file));
 
 		if (this.realpathCache[file]) {
 			callback(null, file);
@@ -98,8 +122,8 @@ var Parser = (function () {
 	/**
   * Parses URL string with glob
   *
-  * @param {string} base - a path to a base file
-  * @param {string} url - URL
+  * @param {string} base - a path to the base file
+  * @param {string} url
   * @param {function(Error, Array=)} callback - a callback function
   */
 
@@ -173,8 +197,13 @@ var Parser = (function () {
 						return next(err, err ? void 0 : content = res);
 					});
 				} else {
-					content = replacer(content, file);
-					next();
+					try {
+						content = replacer(content, file);
+						next();
+					} catch (err) {
+						err.fileName = file;
+						next(err);
+					}
 				}
 			});
 		});
@@ -225,21 +254,18 @@ var Parser = (function () {
 
 				return parseLines;
 			})(function (start) {
-				var errors = [];
-
 				var info = void 0,
 				    i = void 0;
 
-				function appendError(err) {
-					var msg = err.message;
-
-					errors.push(new _MonicError.MonicError(msg, file, i + 1));
-					fileStructure.error(msg, info);
+				function error(err) {
+					err.fileName = file;
+					err.lineNumber = i + 1;
+					callback(err);
 				}
 
 				function asyncParseCallback(err) {
 					if (err) {
-						appendError(err);
+						return error(err);
 					}
 
 					parseLines(i + 1);
@@ -273,6 +299,12 @@ var Parser = (function () {
 
 								$C(originalMap).forEach(function (el) {
 									if (el.source === src) {
+										el.source = Parser.normalizeUrl(_path2['default'].resolve(el.source));
+
+										if (_this3.sourceRoot) {
+											el.source = Parser.relativeUrl(_this3.sourceRoot, el.source);
+										}
+
 										el.sourcesContent = content;
 									}
 								});
@@ -302,7 +334,8 @@ var Parser = (function () {
 									column: 0
 								},
 
-								source: file,
+								source: _this3.sourceRoot ? Parser.relativeUrl(_this3.sourceRoot, file) : file,
+
 								sourcesContent: content || _this3.eol,
 								line: line
 							};
@@ -323,7 +356,7 @@ var Parser = (function () {
 								try {
 									_this3[key](fileStructure, params);
 								} catch (err) {
-									appendError(err);
+									return error(err);
 								}
 							} else {
 								fileStructure.addCode(val, info);
@@ -478,7 +511,7 @@ var Parser = (function () {
 		value = value.trim();
 
 		if (!value) {
-			throw new Error('Bad "if" directive');
+			throw new SyntaxError('Bad "if" directive');
 		}
 
 		var args = value.split(/\s+/);
@@ -515,7 +548,7 @@ var Parser = (function () {
 		value = value.trim();
 
 		if (!value) {
-			throw new Error('Bad "set" directive');
+			throw new SyntaxError('Bad "set" directive');
 		}
 
 		struct.addSet(value);
@@ -533,7 +566,7 @@ var Parser = (function () {
 		value = value.trim();
 
 		if (!value) {
-			throw new Error('Bad "unset" directive');
+			throw new SyntaxError('Bad "unset" directive');
 		}
 
 		struct.addUnset(value);
