@@ -73,7 +73,7 @@ exports.compile = function (file, params, callback) {
 		if (params.sourceFileName) {
 			tasks.push(function (cb) {
 				if (sourceMapName) {
-					let sourceMapUrl;
+					var sourceMapUrl;
 
 					if (params.sourceMaps === 'inline') {
 						sourceMapUrl = `data:application\/json;base64,${new Buffer(map.toString()).toString('base64')}`;
