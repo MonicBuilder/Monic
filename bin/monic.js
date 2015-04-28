@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+/*!
+ * Monic
+ * https://github.com/MonicBuilder/Monic
+ *
+ * Released under the MIT license
+ * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
+ */
+
 var
 	monic = require('../monic'),
 	Parser = require('../build/parser'),
