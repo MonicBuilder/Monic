@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 18:05:33 GMT
+ * Date: Tue, 28 Apr 2015 18:12:23 GMT
  */
 
 // istanbul ignore next
@@ -87,7 +87,7 @@ var Parser = (function () {
   */
 
 	Parser.relativeUrl = function relativeUrl(from, to) {
-		return Parser.normalizeUrl(_path2['default'].join(_path2['default'].relative(from, _path2['default'].dirname(to)), _path2['default'].basename(to)));
+		return Parser.normalizeUrl(_path2['default'].relative(from, to));
 	};
 
 	/**
