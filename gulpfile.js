@@ -26,7 +26,6 @@ gulp.task('build', function () {
 	gulp.src('./lib/*.js')
 		.pipe(babel({
 			compact: false,
-			highlightCode: false,
 			auxiliaryComment: 'istanbul ignore next',
 			loose: 'all',
 			optional: [
