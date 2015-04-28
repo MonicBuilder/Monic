@@ -69,7 +69,7 @@ function action(file, input) {
 			process.exit(1);
 		}
 
-		if (!program['sourceFileName']) {
+		if (!program['fileName']) {
 			console.log(data);
 		}
 	});
