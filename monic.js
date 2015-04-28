@@ -106,9 +106,6 @@ exports.compile = function (file, params, callback) {
 	});
 
 	Parser.cursor = 1;
-	Parser.diff = 0;
-	Parser.tmpDiff = 0;
-	Parser.diffMap = {};
 	Parser.current = null;
 
 	if (params.content != null) {
