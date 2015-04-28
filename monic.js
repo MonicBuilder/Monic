@@ -78,7 +78,7 @@ exports.compile = function (file, params, callback) {
 			sourceMapDecl = '//# sourceMappingURL=';
 
 			if (externalSourceMap) {
-				sourceMapUrl = Parser.relativeUrl(path.dirname(fileToSave), fileToSave);
+				sourceMapUrl = Parser.relativeUrl(path.dirname(fileToSave), sourceMapFile);
 
 			} else {
 				sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
