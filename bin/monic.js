@@ -13,7 +13,7 @@ program
 	.usage('[options] [file ...]')
 
 	.option('-f, --file [string]', 'Set a path to a file (meta-information)')
-	.option('-o, --output-file [string]', 'Set a path to save the generated file')
+	.option('-o, --output [string]', 'Set a path to save the generated file')
 
 	.option('--eol [char]', 'Set a newline character')
 	.option('--flags [list]', 'Set a list of flags separated by commas')
@@ -30,7 +30,7 @@ var
 
 var
 	file,
-	out = program['outputFile'],
+	out = program['output'],
 	root = process.cwd();
 
 if (args.length) {
