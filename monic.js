@@ -27,11 +27,12 @@ exports.VERSION = [2, 0, 0];
  * @param {?string=} [params.content] - the file text
  * @param {?string=} [params.eol] - EOL symbol
  * @param {Array=} [params.replacers] - an array of transform functions
- * @param {?string=} [params.file] - a path to save the generated file
- * @param {(boolean|string|null)=} [params.sourceMaps] - if is true or 'inline', then will be generated a source map
- * @param {?string=} [params.sourceMap] - a path to save the generated source map
+ * @param {?boolean=} [params.saveFiles=false] - if is true, then generated files will be saved
+ * @param {?string=} [params.file] - a path to the generated file
+ * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
+ * @param {?string=} [params.sourceMap] - a path to the generated source map
  * @param {?string=} [params.sourceRoot] - the root for all relative URLs in the source map
- * @param {function(Error, string=, string=, SourceMapGenerator=)} callback - a callback function
+ * @param {function(Error, string=, string=, SourceMapGenerator=, string=, string=)} callback - a callback function
  */
 exports.compile = function (file, params, callback) {
 	params = params || {};
@@ -40,22 +41,26 @@ exports.compile = function (file, params, callback) {
 	params.labels = params.labels || {};
 
 	var
+		sourceMaps = params.sourceMaps,
 		eol = params.eol || '\n';
 
 	params.replacers = params.replacers || [];
 	file = url(file);
 
 	var
-		sourceMapName = params.sourceMaps && params.sourceMap && url(params.sourceMap),
 		fileToSave = params.file ?
 			url(params.file) : file;
+
+	var
+		sourceMapFile = sourceMaps && (params.sourceMap ? url(params.sourceMap) : fileToSave),
+		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
 	function finish(err, fileStructure, src) {
 		if (err) {
 			return callback(err);
 		}
 
-		var map = params.sourceMaps ?
+		var map = sourceMaps ?
 			new SourceMapGenerator({
 				file: fileToSave,
 				sourceRoot: params.sourceRoot
@@ -65,40 +70,49 @@ exports.compile = function (file, params, callback) {
 			result = fileStructure.compile(params.labels, params.flags, map),
 			tasks = [];
 
-		if (sourceMapName && params.sourceMaps !== 'inline') {
-			tasks.push(function (cb) {
-				fs.writeFile(sourceMapName, map.toString(), cb);
-			});
+		var
+			sourceMapDecl,
+			sourceMapUrl;
+
+		if (sourceMaps) {
+			sourceMapDecl = '//# sourceMappingURL=';
+
+			if (externalSourceMap) {
+				sourceMapUrl = path.join(
+					path.relative(path.dirname(fileToSave), path.dirname(sourceMapFile)),
+					path.basename(sourceMapFile)
+				);
+
+			} else {
+				sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
+				result += sourceMapDecl + sourceMapUrl;
+			}
 		}
 
-		if (params.file) {
-			tasks.push(function (cb) {
-				var sourceMapUrl;
+		if (params.saveFiles) {
+			if (externalSourceMap) {
+				tasks.push(function (cb) {
+					fs.writeFile(sourceMapFile, map.toString(), cb);
+				});
+			}
 
-				if (params.sourceMaps === 'inline') {
-					sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
-
-				} else if (sourceMapName) {
-					sourceMapUrl = path.join(
-						path.relative(path.dirname(fileToSave), path.dirname(sourceMapName)),
-						path.basename(sourceMapName)
-					);
-				}
-
-				if (sourceMapUrl) {
-					result += '//# sourceMappingURL=' + sourceMapUrl;
-				}
-
-				fs.writeFile(fileToSave, result, cb);
-			});
+			if (params.file) {
+				tasks.push(function (cb) {
+					fs.writeFile(fileToSave, result, cb);
+				});
+			}
 		}
 
 		async.parallel(tasks, function () {
-			callback(err, result, src, map);
+			callback(err, result, src, map, sourceMapDecl, sourceMapUrl);
 		})
 	}
 
 	function url(url) {
+		if (!url) {
+			return '';
+		}
+
 		if (params.root) {
 			url = path.resolve(params.root, url);
 
@@ -112,7 +126,7 @@ exports.compile = function (file, params, callback) {
 	var parser = new Parser({
 		eol: eol,
 		replacers: params.replacers,
-		sourceMaps: Boolean(params.sourceMaps)
+		sourceMaps: Boolean(sourceMaps)
 	});
 
 	Parser.cursor = 1;

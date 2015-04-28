@@ -76,6 +76,7 @@ function action(file, input) {
 
 	monic.compile(file, {
 		root: root,
+		saveFiles: true,
 		content: input,
 		eol: program['eol'],
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
