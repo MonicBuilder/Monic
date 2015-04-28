@@ -24,7 +24,7 @@ exports.VERSION = [1, 2, 0];
  * @param {Object=} [params.flags] - a map of flags
  * @param {Object=} [params.labels] - a map of labels
  * @param {?string=} [params.content] - the file text
- * @param {?string=} [params.lineSeparator] - EOL symbol
+ * @param {?string=} [params.eol] - EOL symbol
  * @param {Array=} [params.replacers] - an array of transform functions
  * @param {(boolean|string|null)=} [params.sourceMaps] - if is true or 'inline', then will be generated a source map
  * @param {?string=} [params.sourceMapName] - a filename of the source map
@@ -39,7 +39,7 @@ exports.compile = function (file, params, callback) {
 	params.labels = params.labels || {};
 
 	var
-		nl = params.lineSeparator || '\n';
+		eol = params.eol || '\n';
 
 	params.replacers = params.replacers || [];
 	file = url(file);
@@ -86,7 +86,7 @@ exports.compile = function (file, params, callback) {
 					}
 
 					result +=
-						(new Array(1 + (result[result.length - 1] !== nl ? 1 : 0)).join(nl)) +
+						(new Array(1 + (result[result.length - 1] !== eol ? 1 : 0)).join(eol)) +
 						'//# sourceMappingURL=' + sourceMapUrl;
 				}
 
@@ -107,7 +107,7 @@ exports.compile = function (file, params, callback) {
 	}
 
 	var parser = new Parser({
-		nl: nl,
+		nl: eol,
 		replacers: params.replacers,
 		sourceMaps: Boolean(params.sourceMaps)
 	});
