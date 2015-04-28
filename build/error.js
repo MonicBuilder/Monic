@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 08:45:34 GMT
+ * Date: Tue, 28 Apr 2015 09:42:11 GMT
  */
 
 // istanbul ignore next
