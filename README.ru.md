@@ -52,7 +52,7 @@ monic [options] [file ...]
 monic file.js --flags ie --labels escapeHTML > _file.js
 ```
 
-Или можно использовать `--output-file-name`
+Или можно использовать `--output`
 
 ```bash
 monic file.js --flags ie --labels escapeHTML -o _file.js

@@ -53,7 +53,7 @@ The build result will be outputed to `stdout`, so to save the file you need to t
 monic file.js --flags ie --labels escapeHTML > _file.js
 ```
 
-Or we can use `--output-file-name`
+Or we can use `--output`
 
 ```bash
 monic file.js --flags ie --labels escapeHTML -o _file.js
