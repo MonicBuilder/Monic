@@ -67,13 +67,13 @@ monic file.js --flags ie --labels escapeHTML -o _file.js
 monic myFile.js
 ```
 
-**Builds a file and saves result to a new file**
+**Builds a file and saves the result to a new file**
 
 ```bash
 monic myFile.js > myNewFile.js
 ```
 
-**Builds a file and saves result to a new file with SourceMap**
+**Builds a file and saves the result to a new file with SourceMap**
 
 ```bash
 # SourceMap will be saved as "myFile-compiled.map.js"
