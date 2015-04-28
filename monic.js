@@ -86,9 +86,7 @@ exports.compile = function (file, params, callback) {
 				}
 
 				if (sourceMapUrl) {
-					result +=
-						(new Array(1 + (result[result.length - 1] !== eol ? 1 : 0)).join(eol)) +
-						'//# sourceMappingURL=' + sourceMapUrl;
+					result += '//# sourceMappingURL=' + sourceMapUrl;
 				}
 
 				fs.writeFile(fileName, result, cb);
