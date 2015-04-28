@@ -13,12 +13,13 @@ program
 	.usage('[options] [file ...]')
 
 	.option('-f, --file [string]', 'Set a path to a file (meta-information)')
+	.option('-o, --file-name [string]', 'Set a filename of the generated file')
+
 	.option('--eol [char]', 'Set a newline character')
 	.option('--flags [list]', 'Set a list of flags separated by commas')
 	.option('--labels [list]', 'Set a list of labels separated by commas')
 	.option('-s, --source-maps [string]', '[true|false|inline]')
-	.option('--source-file-name [string]', 'Set a filename of the generated file that the source map is associated with')
-	.option('--source-map-name [string]', 'Set a filename of the source map')
+	.option('--source-map-name [string]', 'Set a filename of the generated source map')
 	.option('--source-root [string]', 'Set the root from which all sources are relative')
 
 	.parse(process.argv);
@@ -57,8 +58,8 @@ function action(file, input) {
 		eol: program['eol'],
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
 		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
+		fileName: program['fileName'],
 		sourceMaps: program['sourceMaps'],
-		sourceFileName: program['sourceFileName'],
 		sourceMapName: program['sourceMapName'],
 		sourceRoot: program['sourceRoot']
 
@@ -68,7 +69,9 @@ function action(file, input) {
 			process.exit(1);
 		}
 
-		console.log(data);
+		if (!program['sourceFileName']) {
+			console.log(data);
+		}
 	});
 }
 
