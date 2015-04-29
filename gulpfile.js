@@ -115,4 +115,4 @@ gulp.task('watch', function () {
 	gulp.watch('./monic.js', ['bump', 'head']);
 });
 
-gulp.task('default', ['copyright', 'head', 'build', 'bump', 'watch']);
+gulp.task('default', ['copyright', 'head', 'build', 'bump']);
