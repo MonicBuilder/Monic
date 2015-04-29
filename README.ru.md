@@ -107,7 +107,7 @@ monic.compile(
   {
     // Путь к директории исполнения
     // (опционально, по умолчанию dirname(module.parent.filename))
-    params.root: 'myDir/',
+    root: 'myDir/',
 
     // Символ перевода строки (опционально, по умолчанию \n)
     eol: '\r\n',

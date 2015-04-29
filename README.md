@@ -108,7 +108,7 @@ monic.compile(
   {
     // The path to the exec directory
     // (optional, by default dirname(module.parent.filename))
-    params.root: 'myDir/',
+    root: 'myDir/',
 
     // The newline character (optional, by default \n)
     eol: '\r\n',
