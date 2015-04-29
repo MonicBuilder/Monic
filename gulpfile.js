@@ -44,17 +44,15 @@ gulp.task('head', function (cb) {
 
 	async.parallel([
 		function (cb) {
-			gulp.src('./lib/*.js')
-				.pipe(cached('lib'))
+			gulp.src('./*(lib|spec)/*.js')
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
-				.pipe(gulp.dest('./lib'))
+				.pipe(gulp.dest('./'))
 				.on('end', cb);
 		},
 
 		function (cb) {
 			gulp.src('./monic.js')
-				.pipe(cached('index'))
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
 				.pipe(gulp.dest('./'))
@@ -63,7 +61,6 @@ gulp.task('head', function (cb) {
 
 		function (cb) {
 			gulp.src('./bin/monic.js')
-				.pipe(cached('bin'))
 				.pipe(replace(headRgxp, ''))
 				.pipe(replace(/^#!.*\n{2}/, function (sstr) {
 					return sstr + fullHead;
@@ -83,7 +80,7 @@ gulp.task('build', function () {
 		' */\n\n';
 
 	gulp.src('./lib/*.js')
-		.pipe(cached('lib'))
+		.pipe(cached('build'))
 		.pipe(replace(headRgxp, ''))
 		.pipe(babel({
 			compact: false,
@@ -100,7 +97,6 @@ gulp.task('build', function () {
 
 gulp.task('bump', function () {
 	gulp.src('./*.json')
-		.pipe(cached('index'))
 		.pipe(bump({version: getVersion()}))
 		.pipe(gulp.dest('./'));
 });

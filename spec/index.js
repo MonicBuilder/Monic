@@ -1,3 +1,11 @@
+/*!
+ * Monic
+ * https://github.com/MonicBuilder/Monic
+ *
+ * Released under the MIT license
+ * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
+ */
+
 var
 	fs = require('fs'),
 	path = require('path'),
