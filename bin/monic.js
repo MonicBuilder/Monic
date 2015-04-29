@@ -40,6 +40,7 @@ var
 var
 	file,
 	out = program['output'],
+	eol = program['eol'] || '\n',
 	root = process.cwd();
 
 if (args.length) {
@@ -109,7 +110,7 @@ function action(file, input) {
 		root: root,
 		saveFiles: true,
 		content: input,
-		eol: program['eol'],
+		eol: eol,
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
 		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
 		file: out,
@@ -150,7 +151,6 @@ if (!file && input == null) {
 		action(program['file'], buf);
 	}).resume();
 
-	var eol = program['eol'] || '\n';
 	process.on('SIGINT', function () {
 		stdout.write(eol);
 		stdin.emit('end');
