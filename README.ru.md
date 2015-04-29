@@ -30,7 +30,7 @@ monic [options] [file ...]
 
 ### options
 
-```bash
+```
 -h, --help                             Вызов справки
 -V, --version                          Вернуть версию Monic
 -f, --file [string]                    Задать путь к исходному файлу (мета-информация)

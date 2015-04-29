@@ -32,7 +32,7 @@ monic [options] [file ...]
 
 ### options
 
-```bash
+```
 -h, --help                   Call help
 -V, --version                Return Monic version
 -f, --file [string]          Set a path to the source file (meta-information)
