@@ -6,7 +6,8 @@ var
 	babel = require('gulp-babel'),
 	bump = require('gulp-bump'),
 	header = require('gulp-header'),
-	replace = require('gulp-replace');
+	replace = require('gulp-replace'),
+	changed = require('gulp-changed');
 
 function getVersion() {
 	delete require.cache[require.resolve('./monic')];
@@ -43,35 +44,42 @@ gulp.task('head', function (cb) {
 
 	async.parallel([
 		function (cb) {
+			var dest = './lib';
 			gulp.src('./lib/*.js')
+				.pipe(changed(dest))
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
-				.pipe(gulp.dest('./lib'))
+				.pipe(gulp.dest(dest))
 				.on('end', cb);
 		},
 
 		function (cb) {
+			var dest = './';
 			gulp.src('./monic.js')
+				.pipe(changed(dest))
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
-				.pipe(gulp.dest('./'))
+				.pipe(gulp.dest(dest))
 				.on('end', cb);
 		},
 
 		function (cb) {
+			var dest = './bin';
 			gulp.src('./bin/monic.js')
+				.pipe(changed(dest))
 				.pipe(replace(headRgxp, ''))
 				.pipe(replace(/^#!.*\n{2}/, function (sstr) {
 					return sstr + fullHead;
 				}))
 
-				.pipe(gulp.dest('./bin'))
+				.pipe(gulp.dest(dest))
 				.on('end', cb);
 		}
 	], cb);
 });
 
 gulp.task('build', function () {
+	var dest = './build';
 	var fullHead =
 		getHead(true) +
 		' *\n' +
@@ -79,6 +87,7 @@ gulp.task('build', function () {
 		' */\n\n';
 
 	gulp.src('./lib/*.js')
+		.pipe(changed(dest))
 		.pipe(replace(headRgxp, ''))
 		.pipe(babel({
 			compact: false,
@@ -90,13 +99,15 @@ gulp.task('build', function () {
 		}))
 
 		.pipe(header(fullHead))
-		.pipe(gulp.dest('./build'));
+		.pipe(gulp.dest(dest));
 });
 
 gulp.task('bump', function () {
+	var dest = './';
 	gulp.src('./*.json')
+		.pipe(changed(dest))
 		.pipe(bump({version: getVersion()}))
-		.pipe(gulp.dest('./'));
+		.pipe(gulp.dest(dest));
 });
 
 gulp.task('watch', function () {
@@ -104,4 +115,4 @@ gulp.task('watch', function () {
 	gulp.watch('./monic.js', ['bump', 'head']);
 });
 
-gulp.task('default', ['copyright', 'head', 'build', 'bump']);
+gulp.task('default', ['copyright', 'head', 'build', 'bump', 'watch']);
