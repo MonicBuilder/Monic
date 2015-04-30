@@ -7,7 +7,8 @@ var
 	bump = require('gulp-bump'),
 	header = require('gulp-header'),
 	replace = require('gulp-replace'),
-	cached = require('gulp-cached');
+	cached = require('gulp-cached'),
+	run = require('gulp-run');
 
 function getVersion() {
 	delete require.cache[require.resolve('./monic')];
@@ -27,14 +28,15 @@ function getHead(opt_version) {
 var
 	headRgxp = /\/\*![\s\S]*?\*\/\n{2}/;
 
-gulp.task('copyright', function () {
+gulp.task('copyright', function (cb) {
 	gulp.src('./LICENSE')
 		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, function (sstr, intro, from, to) {
 			var year = new Date().getFullYear();
 			return intro + from + (to || from != year ? '-' + year : '');
 		}))
 
-		.pipe(gulp.dest('./'));
+		.pipe(gulp.dest('./'))
+		.on('end', cb);
 });
 
 gulp.task('head', function (cb) {
@@ -72,7 +74,7 @@ gulp.task('head', function (cb) {
 	], cb);
 });
 
-gulp.task('build', function () {
+gulp.task('build', function (cb) {
 	var fullHead =
 		getHead(true) +
 		' *\n' +
@@ -91,19 +93,41 @@ gulp.task('build', function () {
 			]
 		}))
 
+		.on('error', function (err) {
+			console.error(err.message);
+			cb();
+		})
+
 		.pipe(header(fullHead))
-		.pipe(gulp.dest('./build'));
+		.pipe(gulp.dest('./build'))
+		.on('end', cb);
 });
 
-gulp.task('bump', function () {
+gulp.task('bump', function (cb) {
 	gulp.src('./*.json')
 		.pipe(bump({version: getVersion()}))
-		.pipe(gulp.dest('./'));
+		.pipe(gulp.dest('./'))
+		.on('end', cb);
 });
+
+function test(cb) {
+	run('node spec').exec()
+		.on('error', function (err) {
+			console.error(err.message);
+			cb();
+		})
+
+		.pipe(gulp.dest('output'))
+		.on('end', cb);
+}
+
+gulp.task('full-build', ['build'], test);
+gulp.task('test', test);
 
 gulp.task('watch', function () {
-	gulp.watch('./lib/*.js', ['build']);
+	gulp.watch('./lib/*.js', ['full-build']);
 	gulp.watch('./monic.js', ['bump']);
+	gulp.watch(['./spec/**/*', './monic.js'], ['test']);
 });
 
-gulp.task('default', ['copyright', 'head', 'build', 'bump']);
+gulp.task('default', ['copyright', 'head', 'full-build', 'bump']);
