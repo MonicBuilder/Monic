@@ -1,6 +1,7 @@
 var
 	gulp = require('gulp'),
-	async = require('async');
+	async = require('async'),
+	through = require('through2');
 
 var
 	babel = require('gulp-babel'),
@@ -26,7 +27,8 @@ function getHead(opt_version) {
 }
 
 var
-	headRgxp = /\/\*![\s\S]*?\*\/\n{2}/;
+	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/,
+	readyToWatcher = false;
 
 gulp.task('copyright', function (cb) {
 	gulp.src('./LICENSE')
@@ -44,17 +46,20 @@ gulp.task('head', function (cb) {
 		getHead() +
 		' */\n\n';
 
+	function test() {
+		return through.obj(function (file, enc, cb) {
+			if (headRgxp.exec(file.contents.toString()) && RegExp.$1 !== fullHead) {
+				this.push(file);
+			}
+
+			return cb();
+		})
+	}
+
 	async.parallel([
 		function (cb) {
-			gulp.src('./*(lib|spec)/*.js')
-				.pipe(replace(headRgxp, ''))
-				.pipe(header(fullHead))
-				.pipe(gulp.dest('./'))
-				.on('end', cb);
-		},
-
-		function (cb) {
-			gulp.src('./monic.js')
+			gulp.src(['./@(lib|spec)/*.js', './monic.js'], {base: './'})
+				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
 				.pipe(gulp.dest('./'))
@@ -63,6 +68,7 @@ gulp.task('head', function (cb) {
 
 		function (cb) {
 			gulp.src('./bin/monic.js')
+				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(replace(/^#!.*\n{2}/, function (sstr) {
 					return sstr + fullHead;
@@ -71,7 +77,10 @@ gulp.task('head', function (cb) {
 				.pipe(gulp.dest('./bin'))
 				.on('end', cb);
 		}
-	], cb);
+	], function () {
+		readyToWatcher = true;
+		cb();
+	});
 });
 
 gulp.task('build', function (cb) {
@@ -117,17 +126,28 @@ function test(cb) {
 			cb();
 		})
 
-		.pipe(gulp.dest('output'))
-		.on('end', cb);
+		.on('finish', cb);
 }
 
 gulp.task('full-build', ['build'], test);
 gulp.task('test', test);
 
 gulp.task('watch', function () {
-	gulp.watch('./lib/*.js', ['full-build']);
-	gulp.watch('./monic.js', ['bump']);
-	gulp.watch(['./spec/**/*', './monic.js'], ['test']);
+	async.whilst(
+		function () {
+			return !readyToWatcher;
+		},
+
+		function (cb) {
+			setTimeout(cb, 500);
+		},
+
+		function () {
+			gulp.watch('./lib/*.js', ['full-build']);
+			gulp.watch('./monic.js', ['bump']);
+			gulp.watch(['./spec/**/*', './monic.js'], ['test']);
+		}
+	);
 });
 
 gulp.task('default', ['copyright', 'head', 'full-build', 'bump']);
