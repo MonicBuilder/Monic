@@ -29,7 +29,7 @@ exports.VERSION = [2, 0, 0];
  *
  * @param {string} file - the file path
  * @param {Object} params - additional parameters
- * @param {?string=} [params.root] - a path to the exec directory (by default, dirname(module.parent.filename))
+ * @param {?string=} [params.cwd] - a path to the working directory (by default, module.parent)
  * @param {Object=} [params.flags] - a map of flags
  * @param {Object=} [params.labels] - a map of labels
  * @param {?string=} [params.content] - the file text
@@ -122,8 +122,8 @@ exports.compile = function (file, params, callback) {
 			return undefined;
 		}
 
-		if (params.root) {
-			url = path.resolve(params.root, url);
+		if (params.cwd) {
+			url = path.resolve(params.cwd, url);
 
 		} else {
 			url = path.resolve(module.parent ? path.dirname(module.parent.filename) : '', url);

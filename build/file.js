@@ -5,19 +5,19 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Apr 2015 21:32:15 GMT
+ * Date: Sat, 02 May 2015 17:00:42 GMT
  */
 
-// istanbul ignore next
 'use strict';
+
+exports.__esModule = true;
+// istanbul ignore next
 
 var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 // istanbul ignore next
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-exports.__esModule = true;
 
 var _uid = require('uid');
 

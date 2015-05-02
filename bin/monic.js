@@ -41,7 +41,7 @@ var
 	file,
 	out = program['output'],
 	eol = program['eol'] || '\n',
-	root = process.cwd();
+	cwd = process.cwd();
 
 if (args.length) {
 	input = args.join(' ');
@@ -65,7 +65,7 @@ function action(file, input) {
 	}
 
 	function url(url) {
-		return Parser.getRelativePath(root, path.resolve(url));
+		return Parser.getRelativePath(cwd, path.resolve(url));
 	}
 
 	function line(opt_error) {
@@ -107,7 +107,7 @@ function action(file, input) {
 	}
 
 	monic.compile(file, {
-		root: root,
+		cwd: cwd,
 		saveFiles: true,
 		content: input,
 		eol: eol,

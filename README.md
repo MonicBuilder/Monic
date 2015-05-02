@@ -106,9 +106,9 @@ monic.compile(
   'myFile.js',
 
   {
-    // The path to the exec directory
-    // (optional, by default dirname(module.parent.filename))
-    root: 'myDir/',
+    // The path to the working directory
+    // (optional, by default module.parent)
+    cwd: 'myDir/',
 
     // The newline character (optional, by default \n)
     eol: '\r\n',
