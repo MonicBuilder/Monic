@@ -19,6 +19,7 @@
     "/node.?js/i",
     "/ie/i",
     "/f\\d+/",
+    "WebPack",
     "SourceMap",
     "форк",
     "фреймворков",
