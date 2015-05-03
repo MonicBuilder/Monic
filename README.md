@@ -23,6 +23,7 @@ npm install monic --global
 
 * [Gulp](https://github.com/MonicBuilder/gulp-monic)
 * [Grunt](https://github.com/MonicBuilder/grunt-monic)
+* [WebPack](https://github.com/MonicBuilder/monic-loader)
 
 ## Using CLI
 
