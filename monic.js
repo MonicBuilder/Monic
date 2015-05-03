@@ -128,7 +128,7 @@ exports.compile = function (file, params, callback) {
 		}
 
 		async.parallel(tasks, function () {
-			callback(err, result, {map: map, decl: sourceMapDecl, url: sourceMapUrl, isExternal: externalSourceMap});
+			callback(err, result, map && {map: map, decl: sourceMapDecl, url: sourceMapUrl, isExternal: externalSourceMap});
 		})
 	}
 
