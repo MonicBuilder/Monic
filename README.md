@@ -141,7 +141,7 @@ monic.compile(
     sourceRoot: 'myDir/'
   },
 
-  function (err, data, sourceFileURL, sourceMapGenerator, sourceMapDecl, sourceMapUrl) {
+  function (err, data, {map, decl, url, isExternal}) {
     if (err) {
       throw err;
     }
