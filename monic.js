@@ -89,8 +89,8 @@ exports.compile = function (file, params, callback) {
 				sourceMapUrl = Parser.getRelativePath(path.dirname(fileToSave), sourceMapFile);
 
 			} else {
-				sourceMapUrl = 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
-				result += sourceMapDecl + sourceMapUrl;
+				result += sourceMapDecl + 'data:application\/json;base64,' + new Buffer(map.toString()).toString('base64');
+				sourceMapDecl = undefined;
 			}
 		}
 
