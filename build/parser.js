@@ -1,11 +1,11 @@
 /*!
- * Monic v2.0.1
+ * Monic v2.1.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 03 May 2015 11:30:02 GMT
+ * Date: Sun, 03 May 2015 13:34:42 GMT
  */
 
 'use strict';
@@ -48,6 +48,7 @@ var Parser = (function () {
   * @param {string} eol - EOL symbol
   * @param {Array=} [replacers] - an array of transform functions
   * @param {boolean} sourceMaps - if is true, then will be enabled support for source maps
+  * @param {Object=} [inputSourceMap] - a source map object that the output source map will be based on
   * @param {?string=} [sourceRoot] - the root for all URLs in the generated source map
   */
 
@@ -56,12 +57,14 @@ var Parser = (function () {
 		var replacers = _ref.replacers;
 		var sourceMaps = _ref.sourceMaps;
 		var sourceRoot = _ref.sourceRoot;
+		var inputSourceMap = _ref.inputSourceMap;
 
 		_classCallCheck(this, Parser);
 
 		this.eol = eol;
 		this.replacers = replacers;
 		this.sourceMaps = sourceMaps;
+		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;
 		this.realpathCache = {};
 		this.cache = {};
@@ -210,28 +213,32 @@ var Parser = (function () {
 
 		var sourceMap = void 0;
 		if (this.sourceMaps) {
-			content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*$/, function (sstr, url) {
-				actions.push(function (next) {
-					if (/data:application\/json;base64,(.*)/.exec(url)) {
-						parse(new Buffer(RegExp.$1, 'base64').toString());
-					} else {
-						_fs2['default'].readFile(_path2['default'].normalize(_path2['default'].resolve(_path2['default'].dirname(file), url)), 'utf8', function (err, str) {
-							parse(str);
-						});
-					}
-
-					function parse(str) {
-						try {
-							sourceMap = new _SourceMapConsumer.SourceMapConsumer(JSON.parse(str));
-							content = content.replace(sstr, '');
-						} catch (ignore) {} finally {
-							next();
+			if (this.inputSourceMap) {
+				sourceMap = new _SourceMapConsumer.SourceMapConsumer(this.inputSourceMap);
+			} else {
+				content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*$/, function (sstr, url) {
+					actions.push(function (next) {
+						if (/data:application\/json;base64,(.*)/.exec(url)) {
+							parse(new Buffer(RegExp.$1, 'base64').toString());
+						} else {
+							_fs2['default'].readFile(_path2['default'].normalize(_path2['default'].resolve(_path2['default'].dirname(file), url)), 'utf8', function (err, str) {
+								parse(str);
+							});
 						}
-					}
-				});
 
-				return sstr;
-			});
+						function parse(str) {
+							try {
+								sourceMap = new _SourceMapConsumer.SourceMapConsumer(JSON.parse(str));
+								content = content.replace(sstr, '');
+							} catch (ignore) {} finally {
+								next();
+							}
+						}
+					});
+
+					return sstr;
+				});
+			}
 		}
 
 		_async2['default'].series(actions, function (err) {

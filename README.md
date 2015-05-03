@@ -140,6 +140,10 @@ monic.compile(
     // (optional, by default false)
     sourceMaps: true,
 
+    // The source map object that the output source map will be based on
+    // (optional)
+    inputSourceMap: null,
+
     // The path to the generated source map (optional, by default ${file}.map)
     sourceMapFile: 'myFiled.map',
 

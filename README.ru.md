@@ -139,6 +139,10 @@ monic.compile(
     // (опционально, по умолчанию false)
     sourceMaps: true,
 
+    // Объект source map на основе которого будет идти генерация
+    // (опционально)
+    inputSourceMap: null,
+
     // Путь к сгенерированному source map (опционально, по умолчанию ${file}.map)
     sourceMapFile: 'myFiled.map',
 

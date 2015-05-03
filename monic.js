@@ -23,7 +23,7 @@ global.Collection = collection.Collection;
 global.$C = collection.$C;
 
 /** @type {!Array} */
-exports.VERSION = [2, 0, 1];
+exports.VERSION = [2, 1, 0];
 
 /**
  * Builds a file
@@ -40,6 +40,7 @@ exports.VERSION = [2, 0, 1];
  * @param {?string=} [params.mode='0777'] - a mode for any folders that need to be created for the output folder
  * @param {?string=} [params.file] - a path to the generated file
  * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
+ * @param {Object=} [params.inputSourceMap] - a source map object that the output source map will be based on
  * @param {?string=} [params.sourceMapFile] - a path to the generated source map
  * @param {?string=} [params.sourceRoot] - the root for all URLs in the generated source map
  * @param {function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)} callback - a callback function
@@ -156,7 +157,8 @@ exports.compile = function (file, params, callback) {
 		eol: eol,
 		replacers: params.replacers,
 		sourceMaps: Boolean(sourceMaps),
-		sourceRoot: sourceRoot
+		sourceRoot: sourceRoot,
+		inputSourceMap: params.inputSourceMap
 	});
 
 	Parser.cursor = 1;
