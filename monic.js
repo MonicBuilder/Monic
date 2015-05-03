@@ -42,7 +42,7 @@ exports.VERSION = [2, 0, 0];
  * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
  * @param {?string=} [params.sourceMapFile] - a path to the generated source map
  * @param {?string=} [params.sourceRoot] - the root for all URLs in the generated source map
- * @param {function(Error, string=, {map: !SourceMapGenerator, decl: string, url: string, isExternal: boolean}=)} callback - a callback function
+ * @param {function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)} callback - a callback function
  */
 exports.compile = function (file, params, callback) {
 	params = params || {};
@@ -128,7 +128,12 @@ exports.compile = function (file, params, callback) {
 		}
 
 		async.parallel(tasks, function () {
-			callback(err, result, map && {map: map, decl: sourceMapDecl, url: sourceMapUrl, isExternal: externalSourceMap});
+			callback(err, result, map && {
+				map: JSON.parse(map.toString()),
+				decl: sourceMapDecl,
+				url: sourceMapUrl,
+				isExternal: externalSourceMap
+			});
 		})
 	}
 
