@@ -125,7 +125,7 @@ function action(file, input) {
 
 		if (out) {
 			line();
-			console.log('File "' + url(file) + '" has been successfully builded "' + url(out) + '"');
+			console.log('File "' + url(file) + '" was successfully built -> "' + url(out) + '"');
 			console.timeEnd('Time');
 			date();
 			line();
