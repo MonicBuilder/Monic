@@ -393,7 +393,7 @@ String.truncate = function () {};
 //#endlabel truncate
 ```
 
-Please note that the marked-thus the area of the file in builded code can change the order between them and may
+Please note that the marked-thus the area of the file in built code can change the order between them and may
 receive another code.
 
 For example,
