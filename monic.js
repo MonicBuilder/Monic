@@ -23,7 +23,7 @@ global.Collection = collection.Collection;
 global.$C = collection.$C;
 
 /** @type {!Array} */
-exports.VERSION = [2, 0, 0];
+exports.VERSION = [2, 0, 1];
 
 /**
  * Builds a file
