@@ -14,7 +14,8 @@ var
 	Parser = require('./build/parser'),
 	path = require('path'),
 	fs = require('fs'),
-	async = require('async');
+	async = require('async'),
+	mkdirp = require('mkdirp');
 
 var collection = require('collection.js');
 
@@ -36,6 +37,7 @@ exports.VERSION = [2, 0, 0];
  * @param {?string=} [params.eol] - EOL symbol
  * @param {Array=} [params.replacers] - an array of transform functions
  * @param {?boolean=} [params.saveFiles=false] - if is true, then generated files will be saved
+ * @param {?string=} [params.mode='0777'] - a mode for any folders that need to be created for the output folder
  * @param {?string=} [params.file] - a path to the generated file
  * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
  * @param {?string=} [params.sourceMapFile] - a path to the generated source map
@@ -47,6 +49,7 @@ exports.compile = function (file, params, callback) {
 
 	params.flags = params.flags || {};
 	params.labels = params.labels || {};
+	params.mode = params.mode || '0777';
 
 	var
 		sourceMaps = params.sourceMaps,
@@ -97,7 +100,13 @@ exports.compile = function (file, params, callback) {
 		if (params.saveFiles) {
 			if (externalSourceMap) {
 				tasks.push(function (cb) {
-					fs.writeFile(sourceMapFile, map.toString(), cb);
+					mkdirp(path.dirname(sourceMapFile), {mode: params.mode}, function (err) {
+						if (err) {
+							return cb(err);
+						}
+
+						fs.writeFile(sourceMapFile, map.toString(), cb);
+					});
 				});
 			}
 
@@ -107,7 +116,13 @@ exports.compile = function (file, params, callback) {
 						result += sourceMapDecl + sourceMapUrl;
 					}
 
-					fs.writeFile(fileToSave, result, cb);
+					mkdirp(path.dirname(fileToSave), {mode: params.mode}, function (err) {
+						if (err) {
+							return cb(err);
+						}
+
+						fs.writeFile(fileToSave, result, cb);
+					});
 				});
 			}
 		}

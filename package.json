@@ -37,6 +37,7 @@
     "collection.js": "^5.5.5",
     "commander": "^2.5.0",
     "glob": "^5.0.5",
+    "mkdirp": "^0.5.0",
     "source-map": "^0.4.2",
     "uid": "0.0.2"
   },

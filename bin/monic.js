@@ -23,6 +23,7 @@ program
 
 	.option('-f, --file [string]', 'Set a path to the source file (meta-information)')
 	.option('-o, --output [string]', 'Set a path to save the generated file')
+	.option('-m, --mode [string]', 'Set a mode for any folders that need to be created for the output folder')
 
 	.option('--eol [char]', 'Set a newline character')
 	.option('--flags [list]', 'Set a list of flags separated by commas')

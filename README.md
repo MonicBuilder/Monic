@@ -37,6 +37,8 @@ monic [options] [file ...]
 -V, --version                Return Monic version
 -f, --file [string]          Set a path to the source file (meta-information)
 -o, --output [string]        Set a path to save the generated file
+-m, --mode [string]          Set a mode for any folders that need to be created
+                             for the output folder
 --eol [char]                 Set a newline character
 --flags [list]               Set a list of flags separated by commas
 --labels [list]              Set a list of labels separated by commas
@@ -126,6 +128,10 @@ monic.compile(
     // If is true, then generated files will be saved
     // (optional, by default false)
     saveFiles: true,
+
+    // The mode for any folders that need to be created for the output folder
+    // (optional, by default 0777)
+    mode: '0666',
 
     // The path to the generated file (optional)
     file: 'myFiled-compiled.js',
