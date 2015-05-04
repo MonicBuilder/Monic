@@ -26,6 +26,13 @@ function getHead(opt_version) {
 		' * https://github.com/MonicBuilder/Monic/blob/master/LICENSE\n';
 }
 
+function error(cb) {
+	return function (err) {
+		console.error(err.message);
+		cb();
+	}
+}
+
 var
 	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/,
 	readyToWatcher = false;
@@ -102,11 +109,7 @@ gulp.task('build', function (cb) {
 			]
 		}))
 
-		.on('error', function (err) {
-			console.error(err.message);
-			cb();
-		})
-
+		.on('error', error(cb))
 		.pipe(header(fullHead))
 		.pipe(gulp.dest('./build'))
 		.on('end', cb);
@@ -121,11 +124,7 @@ gulp.task('bump', function (cb) {
 
 function test(cb) {
 	run('node spec').exec()
-		.on('error', function (err) {
-			console.error(err.message);
-			cb();
-		})
-
+		.on('error', error(cb))
 		.on('finish', cb);
 }
 
