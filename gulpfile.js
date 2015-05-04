@@ -138,6 +138,11 @@ function test(cb) {
 
 gulp.task('full-build', ['build'], test);
 gulp.task('test', test);
+gulp.task('yaspeller', function (cb) {
+	run('yaspeller ./').exec()
+		.on('error', error(cb))
+		.on('finish', cb);
+});
 
 gulp.task('watch', function () {
 	async.whilst(
@@ -153,8 +158,9 @@ gulp.task('watch', function () {
 			gulp.watch('./lib/*.js', ['full-build']);
 			gulp.watch('./monic.js', ['bump']);
 			gulp.watch(['./spec/**/*', './monic.js'], ['test']);
+			gulp.watch('./*.md', ['yaspeller']);
 		}
 	);
 });
 
-gulp.task('default', ['copyright', 'head', 'full-build', 'bump']);
+gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller']);
