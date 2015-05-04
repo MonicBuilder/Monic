@@ -1,3 +1,11 @@
+/*!
+ * Monic
+ * https://github.com/MonicBuilder/Monic
+ *
+ * Released under the MIT license
+ * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
+ */
+
 var
 	gulp = require('gulp'),
 	async = require('async'),
@@ -55,7 +63,7 @@ gulp.task('head', function (cb) {
 
 	function test() {
 		return through.obj(function (file, enc, cb) {
-			if (headRgxp.exec(file.contents.toString()) && RegExp.$1 !== fullHead) {
+			if (!headRgxp.exec(file.contents.toString()) || RegExp.$1 !== fullHead) {
 				this.push(file);
 			}
 
@@ -65,7 +73,7 @@ gulp.task('head', function (cb) {
 
 	async.parallel([
 		function (cb) {
-			gulp.src(['./@(lib|spec)/*.js', './monic.js'], {base: './'})
+			gulp.src(['./@(lib|spec)/*.js', './@(monic|gulpfile).js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
