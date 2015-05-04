@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.3
+ * Monic v2.1.4
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 03 May 2015 16:22:31 GMT
+ * Date: Mon, 04 May 2015 11:16:13 GMT
  */
 
 'use strict';
@@ -196,12 +196,12 @@ var Parser = (function () {
 		$C(this.replacers).forEach(function (replacer) {
 			actions.push(function (next) {
 				if (replacer.length > 2) {
-					replacer(content, file, function (err, res) {
+					replacer.call(_this3, content, file, function (err, res) {
 						return next(err, err ? void 0 : content = res);
 					});
 				} else {
 					try {
-						content = replacer(content, file);
+						content = replacer.call(_this3, content, file);
 						next();
 					} catch (err) {
 						err.fileName = file;
