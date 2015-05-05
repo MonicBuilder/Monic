@@ -43,7 +43,7 @@ function error(cb) {
 
 var
 	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/,
-	readyToWatcher = false;
+	readyToWatcher = null;
 
 gulp.task('copyright', function (cb) {
 	gulp.src('./LICENSE')
@@ -57,6 +57,7 @@ gulp.task('copyright', function (cb) {
 });
 
 gulp.task('head', function (cb) {
+	readyToWatcher = false;
 	var fullHead =
 		getHead() +
 		' */\n\n';
@@ -147,7 +148,7 @@ gulp.task('yaspeller', function (cb) {
 gulp.task('watch', function () {
 	async.whilst(
 		function () {
-			return !readyToWatcher;
+			return readyToWatcher === false;
 		},
 
 		function (cb) {
