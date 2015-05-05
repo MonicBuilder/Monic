@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.7
+ * Monic v2.1.8
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 04 May 2015 14:12:13 GMT
+ * Date: Tue, 05 May 2015 08:07:21 GMT
  */
 
 'use strict';
@@ -38,6 +38,8 @@ var _async2 = _interopRequireDefault(_async);
 var _FileStructure = require('./file');
 
 var _SourceMapConsumer = require('source-map');
+
+var _$C = require('collection.js');
 
 /**
  * Parser class
@@ -139,7 +141,7 @@ var Parser = (function () {
 				return callback(err);
 			}
 
-			callback(null, $C(files).reduce(function (res, el) {
+			callback(null, _$C.$C(files).reduce(function (res, el) {
 				parts[0] = _path2['default'].relative(dirname, el);
 				res.push(parts.slice());
 				return res;
@@ -193,7 +195,7 @@ var Parser = (function () {
 
 		var actions = [];
 
-		$C(this.replacers).forEach(function (replacer) {
+		_$C.$C(this.replacers).forEach(function (replacer) {
 			actions.push(function (next) {
 				if (replacer.length > 2) {
 					replacer.call(_this3, content, file, function (err, res) {
@@ -291,10 +293,10 @@ var Parser = (function () {
 						});
 
 						if (sourceMap.sourcesContent) {
-							$C(sourceMap.sourcesContent).forEach(function (content, i) {
+							_$C.$C(sourceMap.sourcesContent).forEach(function (content, i) {
 								var src = sourceMap.sources[i];
 
-								$C(originalMap).forEach(function (el) {
+								_$C.$C(originalMap).forEach(function (el) {
 									if (el.source === src) {
 										el.source = Parser.normalizePath(_path2['default'].resolve(el.source));
 
@@ -308,7 +310,7 @@ var Parser = (function () {
 							});
 						}
 
-						original = $C(originalMap).group('generated > line');
+						original = _$C.$C(originalMap).group('generated > line');
 					})();
 				}
 
@@ -390,7 +392,7 @@ var Parser = (function () {
 
 			var actions = [];
 
-			$C(arr).forEach(function (paramsParts) {
+			_$C.$C(arr).forEach(function (paramsParts) {
 				actions.push(function (next) {
 					return action.call(_this4, paramsParts, next);
 				});
@@ -402,7 +404,7 @@ var Parser = (function () {
 		function action(paramsParts, next) {
 			var includeFileName = paramsParts.shift();
 
-			paramsParts = $C(paramsParts).reduce(function (res, el) {
+			paramsParts = _$C.$C(paramsParts).reduce(function (res, el) {
 				res[el] = true;
 				return res;
 			}, {});
@@ -417,7 +419,7 @@ var Parser = (function () {
 					next();
 				});
 			} else {
-				$C(paramsParts).forEach(function (el, key) {
+				_$C.$C(paramsParts).forEach(function (el, key) {
 					struct.root.labels[key] = true;
 				});
 
@@ -445,7 +447,7 @@ var Parser = (function () {
 
 			var actions = [];
 
-			$C(arr).forEach(function (paramsParts) {
+			_$C.$C(arr).forEach(function (paramsParts) {
 				actions.push(function (next) {
 					return action.call(_this5, paramsParts, next);
 				});
@@ -457,7 +459,7 @@ var Parser = (function () {
 		function action(paramsParts, next) {
 			var includedFile = struct.getRelativePathOf(paramsParts.shift());
 
-			paramsParts = $C(paramsParts).reduce(function (res, el) {
+			paramsParts = _$C.$C(paramsParts).reduce(function (res, el) {
 				res[el] = true;
 				return res;
 			}, {});

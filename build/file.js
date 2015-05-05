@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.7
+ * Monic v2.1.8
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 04 May 2015 14:12:13 GMT
+ * Date: Tue, 05 May 2015 08:07:21 GMT
  */
 
 'use strict';
@@ -30,6 +30,8 @@ var _path2 = _interopRequireDefault(_path);
 var _Parser = require('./parser');
 
 var _Parser2 = _interopRequireDefault(_Parser);
+
+var _$C = require('collection.js');
 
 /**
  * File structure class
@@ -245,7 +247,7 @@ var FileStructure = (function () {
 	FileStructure.prototype.compile = function compile(opt_labels, opt_flags, opt_sourceMap) {
 		var _this = this;
 
-		$C(opt_labels).forEach(function (el, key) {
+		_$C.$C(opt_labels).forEach(function (el, key) {
 			_this.root.labels[key] = true;
 		});
 
@@ -292,7 +294,7 @@ var FileStructure = (function () {
 			case 'include':
 				var cacheKey = block.fileStructure.file + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
 
-				$C(labels).forEach(function (el, key) {
+				_$C.$C(labels).forEach(function (el, key) {
 					block.labels[key] = true;
 				});
 
@@ -313,7 +315,7 @@ var FileStructure = (function () {
 
 			default:
 				if (FileStructure.isValidContentBlock(block, labels, flags)) {
-					return $C(block.content).map(function (block) {
+					return _$C.$C(block.content).map(function (block) {
 						if (!_Parser2['default'].current || _this2.uid !== _Parser2['default'].current) {
 							_Parser2['default'].current = _this2.uid;
 						}
@@ -328,7 +330,7 @@ var FileStructure = (function () {
 									var test = {},
 									    selfMap = info.source;
 
-									$C(selfMap ? [info] : info).forEach(function (info) {
+									_$C.$C(selfMap ? [info] : info).forEach(function (info) {
 										if (selfMap) {
 											info.generated.line = _Parser2['default'].cursor;
 										} else {
