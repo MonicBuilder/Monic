@@ -17,13 +17,8 @@ var
 	async = require('async'),
 	mkdirp = require('mkdirp');
 
-var collection = require('collection.js');
-
-global.Collection = collection.Collection;
-global.$C = collection.$C;
-
 /** @type {!Array} */
-exports.VERSION = [2, 1, 7];
+exports.VERSION = [2, 1, 8];
 
 /**
  * Builds a file

@@ -9,6 +9,7 @@
 var
 	fs = require('fs'),
 	path = require('path'),
+	$C = require('collection.js').$C;
 	eol = '\n';
 
 var
@@ -28,7 +29,7 @@ fs.readdir(basePath, function (err, dirs) {
 		throw err;
 	}
 
-	dirs.forEach(function (dir) {
+	$C(dirs).forEach(function (dir) {
 		var dirPath = path.resolve(basePath, dir);
 
 		fs.stat(dirPath, function (err, stat) {
