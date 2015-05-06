@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.9
+ * Monic v2.1.10
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 05 May 2015 09:21:04 GMT
+ * Date: Wed, 06 May 2015 12:02:58 GMT
  */
 
 'use strict';
@@ -134,19 +134,24 @@ var Parser = (function () {
 
 	Parser.prototype.parsePath = function parsePath(base, src, callback) {
 		var parts = src.split('::'),
-		    dirname = _path2['default'].dirname(base);
+		    dirname = _path2['default'].dirname(base),
+		    pattern = _path2['default'].join(dirname, parts[0]);
 
-		_glob2['default'](_path2['default'].join(dirname, parts[0]), null, function (err, files) {
-			if (err) {
-				return callback(err);
-			}
+		if (_glob2['default'].hasMagic(pattern)) {
+			_glob2['default'](pattern, null, function (err, files) {
+				if (err) {
+					return callback(err);
+				}
 
-			callback(null, _$C.$C(files).reduce(function (res, el) {
-				parts[0] = _path2['default'].relative(dirname, el);
-				res.push(parts.slice());
-				return res;
-			}, []));
-		});
+				callback(null, _$C.$C(files).reduce(function (res, el) {
+					parts[0] = _path2['default'].relative(dirname, el);
+					res.push(parts.slice());
+					return res;
+				}, []));
+			});
+		} else {
+			callback(null, [parts]);
+		}
 	};
 
 	/**
