@@ -1,23 +1,23 @@
 /*!
- * Monic v2.1.10
+ * Monic v2.1.11
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Wed, 06 May 2015 12:02:58 GMT
+ * Date: Wed, 20 May 2015 04:29:02 GMT
  */
 
-'use strict';
-
-exports.__esModule = true;
 // istanbul ignore next
+'use strict';
 
 var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 // istanbul ignore next
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
 
 var _path = require('path');
 
@@ -257,7 +257,17 @@ var Parser = (function () {
 			    lines = content.split(/\r?\n|\r/);
 
 			_this3.cache[file] = fileStructure;
-			var parseLines = function parseLines(start) {
+			var parseLines = (function (_parseLines) {
+				function parseLines(_x) {
+					return _parseLines.apply(this, arguments);
+				}
+
+				parseLines.toString = function () {
+					return _parseLines.toString();
+				};
+
+				return parseLines;
+			})(function (start) {
 				var info = void 0,
 				    i = void 0;
 
@@ -372,7 +382,7 @@ var Parser = (function () {
 				}
 
 				callback(null, fileStructure, file);
-			};
+			});
 
 			parseLines(0);
 		});

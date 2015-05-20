@@ -1,23 +1,23 @@
 /*!
- * Monic v2.1.10
+ * Monic v2.1.11
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Wed, 06 May 2015 12:02:58 GMT
+ * Date: Wed, 20 May 2015 04:29:05 GMT
  */
 
-'use strict';
-
-exports.__esModule = true;
 // istanbul ignore next
+'use strict';
 
 var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 // istanbul ignore next
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+
+exports.__esModule = true;
 
 var _uid = require('uid');
 
