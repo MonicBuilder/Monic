@@ -18,7 +18,7 @@ var
 	mkdirp = require('mkdirp');
 
 /** @type {!Array} */
-exports.VERSION = [2, 1, 12];
+exports.VERSION = [2, 1, 13];
 
 /**
  * Builds a file
