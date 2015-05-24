@@ -1,23 +1,23 @@
 /*!
- * Monic v2.1.12
+ * Monic v2.1.13
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 24 May 2015 13:57:30 GMT
+ * Date: Sun, 24 May 2015 17:27:28 GMT
  */
 
-// istanbul ignore next
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+exports.__esModule = true;
+// istanbul ignore next
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 // istanbul ignore next
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-exports.__esModule = true;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _uid = require('uid');
 
@@ -27,11 +27,11 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _Parser = require('./parser');
+var _parser = require('./parser');
 
-var _Parser2 = _interopRequireDefault(_Parser);
+var _parser2 = _interopRequireDefault(_parser);
 
-var _$C = require('collection.js');
+var _collectionJs = require('collection.js');
 
 /**
  * File structure class
@@ -58,7 +58,7 @@ var FileStructure = (function () {
 			labels: {}
 		};
 
-		this.uid = _uid2['default']();
+		this.uid = (0, _uid2['default'])();
 		this.currentBlock = this.root;
 		this.included = {};
 	}
@@ -71,7 +71,7 @@ var FileStructure = (function () {
   */
 
 	FileStructure.prototype.getRelativePathOf = function getRelativePathOf(src) {
-		return _Parser2['default'].normalizePath(_path2['default'].resolve(_path2['default'].dirname(this.file), src));
+		return _parser2['default'].normalizePath(_path2['default'].resolve(_path2['default'].dirname(this.file), src));
 	};
 
 	/**
@@ -245,9 +245,11 @@ var FileStructure = (function () {
   */
 
 	FileStructure.prototype.compile = function compile(opt_labels, opt_flags, opt_sourceMap) {
+		// istanbul ignore next
+
 		var _this = this;
 
-		_$C.$C(opt_labels).forEach(function (el, key) {
+		(0, _collectionJs.$C)(opt_labels).forEach(function (el, key) {
 			_this.root.labels[key] = true;
 		});
 
@@ -280,6 +282,8 @@ var FileStructure = (function () {
   */
 
 	FileStructure.prototype._compileBlock = function _compileBlock(block, labels, flags, opt_sourceMap) {
+		// istanbul ignore next
+
 		var _this2 = this;
 
 		switch (block.type) {
@@ -294,7 +298,7 @@ var FileStructure = (function () {
 			case 'include':
 				var cacheKey = block.fileStructure.file + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
 
-				_$C.$C(labels).forEach(function (el, key) {
+				(0, _collectionJs.$C)(labels).forEach(function (el, key) {
 					block.labels[key] = true;
 				});
 
@@ -315,9 +319,9 @@ var FileStructure = (function () {
 
 			default:
 				if (FileStructure.isValidContentBlock(block, labels, flags)) {
-					return _$C.$C(block.content).map(function (block) {
-						if (!_Parser2['default'].current || _this2.uid !== _Parser2['default'].current) {
-							_Parser2['default'].current = _this2.uid;
+					return (0, _collectionJs.$C)(block.content).map(function (block) {
+						if (!_parser2['default'].current || _this2.uid !== _parser2['default'].current) {
+							_parser2['default'].current = _this2.uid;
 						}
 
 						var info = block.info;
@@ -330,11 +334,11 @@ var FileStructure = (function () {
 									var test = {},
 									    selfMap = info.source;
 
-									_$C.$C(selfMap ? [info] : info).forEach(function (info) {
+									(0, _collectionJs.$C)(selfMap ? [info] : info).forEach(function (info) {
 										if (selfMap) {
-											info.generated.line = _Parser2['default'].cursor;
+											info.generated.line = _parser2['default'].cursor;
 										} else {
-											info.generated.line += _Parser2['default'].cursor - info.generated.line;
+											info.generated.line += _parser2['default'].cursor - info.generated.line;
 										}
 
 										opt_sourceMap.addMapping(info);
@@ -347,7 +351,7 @@ var FileStructure = (function () {
 								})();
 							}
 
-							_Parser2['default'].cursor++;
+							_parser2['default'].cursor++;
 						}
 
 						return compiledBlock;
