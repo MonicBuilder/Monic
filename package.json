@@ -1,8 +1,10 @@
 {
   "name": "monic",
   "description": "File builder for JavaScript.",
-  "version": "2.1.13",
   "homepage": "https://github.com/MonicBuilder/Monic",
+  "main": "monic.js",
+  "version": "2.1.14",
+  "license": "MIT",
   "author": {
     "name": "kobezzza",
     "email": "kobezzza@mail.ru",
@@ -15,8 +17,6 @@
   "bugs": {
     "url": "https://github.com/MonicBuilder/Monic/issues"
   },
-  "license": "MIT",
-  "main": "monic.js",
   "bin": {
     "monic": "bin/monic.js"
   },
@@ -26,15 +26,6 @@
   "scripts": {
     "test": "node spec",
     "full-test": "istanbul cover spec && yaspeller ./"
-  },
-  "dependencies": {
-    "async": "^1.0.0",
-    "collection.js": "^5.5.5",
-    "commander": "^2.5.0",
-    "glob": "^5.0.5",
-    "mkdirp": "^0.5.0",
-    "source-map": "^0.4.2",
-    "uid": "0.0.2"
   },
   "keywords": [
     "filebuilder",
@@ -46,6 +37,15 @@
     "builder",
     "pack"
   ],
+  "dependencies": {
+    "async": "^1.0.0",
+    "collection.js": "^5.5.5",
+    "commander": "^2.5.0",
+    "glob": "^5.0.5",
+    "mkdirp": "^0.5.0",
+    "source-map": "^0.4.2",
+    "uid": "0.0.2"
+  },
   "devDependencies": {
     "coveralls": "^2.11.2",
     "gulp": "^3.8.9",

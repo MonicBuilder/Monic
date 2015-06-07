@@ -6,12 +6,13 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-var
+const
 	gulp = require('gulp'),
 	async = require('async'),
-	through = require('through2');
+	through = require('through2'),
+	fs = require('fs');
 
-var
+const
 	babel = require('gulp-babel'),
 	bump = require('gulp-bump'),
 	header = require('gulp-header'),
@@ -38,17 +39,19 @@ function error(cb) {
 	return function (err) {
 		console.error(err.message);
 		cb();
-	}
+	};
 }
 
+const
+	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/;
+
 var
-	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/,
 	readyToWatcher = null;
 
 gulp.task('copyright', function (cb) {
 	gulp.src('./LICENSE')
 		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, function (sstr, intro, from, to) {
-			var year = new Date().getFullYear();
+			const year = new Date().getFullYear();
 			return intro + from + (to || from != year ? '-' + year : '');
 		}))
 
@@ -58,7 +61,7 @@ gulp.task('copyright', function (cb) {
 
 gulp.task('head', function (cb) {
 	readyToWatcher = false;
-	var fullHead =
+	const fullHead =
 		getHead() +
 		' */\n\n';
 
@@ -69,7 +72,7 @@ gulp.task('head', function (cb) {
 			}
 
 			return cb();
-		})
+		});
 	}
 
 	async.parallel([
@@ -93,6 +96,7 @@ gulp.task('head', function (cb) {
 				.pipe(gulp.dest('./bin'))
 				.on('end', cb);
 		}
+
 	], function () {
 		readyToWatcher = true;
 		cb();
@@ -100,7 +104,7 @@ gulp.task('head', function (cb) {
 });
 
 gulp.task('build', function (cb) {
-	var fullHead =
+	const fullHead =
 		getHead(true) +
 		' *\n' +
 		' * Date: ' + new Date().toUTCString() + '\n' +
@@ -131,6 +135,13 @@ gulp.task('bump', function (cb) {
 		.on('end', cb);
 });
 
+gulp.task('npmignore', function (cb) {
+	gulp.src('./.npmignore')
+		.pipe(replace(/([\s\S]*?)(?=# NPM ignore list)/, fs.readFileSync('./.gitignore') + '\n'))
+		.pipe(gulp.dest('./'))
+		.on('end', cb);
+});
+
 function test(cb) {
 	run('node spec').exec()
 		.on('error', error(cb))
@@ -151,7 +162,7 @@ gulp.task('watch', ['default'], function () {
 			if (e.type === 'deleted') {
 				delete cached.caches[name][e.path];
 			}
-		}
+		};
 	}
 
 	async.whilst(
@@ -168,8 +179,10 @@ gulp.task('watch', ['default'], function () {
 			gulp.watch('./monic.js', ['bump']);
 			gulp.watch(['./spec/**/*', './monic.js'], ['test']);
 			gulp.watch('./*.md', ['yaspeller']);
+			gulp.watch('./.gitignore', ['npmignore']);
 		}
+
 	);
 });
 
-gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller']);
+gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller', 'npmignore']);

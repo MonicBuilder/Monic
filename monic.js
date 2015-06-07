@@ -6,11 +6,11 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-var
+const
 	sourceMapFile = require('source-map'),
 	SourceMapGenerator = sourceMapFile.SourceMapGenerator;
 
-var
+const
 	Parser = require('./build/parser'),
 	path = require('path'),
 	fs = require('fs'),
@@ -18,7 +18,7 @@ var
 	mkdirp = require('mkdirp');
 
 /** @type {!Array} */
-exports.VERSION = [2, 1, 13];
+exports.VERSION = [2, 1, 14];
 
 /**
  * Builds a file
@@ -47,37 +47,37 @@ exports.compile = function (file, params, callback) {
 	params.labels = params.labels || {};
 	params.mode = params.mode || '0777';
 
-	var
+	const
 		sourceMaps = params.sourceMaps,
 		eol = params.eol || '\n';
 
 	file = url(file);
 
-	var
+	const
 		sourceRoot = url(params.sourceRoot),
 		fileToSave = params.file ?
 			url(params.file) : file;
 
-	var
+	const
 		sourceMapFile = sourceMaps && (params.sourceMapFile ? url(params.sourceMapFile) : fileToSave + '.map'),
 		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
-	function finish(err, fileStructure, src) {
+	function finish(err, fileStructure) {
 		if (err) {
 			return callback(err);
 		}
 
-		var map = sourceMaps ?
+		const map = sourceMaps ?
 			new SourceMapGenerator({
 				file: Parser.getRelativePath(path.dirname(sourceMapFile), fileToSave),
 				sourceRoot: sourceRoot
 			}) : undefined;
 
-		var
-			result = fileStructure.compile(params.labels, params.flags, map),
+		const
 			tasks = [];
 
 		var
+			result = fileStructure.compile(params.labels, params.flags, map),
 			sourceMapDecl,
 			sourceMapUrl;
 
@@ -130,7 +130,7 @@ exports.compile = function (file, params, callback) {
 				url: sourceMapUrl,
 				isExternal: externalSourceMap
 			});
-		})
+		});
 	}
 
 	function url(url) {
@@ -148,7 +148,7 @@ exports.compile = function (file, params, callback) {
 		return Parser.normalizePath(url);
 	}
 
-	var parser = new Parser({
+	const parser = new Parser({
 		eol: eol,
 		replacers: params.replacers,
 		sourceMaps: Boolean(sourceMaps),
