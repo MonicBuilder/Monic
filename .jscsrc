@@ -6,7 +6,7 @@
     "gulpfile.js",
     "build/**",
     "bin/**",
-    "spec/**",
+    "test/**",
     "node_modules/**"
   ],
 
