@@ -53,7 +53,7 @@ error.txt
 
 # NPM ignore list
 /lib
-/spec
+/test
 /gulpfile.js
 /.editorconfig
 /.jscsrc
