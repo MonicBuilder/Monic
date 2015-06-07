@@ -3,7 +3,7 @@
   "description": "File builder for JavaScript.",
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
-  "version": "2.1.14",
+  "version": "2.1.15",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -24,7 +24,7 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "test": "node spec",
+    "test": "node test",
     "full-test": "istanbul cover spec && yaspeller ./"
   },
   "keywords": [

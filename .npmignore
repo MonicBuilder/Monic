@@ -45,6 +45,7 @@ node_modules
 
 # Log
 *.log
+error.txt
 
 # Temporary
 *.tmp

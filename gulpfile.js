@@ -77,7 +77,7 @@ gulp.task('head', function (cb) {
 
 	async.parallel([
 		function (cb) {
-			gulp.src(['./@(lib|spec)/*.js', './@(monic|gulpfile).js'], {base: './'})
+			gulp.src(['./@(lib|test)/*.js', './@(monic|gulpfile).js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
@@ -143,7 +143,7 @@ gulp.task('npmignore', function (cb) {
 });
 
 function test(cb) {
-	run('node spec').exec()
+	run('node test').exec()
 		.on('error', error(cb))
 		.on('finish', cb);
 }
@@ -177,7 +177,7 @@ gulp.task('watch', ['default'], function () {
 		function () {
 			gulp.watch('./lib/*.js', ['full-build']).on('change', unbind('build'));
 			gulp.watch('./monic.js', ['bump']);
-			gulp.watch(['./spec/**/*', './monic.js'], ['test']);
+			gulp.watch(['./test/**/*', './monic.js'], ['test']);
 			gulp.watch('./*.md', ['yaspeller']);
 			gulp.watch('./.gitignore', ['npmignore']);
 		}

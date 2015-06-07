@@ -6,13 +6,13 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-var
+const
 	fs = require('fs'),
 	path = require('path'),
-	$C = require('collection.js').$C;
+	$C = require('collection.js').$C,
 	eol = '\n';
 
-var
+const
 	basePath = __dirname.split(path.sep).slice(-1).join(),
 	monic = require('../');
 
@@ -44,9 +44,12 @@ fs.readdir(basePath, function (err, dirs) {
 					}
 
 					res = res.trim();
-					var expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
-						status = 'ok',
+					const
+						expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
 						error = res !== expected;
+
+					var
+						status = 'ok';
 
 					if (error) {
 						status = 'fail';
@@ -70,8 +73,8 @@ fs.readdir(basePath, function (err, dirs) {
 					}
 				}
 
-				var src = path.join(dirPath, 'test.js');
-				var replacers = [
+				const src = path.join(dirPath, 'test.js');
+				const replacers = [
 					function (text) {
 						return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
 					}
