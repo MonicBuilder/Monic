@@ -3,7 +3,7 @@
   "description": "File builder for JavaScript.",
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
-  "version": "2.1.16",
+  "version": "2.1.17",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -57,7 +57,7 @@
     "gulp-run": "^1.6.7",
     "istanbul": "^0.3.13",
     "jscs": "^1.12.0",
-    "through2": "^0.6.5",
+    "through2": "^2.0.0",
     "yaspeller": "^2.0.0"
   }
 }

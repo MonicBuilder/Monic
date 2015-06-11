@@ -11,14 +11,14 @@ const
 	SourceMapGenerator = sourceMapFile.SourceMapGenerator;
 
 const
-	Parser = require('./build/parser'),
+	Parser = require('./dist/parser'),
 	path = require('path'),
 	fs = require('fs'),
 	async = require('async'),
 	mkdirp = require('mkdirp');
 
 /** @type {!Array} */
-exports.VERSION = [2, 1, 16];
+exports.VERSION = [2, 1, 17];
 
 /**
  * Builds a file

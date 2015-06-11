@@ -124,7 +124,7 @@ gulp.task('build', function (cb) {
 
 		.on('error', error(cb))
 		.pipe(header(fullHead))
-		.pipe(gulp.dest('./build'))
+		.pipe(gulp.dest('./dist'))
 		.on('end', cb);
 });
 
