@@ -115,7 +115,7 @@ gulp.task('build', function (cb) {
 		.pipe(replace(headRgxp, ''))
 		.pipe(babel({
 			compact: false,
-			auxiliaryComment: 'istanbul ignore next',
+			auxiliaryCommentBefore: 'istanbul ignore next',
 			loose: 'all',
 			optional: [
 				'spec.undefinedToVoid'
