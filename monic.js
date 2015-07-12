@@ -15,7 +15,8 @@ const
 	path = require('path'),
 	fs = require('fs'),
 	async = require('async'),
-	mkdirp = require('mkdirp');
+	mkdirp = require('mkdirp'),
+	ok = require('okay');
 
 /** @type {!Array} */
 exports.VERSION = [2, 1, 18];
@@ -23,22 +24,22 @@ exports.VERSION = [2, 1, 18];
 /**
  * Builds a file
  *
- * @param {string} file - the file path
+ * @param {string} file - file path
  * @param {Object} params - additional parameters
- * @param {?string=} [params.cwd] - a path to the working directory (by default, module.parent)
- * @param {Object=} [params.flags] - a map of flags
- * @param {Object=} [params.labels] - a map of labels
- * @param {?string=} [params.content] - the file text
+ * @param {?string=} [params.cwd] - path to the working directory (by default, module.parent)
+ * @param {Object=} [params.flags] - map of Monic flags
+ * @param {Object=} [params.labels] - map of Monic labels
+ * @param {?string=} [params.content] - file text
  * @param {?string=} [params.eol] - EOL symbol
- * @param {Array=} [params.replacers] - an array of transform functions
+ * @param {Array=} [params.replacers] - array of transform functions
  * @param {?boolean=} [params.saveFiles=false] - if is true, then generated files will be saved
- * @param {?string=} [params.mode='0777'] - a mode for any folders that need to be created for the output folder
- * @param {?string=} [params.file] - a path to the generated file
+ * @param {?string=} [params.mode='0777'] - mode for any folders that need to be created for the output folder
+ * @param {?string=} [params.file] - path to the generated file
  * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
- * @param {Object=} [params.inputSourceMap] - a source map object that the output source map will be based on
- * @param {?string=} [params.sourceMapFile] - a path to the generated source map
- * @param {?string=} [params.sourceRoot] - the root for all URLs in the generated source map
- * @param {function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)} callback - a callback function
+ * @param {Object=} [params.inputSourceMap] - base source map object for the output source map
+ * @param {?string=} [params.sourceMapFile] - path to the generated source map
+ * @param {?string=} [params.sourceRoot] - root for all URLs in the generated source map
+ * @param {function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)} callback - callback function
  */
 exports.compile = function (file, params, callback) {
 	params = params || {};
@@ -62,11 +63,7 @@ exports.compile = function (file, params, callback) {
 		sourceMapFile = sourceMaps && (params.sourceMapFile ? url(params.sourceMapFile) : fileToSave + '.map'),
 		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
-	function finish(err, fileStructure) {
-		if (err) {
-			return callback(err);
-		}
-
+	const finish = ok(callback, function (fileStructure) {
 		const map = sourceMaps ?
 			new SourceMapGenerator({
 				file: Parser.getRelativePath(path.dirname(sourceMapFile), fileToSave),
@@ -124,14 +121,14 @@ exports.compile = function (file, params, callback) {
 		}
 
 		async.parallel(tasks, function () {
-			callback(err, result, map && {
+			callback(null, result, map && {
 				map: JSON.parse(map.toString()),
 				decl: sourceMapDecl,
 				url: sourceMapUrl,
 				isExternal: externalSourceMap
 			});
 		});
-	}
+	});
 
 	function url(url) {
 		if (!url) {
@@ -160,13 +157,9 @@ exports.compile = function (file, params, callback) {
 	Parser.current = null;
 
 	if (params.content != null) {
-		parser.testFile(file, function (err, file) {
-			if (err) {
-				return callback(err);
-			}
-
+		parser.testFile(file, ok(callback, function (file) {
 			parser.parse(file, String(params.content), finish);
-		});
+		}));
 
 	} else {
 		parser.parseFile(file, finish);

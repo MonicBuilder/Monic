@@ -21,16 +21,16 @@ program
 	.version(monic.VERSION.join('.'))
 	.usage('[options] [file ...]')
 
-	.option('-f, --file [string]', 'Set a path to the source file (meta-information)')
-	.option('-o, --output [string]', 'Set a path to save the generated file')
-	.option('-m, --mode [string]', 'Set a mode for any folders that need to be created for the output folder')
+	.option('-f, --file [string]', 'path to the source file (meta-information)')
+	.option('-o, --output [string]', 'path to save the generated file')
+	.option('-m, --mode [string]', 'mode for any folders that need to be created for the output folder')
 
-	.option('--eol [char]', 'Set a newline character')
-	.option('--flags [list]', 'Set a list of flags separated by commas')
-	.option('--labels [list]', 'Set a list of labels separated by commas')
+	.option('--eol [char]', 'EOL symbol')
+	.option('--flags [list]', 'list of Monic flags separated by commas')
+	.option('--labels [list]', 'list of Monic labels separated by commas')
 	.option('-s, --source-maps [string]', '[true|false|inline]')
-	.option('--source-map-file [string]', 'Set a path to save the generated source map')
-	.option('--source-root [string]', 'Set the root for all URLs in the generated source map')
+	.option('--source-map-file [string]', 'path to save the generated source map')
+	.option('--source-root [string]', 'root for all URLs in the generated source map')
 
 	.parse(process.argv);
 
