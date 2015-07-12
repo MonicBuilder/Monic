@@ -2,7 +2,7 @@ Monic
 =====
 
 Monic is a JavaScript file builder ([fork of Jossy](https://github.com/Kolyaj/Jossy)) to one or several files.
-When it used properly, allows not only easy to build modules but also easy to rebuild them when changing the principles
+When it used properly, Monic allows not only easy to build modules, but also easy to rebuild them, when changing principles
 of the build.
 
 [Russian documentation](https://github.com/MonicBuilder/Monic/blob/master/README.ru.md)
@@ -50,13 +50,13 @@ monic [options] [file ...]
 
 ### Addition
 
-The build result will be outputed to `stdout`, so to save the file you need to take advantage of the shell, e.g.,
+The build result will be output to `stdout`, so to save it to a file you need use your shell, e.g.,
 
 ```bash
 monic file.js --flags ie --labels escapeHTML > _file.js
 ```
 
-Or we can use `--output`
+Or you can use `--output`
 
 ```bash
 monic file.js --flags ie --labels escapeHTML -o _file.js
@@ -116,12 +116,12 @@ monic.compile(
     // The newline character (optional, by default \n)
     eol: '\r\n',
 
-    // The map of labels (optional)
+    // The map of Monic labels (optional)
     labels: {
       escapeHTML: true
     },
 
-    // The map of flags (optional)
+    // The map of Monic flags (optional)
     flags: {
       ie: true
     },
@@ -141,7 +141,7 @@ monic.compile(
     // (optional, by default false)
     sourceMaps: true,
 
-    // The source map object that the output source map will be based on
+    // The base source map object for the output source map
     // (optional)
     inputSourceMap: null,
 
@@ -218,7 +218,7 @@ In the file path can also be used [templates](https://github.com/isaacs/node-glo
 ```
 
 Technically, the line with the directive is simply replaced to a text of the attached file.
-However, if the specified file is already included in the current module before, then it won't be included again.
+However, if the specified file is already included to the current module before, then it won't be included again.
 For example,
 
 **f1.js**
@@ -261,9 +261,9 @@ The `#without` indicates Monic exclude from the build all the files that are use
 
 **Example**
 
-Our project has several dozen widgets. The code for each widget is in a separate file.
+Our project has several dozen widgets. The code for each widget is inside a separate file.
 Each widget indicated its dependence with the `#include`.
-Some widgets are used on most pages, and is logical to place their code in a separate file *common.js*.
+Some widgets are used on most pages, and is logical to place their code in a separate file, for example *common.js*.
 Select frequently-used widgets, create the file *common.js* and write back:
 
 ```js
@@ -283,13 +283,13 @@ Therefore, next to the *common.js* create a file *feature.js* with the code:
 ```
 
 Now the code in the *common.js*, misses the *feature.js*.
-Most importantly don't forget to connect to a page not only the *feature.js*, but the *common.js* too.
+Most importantly don't forget to include to a page not only the *feature.js*, but the *common.js* too.
 
 The path format in the directive is the same as in the `#include`.
 
 ### Conditional build
 
-In the build process can be defined boolean flags that define whether or not to include selected sections of code.
+In the build process can be defined boolean flags that define whether or not to include selected code sections.
 
 ```js
 //#set flag
@@ -334,8 +334,8 @@ that code never gets to production server.
 
 ### Including chunks of files
 
-This functionality is very useful useful for development of libraries and frameworks.
-For example, in our library there is a file *String.js* containing several dozens of functions for working with strings.
+This functionality is very useful for development of libraries and frameworks.
+For example, in your library there is a file *String.js* containing several dozens of functions for working with strings.
 Isolate each function in a separate file somehow wrong, but attach a few hundred lines of code for only one function
 is also not desirable. To solve this problem Monic can can mark the file *String.js* on specific areas.
 Names in areas can be arbitrary, but it is better to coincide with the names of functions.
