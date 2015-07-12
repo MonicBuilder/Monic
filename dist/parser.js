@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.18
+ * Monic v2.1.19
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sat, 13 Jun 2015 08:57:43 GMT
+ * Date: Sun, 12 Jul 2015 10:16:20 GMT
  */
 
 'use strict';
@@ -31,6 +31,10 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _okay = require('okay');
+
+var _okay2 = _interopRequireDefault(_okay);
+
 var _async = require('async');
 
 var _async2 = _interopRequireDefault(_async);
@@ -48,10 +52,10 @@ var _collectionJs = require('collection.js');
 var Parser = (function () {
 	/**
   * @param {string} eol - EOL symbol
-  * @param {Array=} [replacers] - an array of transform functions
+  * @param {Array=} [replacers] - array of transform functions
   * @param {boolean} sourceMaps - if is true, then will be enabled support for source maps
-  * @param {Object=} [inputSourceMap] - a source map object that the output source map will be based on
-  * @param {?string=} [sourceRoot] - the root for all URLs in the generated source map
+  * @param {Object=} [inputSourceMap] - base source map object for the output source map
+  * @param {?string=} [sourceRoot] - root for all URLs in the generated source map
   */
 
 	function Parser(_ref) {
@@ -75,7 +79,7 @@ var Parser = (function () {
 	/**
   * Normalizes a path
   *
-  * @param {string} src - the path
+  * @param {string} src - path
   * @return {string}
   */
 
@@ -99,8 +103,8 @@ var Parser = (function () {
   * Checks a file for existence
   * and returns an absolute path to it
   *
-  * @param {string} file - the file path
-  * @param {function(Error, string=)} callback - a callback function
+  * @param {string} file - file path
+  * @param {function(Error, string=)} callback - callback function
   */
 
 	Parser.prototype.testFile = function testFile(file, callback) {
@@ -127,11 +131,11 @@ var Parser = (function () {
 	};
 
 	/**
-  * Parses path with glob
+  * Parses a path with glob
   *
-  * @param {string} base - a path to the base file
-  * @param {string} src - the path
-  * @param {function(Error, !Array=)} callback - a callback function
+  * @param {string} base - path to a base file
+  * @param {string} src - path
+  * @param {function(Error, !Array=)} callback - callback function
   */
 
 	Parser.prototype.parsePath = function parsePath(base, src, callback) {
@@ -140,17 +144,13 @@ var Parser = (function () {
 		    pattern = _path2['default'].join(dirname, parts[0]);
 
 		if (_glob2['default'].hasMagic(pattern)) {
-			(0, _glob2['default'])(pattern, null, function (err, files) {
-				if (err) {
-					return callback(err);
-				}
-
+			(0, _glob2['default'])(pattern, null, (0, _okay2['default'])(callback, function (files) {
 				callback(null, (0, _collectionJs.$C)(files).reduce(function (res, el) {
 					parts[0] = _path2['default'].relative(dirname, el);
 					res.push(parts.slice());
 					return res;
 				}, []));
-			});
+			}));
 		} else {
 			callback(null, [parts]);
 		}
@@ -159,8 +159,8 @@ var Parser = (function () {
 	/**
   * Parses a file and returns it structure
   *
-  * @param {string} file - the file path
-  * @param {function(Error, !FileStructure=, string=)} callback - a callback function
+  * @param {string} file - file path
+  * @param {function(Error, !FileStructure=, string=)} callback - callback function
   */
 
 	Parser.prototype.parseFile = function parseFile(file, callback) {
@@ -176,7 +176,7 @@ var Parser = (function () {
 			}
 
 			_fs2['default'].readFile(src, 'utf8', function (err, content) {
-				next(err, src, content);
+				return next(err, src, content);
 			});
 		}, function (src, content, next) {
 			if (typeof content !== 'string') {
@@ -190,9 +190,9 @@ var Parser = (function () {
 	/**
   * Parses a text and returns it structure
   *
-  * @param {string} file - a path to a file
-  * @param {string} content - the source text
-  * @param {function(Error, !FileStructure=, string=)} callback - a callback function
+  * @param {string} file - file path
+  * @param {string} content - source text
+  * @param {function(Error, !FileStructure=, string=)} callback - callback function
   */
 
 	Parser.prototype.parse = function parse(file, content, callback) {
@@ -254,11 +254,7 @@ var Parser = (function () {
 			}
 		}
 
-		_async2['default'].series(actions, function (err) {
-			if (err) {
-				return callback(err);
-			}
-
+		_async2['default'].series(actions, (0, _okay2['default'])(callback, function () {
 			var fileStructure = new _file.FileStructure({ file: file, eol: _this3.eol }),
 			    lines = content.split(/\r?\n|\r/);
 
@@ -273,19 +269,14 @@ var Parser = (function () {
 					callback(err);
 				}
 
-				function asyncParseCallback(err) {
-					if (err) {
-						return error(err);
-					}
-
-					parseLines(i + 1);
-				}
+				var asyncParseCallback = (0, _okay2['default'])(error, function () {
+					return parseLines(i + 1);
+				});
 
 				var original = undefined;
 				if (sourceMap) {
 					(function () {
 						var originalMap = [];
-
 						sourceMap.eachMapping(function (el) {
 							originalMap.push({
 								generated: {
@@ -381,16 +372,16 @@ var Parser = (function () {
 			};
 
 			parseLines(0);
-		});
+		}));
 	};
 
 	/**
   * Directive #include
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
-  * @param {string} value - a value of the directive
-  * @param {function(Error=)} callback - a callback function
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  * @param {function(Error=)} callback - callback function
   */
 
 	Parser.prototype._include = function _include(struct, value, callback) {
@@ -398,11 +389,7 @@ var Parser = (function () {
 
 		var _this4 = this;
 
-		this.parsePath(struct.file, value, function (err, arr) {
-			if (err) {
-				return callback(err);
-			}
-
+		this.parsePath(struct.file, value, (0, _okay2['default'])(callback, function (arr) {
 			var actions = [];
 
 			(0, _collectionJs.$C)(arr).forEach(function (paramsParts) {
@@ -412,30 +399,24 @@ var Parser = (function () {
 			});
 
 			_async2['default'].series(actions, callback);
-		});
+		}));
 
 		function action(paramsParts, next) {
 			var includeFileName = paramsParts.shift();
 
-			paramsParts = (0, _collectionJs.$C)(paramsParts).reduce(function (res, el) {
-				res[el] = true;
-				return res;
+			paramsParts = (0, _collectionJs.$C)(paramsParts).reduce(function (map, el) {
+				return (map[el] = true, map);
 			}, {});
 
 			if (includeFileName) {
-				this.parseFile(struct.getRelativePathOf(includeFileName), function (err, includeFile) {
-					if (err) {
-						return next(err);
-					}
-
+				this.parseFile(struct.getRelativePathOf(includeFileName), (0, _okay2['default'])(next, function (includeFile) {
 					struct.addInclude(includeFile, paramsParts);
 					next();
-				});
+				}));
 			} else {
 				(0, _collectionJs.$C)(paramsParts).forEach(function (el, key) {
-					struct.root.labels[key] = true;
+					return struct.root.labels[key] = true;
 				});
-
 				next();
 			}
 		}
@@ -445,9 +426,9 @@ var Parser = (function () {
   * Directive #without
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
-  * @param {string} value - a value of the directive
-  * @param {function(Error=)} callback - a callback function
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  * @param {function(Error=)} callback - callback function
   */
 
 	Parser.prototype._without = function _without(struct, value, callback) {
@@ -455,11 +436,7 @@ var Parser = (function () {
 
 		var _this5 = this;
 
-		this.parsePath(struct.file, value, function (err, arr) {
-			if (err) {
-				return callback(err);
-			}
-
+		this.parsePath(struct.file, value, (0, _okay2['default'])(callback, function (arr) {
 			var actions = [];
 
 			(0, _collectionJs.$C)(arr).forEach(function (paramsParts) {
@@ -469,24 +446,19 @@ var Parser = (function () {
 			});
 
 			_async2['default'].series(actions, callback);
-		});
+		}));
 
 		function action(paramsParts, next) {
 			var includedFile = struct.getRelativePathOf(paramsParts.shift());
 
-			paramsParts = (0, _collectionJs.$C)(paramsParts).reduce(function (res, el) {
-				res[el] = true;
-				return res;
+			paramsParts = (0, _collectionJs.$C)(paramsParts).reduce(function (map, el) {
+				return (map[el] = true, map);
 			}, {});
 
-			this.parseFile(includedFile, function (err, includeFile) {
-				if (err) {
-					return next(err);
-				}
-
+			this.parseFile(includedFile, (0, _okay2['default'])(next, function (includeFile) {
 				struct.addWithout(includeFile, paramsParts);
 				next();
-			});
+			}));
 		}
 	};
 
@@ -494,8 +466,8 @@ var Parser = (function () {
   * Directive #label
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
-  * @param {string} value - a value of the directive
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
   */
 
 	Parser.prototype._label = function _label(struct, value) {
@@ -506,7 +478,7 @@ var Parser = (function () {
   * Directive #endlabel
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
+  * @param {!FileStructure} struct - file structure
   */
 
 	Parser.prototype._endlabel = function _endlabel(struct) {
@@ -517,8 +489,8 @@ var Parser = (function () {
   * Directive #if
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
-  * @param {string} value - a value of the directive
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
   */
 
 	Parser.prototype._if = function _if(struct, value) {
@@ -531,6 +503,7 @@ var Parser = (function () {
 		var args = value.split(/\s+/);
 
 		var res = true;
+
 		if (args.length > 1 && args[0] === 'not') {
 			res = false;
 			args.shift();
@@ -543,7 +516,7 @@ var Parser = (function () {
   * Directive #endif
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
+  * @param {!FileStructure} struct - file structure
   */
 
 	Parser.prototype._endif = function _endif(struct) {
@@ -554,8 +527,8 @@ var Parser = (function () {
   * Directive #set
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
-  * @param {string} value - a value of the directive
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
   */
 
 	Parser.prototype._set = function _set(struct, value) {
@@ -572,8 +545,8 @@ var Parser = (function () {
   * Directive #unset
   *
   * @private
-  * @param {!FileStructure} struct - a file structure
-  * @param {string} value - a value of the directive
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
   */
 
 	Parser.prototype._unset = function _unset(struct, value) {

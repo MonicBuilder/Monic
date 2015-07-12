@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.18
+ * Monic v2.1.19
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sat, 13 Jun 2015 08:57:43 GMT
+ * Date: Sun, 12 Jul 2015 10:16:20 GMT
  */
 
 'use strict';
@@ -39,7 +39,7 @@ var _collectionJs = require('collection.js');
 
 var FileStructure = (function () {
 	/**
-  * @param {string} file - a path to a file
+  * @param {string} file - file path
   * @param {string} eol - EOL symbol
   */
 
@@ -66,7 +66,7 @@ var FileStructure = (function () {
 	/**
   * Returns a file path relative to the base folder
   *
-  * @param {string} src - the file path
+  * @param {string} src - file path
   * @return {string}
   */
 
@@ -78,7 +78,7 @@ var FileStructure = (function () {
   * Adds custom code (text) to the structure
   *
   * @param {string} code - some code
-  * @param {Object=} [opt_info] - an information object for a source map
+  * @param {Object=} [opt_info] - information object for a source map
   * @return {!FileStructure}
   */
 
@@ -96,8 +96,8 @@ var FileStructure = (function () {
 	/**
   * Adds a file to the structure
   *
-  * @param {!FileStructure} fileStructure - the structure of the adding file
-  * @param {!Object} labels - a map of labels
+  * @param {!FileStructure} fileStructure - structure of the adding file
+  * @param {!Object} labels - map of Monic labels
   * @return {!FileStructure}
   */
 
@@ -114,8 +114,8 @@ var FileStructure = (function () {
 	/**
   * Adds expulsion to the structure
   *
-  * @param {!FileStructure} fileStructure - the structure of the expulsion file
-  * @param {!Object} labels - a map of labels
+  * @param {!FileStructure} fileStructure - structure of the expulsion file
+  * @param {!Object} labels - map of Monic labels
   * @return {!FileStructure}
   */
 
@@ -132,7 +132,7 @@ var FileStructure = (function () {
 	/**
   * Sets a flag
   *
-  * @param {string} flag - the flag name
+  * @param {string} flag - flag name
   * @return {!FileStructure}
   */
 
@@ -149,7 +149,7 @@ var FileStructure = (function () {
 	/**
   * Cancels a flag
   *
-  * @param {string} flag - the flag name
+  * @param {string} flag - flag name
   * @return {!FileStructure}
   */
 
@@ -166,8 +166,8 @@ var FileStructure = (function () {
 	/**
   * Sets a condition
   *
-  * @param {string} flag - the condition
-  * @param {boolean} value - a value of the condition
+  * @param {string} flag - condition
+  * @param {boolean} value - condition value
   * @return {!FileStructure}
   */
 
@@ -203,7 +203,7 @@ var FileStructure = (function () {
 	/**
   * Sets a label
   *
-  * @param {string} label - the label name
+  * @param {string} label - label name
   * @return {!FileStructure}
   */
 
@@ -238,9 +238,9 @@ var FileStructure = (function () {
 	/**
   * Compiles the structure
   *
-  * @param {Array=} [opt_labels] - a map of labels
-  * @param {Object=} [opt_flags] - a map of flags
-  * @param {SourceMapGenerator=} [opt_sourceMap] - a source map object
+  * @param {Array=} [opt_labels] - map of Monic labels
+  * @param {Object=} [opt_flags] - map of Monic flags
+  * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
   * @return {string}
   */
 
@@ -250,18 +250,17 @@ var FileStructure = (function () {
 		var _this = this;
 
 		(0, _collectionJs.$C)(opt_labels).forEach(function (el, key) {
-			_this.root.labels[key] = true;
+			return _this.root.labels[key] = true;
 		});
-
 		return this._compileBlock(this.root, this.root.labels, opt_flags || {}, opt_sourceMap);
 	};
 
 	/**
   * Compiles expulsion of a file
   *
-  * @param {Array=} [opt_labels] - a map of labels
-  * @param {Object=} [opt_flags] - a map of flags
-  * @param {SourceMapGenerator=} [opt_sourceMap] - a source map object
+  * @param {Array=} [opt_labels] - a map of Monic labels
+  * @param {Object=} [opt_flags] - map of Monic flags
+  * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
   * @return {!FileStructure}
   */
 
@@ -274,10 +273,10 @@ var FileStructure = (function () {
   * Compiles some file structure
   *
   * @private
-  * @param {!Object} block - the structure object
-  * @param {!Object} labels - a map of labels
-  * @param {!Object} flags - a map of flags
-  * @param {SourceMapGenerator=} [opt_sourceMap] - a source map object
+  * @param {!Object} block - structure object
+  * @param {!Object} labels - map of Monic labels
+  * @param {!Object} flags - map of Monic flags
+  * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
   * @return {string}
   */
 
@@ -299,7 +298,7 @@ var FileStructure = (function () {
 				var cacheKey = block.fileStructure.file + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
 
 				(0, _collectionJs.$C)(labels).forEach(function (el, key) {
-					block.labels[key] = true;
+					return block.labels[key] = true;
 				});
 
 				if (!this.included[cacheKey]) {
@@ -365,9 +364,9 @@ var FileStructure = (function () {
 	/**
   * Returns true if an object is a valid file structure
   *
-  * @param {!Object} block - the structure object
-  * @param {!Object} labels - a map of labels
-  * @param {!Object} flags - a map of flags
+  * @param {!Object} block - structure object
+  * @param {!Object} labels - map of Monic labels
+  * @param {!Object} flags - map of Monic flags
   * @return {boolean}
   */
 
