@@ -93,13 +93,9 @@ exports.compile = function (file, params, callback) {
 		if (params.saveFiles) {
 			if (externalSourceMap) {
 				tasks.push(function (cb) {
-					mkdirp(path.dirname(sourceMapFile), {mode: params.mode}, function (err) {
-						if (err) {
-							return cb(err);
-						}
-
+					mkdirp(path.dirname(sourceMapFile), {mode: params.mode}, ok(cb, function () {
 						fs.writeFile(sourceMapFile, map.toString(), cb);
-					});
+					}));
 				});
 			}
 
@@ -109,13 +105,9 @@ exports.compile = function (file, params, callback) {
 						result += sourceMapDecl + sourceMapUrl;
 					}
 
-					mkdirp(path.dirname(fileToSave), {mode: params.mode}, function (err) {
-						if (err) {
-							return cb(err);
-						}
-
+					mkdirp(path.dirname(fileToSave), {mode: params.mode}, ok(cb, function () {
 						fs.writeFile(fileToSave, result, cb);
-					});
+					}));
 				});
 			}
 		}
