@@ -19,7 +19,7 @@ const
 	ok = require('okay');
 
 /** @type {!Array} */
-exports.VERSION = [2, 1, 19];
+exports.VERSION = [2, 1, 20];
 
 /**
  * Builds a file
