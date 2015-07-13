@@ -77,7 +77,7 @@ gulp.task('head', function (cb) {
 
 	async.parallel([
 		function (cb) {
-			gulp.src(['./@(lib|test)/*.js', './@(monic|gulpfile).js'], {base: './'})
+			gulp.src(['./@(src|test)/*.js', './@(monic|gulpfile).js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
 				.pipe(header(fullHead))
@@ -110,7 +110,7 @@ gulp.task('build', function (cb) {
 		' * Date: ' + new Date().toUTCString() + '\n' +
 		' */\n\n';
 
-	gulp.src('./lib/*.js')
+	gulp.src('./src/*.js')
 		.pipe(cached('build'))
 		.pipe(replace(headRgxp, ''))
 		.pipe(babel({
@@ -175,7 +175,7 @@ gulp.task('watch', ['default'], function () {
 		},
 
 		function () {
-			gulp.watch('./lib/*.js', ['full-build']).on('change', unbind('build'));
+			gulp.watch('./src/*.js', ['full-build']).on('change', unbind('build'));
 			gulp.watch('./monic.js', ['bump']);
 			gulp.watch(['./test/**/*', './monic.js'], ['test']);
 			gulp.watch('./*.md', ['yaspeller']);
