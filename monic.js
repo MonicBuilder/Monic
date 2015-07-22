@@ -20,7 +20,7 @@ const
 	promisify = require('promisify-any');
 
 /** @type {!Array} */
-exports.VERSION = [2, 1, 20];
+exports.VERSION = [2, 2, 0];
 
 /**
  * Builds a file

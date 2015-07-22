@@ -3,7 +3,7 @@
   "description": "File builder for JavaScript.",
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
-  "version": "2.1.20",
+  "version": "2.2.0",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -44,6 +44,7 @@
     "glob": "^5.0.5",
     "mkdirp": "^0.5.0",
     "okay": "^1.0.0",
+    "promisify-any": "^1.1.1",
     "source-map": "^0.4.2",
     "uid": "0.0.2"
   },
