@@ -173,7 +173,6 @@ monic.compile('myFile.js')
   .catch(function (err) {
     ...
   });
-);
 ```
 
 ### Явное указание текста файла

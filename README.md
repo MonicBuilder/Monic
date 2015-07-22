@@ -174,7 +174,6 @@ monic.compile('myFile.js')
   .catch(function (err) {
     ...
   });
-);
 ```
 
 ### Building from a string
