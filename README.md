@@ -167,7 +167,7 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile('myFile.js')
-  .then(function (text) {
+  .then(function ([data, {map, decl, url, isExternal}]) {
     ...
   })
 
