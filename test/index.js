@@ -38,11 +38,7 @@ fs.readdir(basePath, function (err, dirs) {
 			}
 
 			if (stat.isDirectory()) {
-				function test(err, res) {
-					if (err) {
-						throw err;
-					}
-
+				function test(res) {
 					res = res.trim();
 					const
 						expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
@@ -73,6 +69,18 @@ fs.readdir(basePath, function (err, dirs) {
 					}
 				}
 
+				function promiseTest(res) {
+					test(res[0]);
+				}
+
+				function cbTest(err, res) {
+					if (err) {
+						throw err;
+					}
+
+					test(res);
+				}
+
 				const src = path.join(dirPath, 'test.js');
 				const replacers = [
 					function (text) {
@@ -83,13 +91,18 @@ fs.readdir(basePath, function (err, dirs) {
 				monic.compile(src, {
 					eol: eol,
 					replacers: replacers
-				}, test);
+				}).then(promiseTest, cbTest);
+
+				monic.compile(src, {
+					eol: eol,
+					replacers: replacers
+				}, cbTest);
 
 				monic.compile(src, {
 					eol: eol,
 					replacers: replacers,
 					content: String(fs.readFileSync(src))
-				}, test);
+				}, cbTest);
 			}
 		});
 	});

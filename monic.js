@@ -16,7 +16,8 @@ const
 	fs = require('fs'),
 	async = require('async'),
 	mkdirp = require('mkdirp'),
-	ok = require('okay');
+	ok = require('okay'),
+	promisify = require('promisify-any');
 
 /** @type {!Array} */
 exports.VERSION = [2, 1, 20];
@@ -25,23 +26,31 @@ exports.VERSION = [2, 1, 20];
  * Builds a file
  *
  * @param {string} file - file path
- * @param {Object} params - additional parameters
- * @param {?string=} [params.cwd] - path to the working directory (by default, module.parent)
- * @param {Object=} [params.flags] - map of Monic flags
- * @param {Object=} [params.labels] - map of Monic labels
- * @param {?string=} [params.content] - file text
- * @param {?string=} [params.eol] - EOL symbol
- * @param {Array=} [params.replacers] - array of transform functions
- * @param {?boolean=} [params.saveFiles=false] - if is true, then generated files will be saved
- * @param {?string=} [params.mode='0777'] - mode for any folders that need to be created for the output folder
- * @param {?string=} [params.file] - path to the generated file
- * @param {(boolean|string|null)=} [params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
- * @param {Object=} [params.inputSourceMap] - base source map object for the output source map
- * @param {?string=} [params.sourceMapFile] - path to the generated source map
- * @param {?string=} [params.sourceRoot] - root for all URLs in the generated source map
- * @param {function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)} callback - callback function
+ * @param {Object=} [opt_params] - additional parameters
+ * @param {?string=} [opt_params.cwd] - path to the working directory (by default, module.parent)
+ * @param {Object=} [opt_params.flags] - map of Monic flags
+ * @param {Object=} [opt_params.labels] - map of Monic labels
+ * @param {?string=} [opt_params.content] - file text
+ * @param {?string=} [opt_params.eol] - EOL symbol
+ * @param {Array<function(this:Parser, string, string, function(Error=, string=)=)>=} [opt_params.replacers] - array of transform functions
+ * @param {?boolean=} [opt_params.saveFiles=false] - if is true, then generated files will be saved
+ * @param {?string=} [opt_params.mode='0777'] - mode for any folders that need to be created for the output folder
+ * @param {?string=} [opt_params.file] - path to the generated file
+ * @param {(boolean|string|null)=} [opt_params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
+ * @param {Object=} [opt_params.inputSourceMap] - base source map object for the output source map
+ * @param {?string=} [opt_params.sourceMapFile] - path to the generated source map
+ * @param {?string=} [opt_params.sourceRoot] - root for all URLs in the generated source map
+ * @param {?function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)=} [opt_callback] - callback function
  */
-exports.compile = function (file, params, callback) {
+exports.compile = function (file, opt_params, opt_callback) {
+	if (opt_callback) {
+		return compile(file, opt_params, opt_callback);
+	}
+
+	return promisify(compile, arguments.length - 1)(file, opt_params);
+};
+
+function compile(file, params, callback) {
 	params = params || {};
 
 	params.flags = params.flags || {};
@@ -156,4 +165,4 @@ exports.compile = function (file, params, callback) {
 	} else {
 		parser.parseFile(file, finish);
 	}
-};
+}
