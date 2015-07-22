@@ -162,18 +162,18 @@ monic.compile(
 );
 ```
 
-### Using Promise API (When.js)
+### Using Promise API ([When](https://www.npmjs.com/package/when))
 
 ```js
 var monic = require('monic');
-monic.compile('myFile.js').then(
-  function (text) {
+monic.compile('myFile.js')
+  .then(function (text) {
     ...
-  },
+  })
 
-  function (err) {
+  .catch(function (err) {
     ...
-  }
+  });
 );
 ```
 
