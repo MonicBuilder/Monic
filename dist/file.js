@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.20
+ * Monic v2.2.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 13 Jul 2015 21:05:58 GMT
+ * Date: Wed, 22 Jul 2015 09:42:07 GMT
  */
 
 'use strict';
@@ -58,7 +58,7 @@ var FileStructure = (function () {
 			labels: {}
 		};
 
-		this.uid = (0, _uid2['default'])();
+		this.uid = _uid2['default']();
 		this.currentBlock = this.root;
 		this.included = {};
 	}
@@ -249,7 +249,7 @@ var FileStructure = (function () {
 
 		var _this = this;
 
-		(0, _collectionJs.$C)(opt_labels).forEach(function (el, key) {
+		_collectionJs.$C(opt_labels).forEach(function (el, key) {
 			return _this.root.labels[key] = true;
 		});
 		return this._compileBlock(this.root, this.root.labels, opt_flags || {}, opt_sourceMap);
@@ -297,7 +297,7 @@ var FileStructure = (function () {
 			case 'include':
 				var cacheKey = block.fileStructure.file + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
 
-				(0, _collectionJs.$C)(labels).forEach(function (el, key) {
+				_collectionJs.$C(labels).forEach(function (el, key) {
 					return block.labels[key] = true;
 				});
 
@@ -318,7 +318,7 @@ var FileStructure = (function () {
 
 			default:
 				if (FileStructure.isValidContentBlock(block, labels, flags)) {
-					return (0, _collectionJs.$C)(block.content).map(function (block) {
+					return _collectionJs.$C(block.content).map(function (block) {
 						if (!_parser2['default'].current || _this2.uid !== _parser2['default'].current) {
 							_parser2['default'].current = _this2.uid;
 						}
@@ -333,7 +333,7 @@ var FileStructure = (function () {
 									var test = {},
 									    selfMap = info.source;
 
-									(0, _collectionJs.$C)(selfMap ? [info] : info).forEach(function (info) {
+									_collectionJs.$C(selfMap ? [info] : info).forEach(function (info) {
 										if (selfMap) {
 											info.generated.line = _parser2['default'].cursor;
 										} else {

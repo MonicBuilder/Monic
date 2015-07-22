@@ -1,11 +1,11 @@
 /*!
- * Monic v2.1.20
+ * Monic v2.2.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 13 Jul 2015 21:05:58 GMT
+ * Date: Wed, 22 Jul 2015 09:42:07 GMT
  */
 
 'use strict';
@@ -144,8 +144,8 @@ var Parser = (function () {
 		    pattern = _path2['default'].join(dirname, parts[0]);
 
 		if (_glob2['default'].hasMagic(pattern)) {
-			(0, _glob2['default'])(pattern, null, (0, _okay2['default'])(callback, function (files) {
-				callback(null, (0, _collectionJs.$C)(files).reduce(function (res, el) {
+			_glob2['default'](pattern, null, _okay2['default'](callback, function (files) {
+				callback(null, _collectionJs.$C(files).reduce(function (res, el) {
 					parts[0] = _path2['default'].relative(dirname, el);
 					res.push(parts.slice());
 					return res;
@@ -206,7 +206,7 @@ var Parser = (function () {
 
 		var actions = [];
 
-		(0, _collectionJs.$C)(this.replacers).forEach(function (replacer) {
+		_collectionJs.$C(this.replacers).forEach(function (replacer) {
 			actions.push(function (next) {
 				if (replacer.length > 2) {
 					replacer.call(_this3, content, file, function (err, res) {
@@ -254,7 +254,7 @@ var Parser = (function () {
 			}
 		}
 
-		_async2['default'].series(actions, (0, _okay2['default'])(callback, function () {
+		_async2['default'].series(actions, _okay2['default'](callback, function () {
 			var fileStructure = new _file.FileStructure({ file: file, eol: _this3.eol }),
 			    lines = content.split(/\r?\n|\r/);
 
@@ -269,7 +269,7 @@ var Parser = (function () {
 					callback(err);
 				}
 
-				var asyncParseCallback = (0, _okay2['default'])(error, function () {
+				var asyncParseCallback = _okay2['default'](error, function () {
 					return parseLines(i + 1);
 				});
 
@@ -295,10 +295,10 @@ var Parser = (function () {
 						});
 
 						if (sourceMap.sourcesContent) {
-							(0, _collectionJs.$C)(sourceMap.sourcesContent).forEach(function (content, i) {
+							_collectionJs.$C(sourceMap.sourcesContent).forEach(function (content, i) {
 								var src = sourceMap.sources[i];
 
-								(0, _collectionJs.$C)(originalMap).forEach(function (el) {
+								_collectionJs.$C(originalMap).forEach(function (el) {
 									if (el.source === src) {
 										el.source = Parser.normalizePath(_path2['default'].resolve(el.source));
 
@@ -312,7 +312,7 @@ var Parser = (function () {
 							});
 						}
 
-						original = (0, _collectionJs.$C)(originalMap).group('generated > line');
+						original = _collectionJs.$C(originalMap).group('generated > line');
 					})();
 				}
 
@@ -389,10 +389,10 @@ var Parser = (function () {
 
 		var _this4 = this;
 
-		this.parsePath(struct.file, value, (0, _okay2['default'])(callback, function (arr) {
+		this.parsePath(struct.file, value, _okay2['default'](callback, function (arr) {
 			var actions = [];
 
-			(0, _collectionJs.$C)(arr).forEach(function (paramsParts) {
+			_collectionJs.$C(arr).forEach(function (paramsParts) {
 				actions.push(function (next) {
 					return action.call(_this4, paramsParts, next);
 				});
@@ -404,17 +404,17 @@ var Parser = (function () {
 		function action(paramsParts, next) {
 			var includeFileName = paramsParts.shift();
 
-			paramsParts = (0, _collectionJs.$C)(paramsParts).reduce(function (map, el) {
+			paramsParts = _collectionJs.$C(paramsParts).reduce(function (map, el) {
 				return (map[el] = true, map);
 			}, {});
 
 			if (includeFileName) {
-				this.parseFile(struct.getRelativePathOf(includeFileName), (0, _okay2['default'])(next, function (includeFile) {
+				this.parseFile(struct.getRelativePathOf(includeFileName), _okay2['default'](next, function (includeFile) {
 					struct.addInclude(includeFile, paramsParts);
 					next();
 				}));
 			} else {
-				(0, _collectionJs.$C)(paramsParts).forEach(function (el, key) {
+				_collectionJs.$C(paramsParts).forEach(function (el, key) {
 					return struct.root.labels[key] = true;
 				});
 				next();
@@ -436,10 +436,10 @@ var Parser = (function () {
 
 		var _this5 = this;
 
-		this.parsePath(struct.file, value, (0, _okay2['default'])(callback, function (arr) {
+		this.parsePath(struct.file, value, _okay2['default'](callback, function (arr) {
 			var actions = [];
 
-			(0, _collectionJs.$C)(arr).forEach(function (paramsParts) {
+			_collectionJs.$C(arr).forEach(function (paramsParts) {
 				actions.push(function (next) {
 					return action.call(_this5, paramsParts, next);
 				});
@@ -451,11 +451,11 @@ var Parser = (function () {
 		function action(paramsParts, next) {
 			var includedFile = struct.getRelativePathOf(paramsParts.shift());
 
-			paramsParts = (0, _collectionJs.$C)(paramsParts).reduce(function (map, el) {
+			paramsParts = _collectionJs.$C(paramsParts).reduce(function (map, el) {
 				return (map[el] = true, map);
 			}, {});
 
-			this.parseFile(includedFile, (0, _okay2['default'])(next, function (includeFile) {
+			this.parseFile(includedFile, _okay2['default'](next, function (includeFile) {
 				struct.addWithout(includeFile, paramsParts);
 				next();
 			}));
