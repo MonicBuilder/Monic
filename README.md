@@ -40,7 +40,7 @@ monic [options] [file ...]
 -o, --output [string]        Set a path to save the generated file
 -m, --mode [string]          Set a mode for any folders that need to be created
                              for the output folder
---eol [char]                 Set a newline character
+--eol [char]                 Set EOL symbol
 --flags [list]               Set a list of flags separated by commas
 --labels [list]              Set a list of labels separated by commas
 -s, --source-maps [string]   [true|false|inline]
@@ -113,7 +113,7 @@ monic.compile(
     // (optional, by default module.parent)
     cwd: 'myDir/',
 
-    // The newline character (optional, by default \n)
+    // EOL symbol (optional, by default \n)
     eol: '\r\n',
 
     // The map of Monic labels (optional)
@@ -158,6 +158,21 @@ monic.compile(
     }
 
     console.log(data);
+  }
+);
+```
+
+### Using Promise API (When.js)
+
+```js
+var monic = require('monic');
+monic.compile('myFile.js').then(
+  function (text) {
+    ...
+  },
+
+  function (err) {
+    ...
   }
 );
 ```

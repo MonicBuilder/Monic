@@ -41,6 +41,7 @@ exports.VERSION = [2, 2, 0];
  * @param {?string=} [opt_params.sourceMapFile] - path to the generated source map
  * @param {?string=} [opt_params.sourceRoot] - root for all URLs in the generated source map
  * @param {?function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)=} [opt_callback] - callback function
+ *   (if not declared, then will be used Promise API)
  */
 exports.compile = function (file, opt_params, opt_callback) {
 	if (opt_callback) {

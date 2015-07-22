@@ -112,7 +112,7 @@ monic.compile(
     // (опционально, по умолчанию module.parent)
     cwd: 'myDir/',
 
-    // Символ перевода строки (опционально, по умолчанию \n)
+    // Разделитель строки (опционально, по умолчанию \n)
     eol: '\r\n',
 
     // Таблица задаваемых меток (опционально)
@@ -157,6 +157,21 @@ monic.compile(
     }
 
     console.log(data);
+  }
+);
+```
+
+### Использование Promise API (When.js)
+
+```js
+var monic = require('monic');
+monic.compile('myFile.js').then(
+  function (text) {
+    ...
+  },
+
+  function (err) {
+    ...
   }
 );
 ```
