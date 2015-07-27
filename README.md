@@ -5,7 +5,7 @@ Monic is a JavaScript file builder ([fork of Jossy](https://github.com/Kolyaj/Jo
 When it used properly, Monic allows not only easy to build modules, but also easy to rebuild them, when changing principles
 of the build.
 
-[Russian documentation](https://github.com/MonicBuilder/Monic/blob/master/README.ru.md)
+[:ru: Russian documentation](https://github.com/MonicBuilder/Monic/blob/master/README.ru.md)
 
 [![NPM version](http://img.shields.io/npm/v/monic.svg?style=flat)](http://badge.fury.io/js/monic)
 [![NPM dependencies](http://img.shields.io/david/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic#info=dependencies&view=table)
