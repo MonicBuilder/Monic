@@ -14,25 +14,22 @@
 
   "dictionary": [
     "/js/i",
-    "/jossy/i",
-    "/monic/i",
+    "jossy",
+    "monic",
     "/node.?js/i",
     "/ie/i",
     "/f\\d+/",
-    "WebPack",
-    "SourceMap",
+    "webPack",
+    "sourceMap",
     "форк",
-    "фреймворков",
+    "фреймворк(ов|а|и|)",
     "пересобирать",
-    "виджет",
-    "виджетов",
-    "виджета",
-    "виджете",
-    "виджеты",
+    "виджет(ов|а|е|ы|)",
     "булевые",
     "maintainers",
-    "CLI",
+    "/cli/i",
     "replacers",
-    "js on"
+    "js on",
+    "ru|gb"
   ]
 }
