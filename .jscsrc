@@ -2,22 +2,21 @@
   "esnext": true,
   "fileExtensions": [".js"],
   "excludeFiles": [
-    "monic.js",
-    "gulpfile.js",
-    "build/**",
+    "node_modules/**",
     "bin/**",
+    "dist/**",
     "test/**",
-    "node_modules/**"
+    "gulpfile.js",
+    "externs.js",
+    "monic.js"
   ],
 
   "validateIndentation": "\t",
   "disallowMixedSpacesAndTabs": "smart",
   "disallowTrailingWhitespace": true,
-
   "validateLineBreaks": "LF",
   "requireLineFeedAtFileEnd": true,
   "disallowMultipleSpaces": true,
-
   "maximumLineLength": {
     "value": 120,
     "allowComments": true
@@ -27,6 +26,11 @@
   "validateQuoteMarks": "'",
   "requireSemicolons": true,
 
+  "requireNumericLiterals": true,
+  "requireTemplateStrings": true,
+  "requireSpread": true,
+
+  "disallowSpaceBeforeComma": true,
   "requireCommaBeforeLineBreak": true,
   "disallowMultipleLineStrings": true,
   "disallowMultipleLineBreaks": true,
@@ -50,16 +54,41 @@
     ]
   },
 
+  "requirePaddingNewLinesAfterUseStrict": true,
+  "validateNewlineAfterArrayElements": true,
   "requireLineBreakAfterVariableAssignment": true,
-  "requirePaddingNewLinesAfterBlocks": true,
+  "requirePaddingNewLinesAfterBlocks": {
+    "allExcept": [
+      "inCallExpressions",
+      "inNewExpressions",
+      "inArrayExpressions",
+      "inProperties"
+    ]
+  },
+
   "requireSpaceBeforeBlockStatements": true,
   "disallowNewlineBeforeBlockStatements": true,
-
   "requireSpacesInForStatement": true,
   "requireSpaceBeforeBinaryOperators": true,
   "requireSpaceAfterBinaryOperators": true,
   "requireSpaceBetweenArguments": true,
   "disallowSpacesInCallExpression": true,
+
+  "jsDoc": {
+    "checkAnnotations": {
+      "preset": "closurecompiler",
+      "extra": {
+        "abstract": false
+      }
+    },
+    "checkTypes": "strictNativeCase",
+    "checkParamNames": true,
+    "requireParamTypes": true,
+    "checkReturnTypes": true,
+    "requireReturnTypes": true,
+    "requireHyphenBeforeDescription": true,
+    "requireNewlineAfterDescription": true
+  },
 
   "requireCurlyBraces": [
     "if",
@@ -107,9 +136,11 @@
 
   "disallowOperatorBeforeLineBreak": [
     "~",
-    "."
+    ".",
+    "::"
   ],
 
+  "validateAlignedFunctionParameters": true,
   "requireSpacesInFunctionDeclaration": {
     "beforeOpeningCurlyBrace": true
   },
