@@ -27,7 +27,6 @@
   "requireSemicolons": true,
 
   "requireNumericLiterals": true,
-  "requireTemplateStrings": true,
   "requireSpread": true,
 
   "disallowSpaceBeforeComma": true,
@@ -151,7 +150,8 @@
 
   "requireSpacesInAnonymousFunctionExpression": {
     "beforeOpeningRoundBrace": true,
-    "beforeOpeningCurlyBrace": true
+    "beforeOpeningCurlyBrace": true,
+    "allExcept": ["shorthandMethods"]
   },
 
   "disallowSpacesInNamedFunctionExpression": {
