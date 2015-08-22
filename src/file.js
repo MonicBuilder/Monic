@@ -100,13 +100,14 @@ export class FileStructure {
 	 * Sets a flag
 	 *
 	 * @param {string} flag - flag name
+	 * @param {boolean=} [opt_value] - flag value
 	 * @return {!FileStructure}
 	 */
-	addSet(flag) {
+	addSet(flag, opt_value = true) {
 		this.currentBlock.content.push({
 			type: 'set',
 			varName: flag,
-			value: true
+			value: opt_value
 		});
 
 		return this;
@@ -132,16 +133,16 @@ export class FileStructure {
 	 * Sets a condition
 	 *
 	 * @param {string} flag - condition
-	 * @param {boolean} value - condition value
+	 * @param {boolean} [opt_value] - condition value
 	 * @return {!FileStructure}
 	 */
-	beginIf(flag, value) {
+	beginIf(flag, opt_value = true) {
 		const ifBlock = {
 			parent: this.currentBlock,
 			type: 'if',
 			content: [],
 			varName: flag,
-			value
+			value: opt_value
 		};
 
 		this.currentBlock.content.push(ifBlock);
@@ -158,6 +159,42 @@ export class FileStructure {
 	endIf() {
 		if (this.currentBlock.type != 'if') {
 			throw new SyntaxError('Attempt to close an unopened block "#if"');
+		}
+
+		this.currentBlock = this.currentBlock.parent;
+		return this;
+	}
+
+	/**
+	 * Sets an unless condition
+	 *
+	 * @param {string} flag - condition
+	 * @param {boolean} [opt_value] - condition value
+	 * @return {!FileStructure}
+	 */
+	beginUnless(flag, opt_value = true) {
+		const ifBlock = {
+			parent: this.currentBlock,
+			type: 'unless',
+			content: [],
+			varName: flag,
+			value: opt_value
+		};
+
+		this.currentBlock.content.push(ifBlock);
+		this.currentBlock = ifBlock;
+
+		return this;
+	}
+
+	/**
+	 * Ends an unless condition
+	 *
+	 * @return {!FileStructure}
+	 */
+	endUnless() {
+		if (this.currentBlock.type != 'unless') {
+			throw new SyntaxError('Attempt to close an unopened block "#unless"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -334,6 +371,9 @@ export class FileStructure {
 
 			case 'if':
 				return Boolean(flags[block.varName]) === Boolean(block.value);
+
+			case 'unless':
+				return Boolean(flags[block.varName]) !== Boolean(block.value);
 
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);

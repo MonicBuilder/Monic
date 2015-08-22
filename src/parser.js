@@ -423,6 +423,26 @@ export default class Parser {
 	}
 
 	/**
+	 * Directive #end
+	 *
+	 * @private
+	 * @param {!FileStructure} struct - file structure
+	 * @param {string} value - directive value
+	 */
+	_end(struct, value) {
+		value = value.trim();
+
+		const
+			key = `_end${value}`;
+
+		if (!value || !this[key]) {
+			throw new SyntaxError('Bad "#end" directive');
+		}
+
+		this[key](struct);
+	}
+
+	/**
 	 * Directive #label
 	 *
 	 * @private
@@ -454,21 +474,10 @@ export default class Parser {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "if" directive');
+			throw new SyntaxError('Bad "#if" directive');
 		}
 
-		const
-			args = value.split(/\s+/);
-
-		let
-			res = true;
-
-		if (args.length > 1 && args[0] === 'not') {
-			res = false;
-			args.shift();
-		}
-
-		struct.beginIf(args[0], res);
+		struct.beginIf(...value.split(/\s+/));
 	}
 
 	/**
@@ -482,6 +491,33 @@ export default class Parser {
 	}
 
 	/**
+	 * Directive #unless
+	 *
+	 * @private
+	 * @param {!FileStructure} struct - file structure
+	 * @param {string} value - directive value
+	 */
+	_unless(struct, value) {
+		value = value.trim();
+
+		if (!value) {
+			throw new SyntaxError('Bad "#unless" directive');
+		}
+
+		struct.beginUnless(...value.split(/\s+/));
+	}
+
+	/**
+	 * Directive #endunless
+	 *
+	 * @private
+	 * @param {!FileStructure} struct - file structure
+	 */
+	_endunless(struct) {
+		struct.endUnless();
+	}
+
+	/**
 	 * Directive #set
 	 *
 	 * @private
@@ -492,10 +528,10 @@ export default class Parser {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "set" directive');
+			throw new SyntaxError('Bad "#set" directive');
 		}
 
-		struct.addSet(value);
+		struct.addSet(...value.split(/\s+/));
 	}
 
 	/**
@@ -509,7 +545,7 @@ export default class Parser {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "unset" directive');
+			throw new SyntaxError('Bad "#unset" directive');
 		}
 
 		struct.addUnset(value);
