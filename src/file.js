@@ -7,7 +7,7 @@
  */
 
 import uid from 'uid';
-import path from 'path';
+import * as path from 'path';
 import Parser from './parser';
 import { $C } from 'collection.js';
 

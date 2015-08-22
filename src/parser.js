@@ -6,11 +6,12 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-import path from 'path';
-import glob from 'glob';
-import fs from 'fs';
 import ok from 'okay';
-import async from 'async';
+
+import * as path from 'path';
+import * as glob from 'glob';
+import * as fs from 'fs';
+import * as async from 'async';
 
 import { FileStructure } from './file';
 import { SourceMapConsumer } from 'source-map';
