@@ -440,8 +440,8 @@ export default class Parser {
 			args = value.split(/\s+/),
 			key = `_end${args[0]}`;
 
-		if (!value || !this[key]) {
-			throw new SyntaxError('Bad "#end" directive');
+		if (!this[key]) {
+			throw new SyntaxError(`Bad value (${args[0]}) for "#end" directive`);
 		}
 
 		this[key](struct, args.join(' '));
