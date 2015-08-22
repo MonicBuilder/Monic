@@ -432,14 +432,19 @@ export default class Parser {
 	_end(struct, value) {
 		value = value.trim();
 
+		if (!value) {
+			throw new SyntaxError('Bad "#end" directive');
+		}
+
 		const
-			key = `_end${value}`;
+			args = value.split(/\s+/),
+			key = `_end${args[0]}`;
 
 		if (!value || !this[key]) {
 			throw new SyntaxError('Bad "#end" directive');
 		}
 
-		this[key](struct);
+		this[key](struct, args.join(' '));
 	}
 
 	/**
