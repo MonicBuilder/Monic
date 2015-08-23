@@ -137,19 +137,17 @@ export class FileStructure {
 	}
 
 	/**
-	 * Sets matching
+	 * Sets a condition
 	 *
 	 * @param {string} flag - condition
 	 * @param {string} type - condition type
 	 * @param {(boolean|string)=} [opt_value] - condition value
 	 * @return {!FileStructure}
 	 */
-	beginMatch(flag, type, opt_value = true) {
+	beginIf(flag, type, opt_value = true) {
 		const aliases = {
-			eq: 'if',
-			ne: 'unless',
-			'=': 'if',
-			'!=': 'unless',
+			'=': 'eq',
+			'!=': 'ne',
 			'>': 'gt',
 			'>=': 'gte',
 			'<': 'lt',
@@ -171,14 +169,13 @@ export class FileStructure {
 	}
 
 	/**
-	 * Ends matching
+	 * Ends a condition
 	 *
 	 * @return {!FileStructure}
 	 */
-	endMatch() {
-		if (!{if: true, unless: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
-			console.log(this.currentBlock.type);
-			throw new SyntaxError('Attempt to close an unopened block "#match"');
+	endIf() {
+		if (!{eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
+			throw new SyntaxError('Attempt to close an unopened block "#if"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -189,13 +186,24 @@ export class FileStructure {
 	 * Sets a condition
 	 *
 	 * @param {string} flag - condition
+	 * @param {string} type - condition type
 	 * @param {(boolean|string)=} [opt_value] - condition value
 	 * @return {!FileStructure}
 	 */
-	beginIf(flag, opt_value = true) {
+	beginUnless(flag, type, opt_value = true) {
+		const aliases = {
+			'=': 'eq',
+			'!=': 'ne',
+			'>': 'gt',
+			'>=': 'gte',
+			'<': 'lt',
+			'<=': 'lte'
+		};
+
 		const ifBlock = {
 			parent: this.currentBlock,
-			type: 'if',
+			type: aliases[type] || type,
+			unless: true,
 			content: [],
 			varName: flag,
 			value: opt_value
@@ -212,45 +220,9 @@ export class FileStructure {
 	 *
 	 * @return {!FileStructure}
 	 */
-	endIf() {
-		if (this.currentBlock.type != 'if') {
-			throw new SyntaxError('Attempt to close an unopened block "#if"');
-		}
-
-		this.currentBlock = this.currentBlock.parent;
-		return this;
-	}
-
-	/**
-	 * Sets an unless condition
-	 *
-	 * @param {string} flag - condition
-	 * @param {(boolean|string)=} [opt_value] - condition value
-	 * @return {!FileStructure}
-	 */
-	beginUnless(flag, opt_value = true) {
-		const ifBlock = {
-			parent: this.currentBlock,
-			type: 'unless',
-			content: [],
-			varName: flag,
-			value: opt_value
-		};
-
-		this.currentBlock.content.push(ifBlock);
-		this.currentBlock = ifBlock;
-
-		return this;
-	}
-
-	/**
-	 * Ends an unless condition
-	 *
-	 * @return {!FileStructure}
-	 */
 	endUnless() {
-		if (this.currentBlock.type != 'unless') {
-			throw new SyntaxError('Attempt to close an unopened block "#unless"');
+		if (!{eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
+			throw new SyntaxError('Attempt to close an unopened block "#if"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -421,32 +393,43 @@ export class FileStructure {
 	 * @return {boolean}
 	 */
 	static isValidContentBlock(block, labels, flags) {
+		let res;
 		switch (block.type) {
 			case 'root':
 				return true;
 
-			case 'if':
-				return flags[block.varName] === block.value;
-
-			case 'unless':
-				return flags[block.varName] !== block.value;
-
-			case 'gt':
-				return Number(flags[block.varName]) > Number(block.value);
-
-			case 'gte':
-				return Number(flags[block.varName]) >= Number(block.value);
-
-			case 'lt':
-				return Number(flags[block.varName]) < Number(block.value);
-
-			case 'lte':
-				return Number(flags[block.varName]) <= Number(block.value);
-
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
+
+			case 'eq':
+				res = flags[block.varName] === block.value;
+				break;
+
+			case 'ne':
+				res = flags[block.varName] !== block.value;
+				break;
+
+			case 'gt':
+				res = Number(flags[block.varName]) > Number(block.value);
+				break;
+
+			case 'gte':
+				res = Number(flags[block.varName]) >= Number(block.value);
+				break;
+
+			case 'lt':
+				res = Number(flags[block.varName]) < Number(block.value);
+				break;
+
+			case 'lte':
+				res = Number(flags[block.varName]) <= Number(block.value);
+				break;
 		}
 
-		return false;
+		if (block.unless) {
+			res = !res;
+		}
+
+		return res || false;
 	}
 }

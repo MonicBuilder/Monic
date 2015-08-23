@@ -1,30 +1,28 @@
-//#set a
-//#if a
-alert('a');
+//#set ie 7
+//#if ie = 7
+alert('ie = 7');
 //#end if
 
-//#unless a
-alert('not a');
-//#end unless
-
-alert('-');
-
-//#unset a
-//#if a
-alert('a');
+//#if ie != 8
+alert('ie != 8');
 //#end if
 
-//#unless a
-alert('not a');
-//#end unless
+//#if ie != 7
+alert('ie != 7');
+//#end if
 
-//#set bar 12
-//#if bar 12
-alert('a 12');
+//#if ie > 6
+alert('ie > 6');
 //#end if
-//#if bar 13
-alert('a 13');
+
+//#if ie >= 7
+alert('ie >= 7');
 //#end if
-//#unless bar 13
-alert('not a 13');
-//#end unless
+
+//#if ie < 8
+alert('ie < 8');
+//#end if
+
+//#if ie <= 7
+alert('ie <= 7');
+//#end if

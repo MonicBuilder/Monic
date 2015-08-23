@@ -1,10 +1,12 @@
-alert('a');
+alert('ie = 7');
+
+alert('ie != 8');
 
 
-alert('-');
+alert('ie > 6');
 
+alert('ie >= 7');
 
-alert('not a');
+alert('ie < 8');
 
-alert('a 12');
-alert('not a 13');
+alert('ie <= 7');

@@ -469,13 +469,13 @@ export default class Parser {
 	}
 
 	/**
-	 * Directive #match
+	 * Directive #if
 	 *
 	 * @private
 	 * @param {!FileStructure} struct - file structure
 	 * @param {string} value - directive value
 	 */
-	_match(struct, value) {
+	_if(struct, value) {
 		value = value.trim();
 
 		const
@@ -492,37 +492,10 @@ export default class Parser {
 		}
 
 		if (!value || args.length !== 3) {
-			throw new SyntaxError('Bad "#match" directive');
-		}
-
-		struct.beginMatch(...args);
-	}
-
-	/**
-	 * Directive #endmatch
-	 *
-	 * @private
-	 * @param {!FileStructure} struct - file structure
-	 */
-	_endmatch(struct) {
-		struct.endMatch();
-	}
-
-	/**
-	 * Directive #if
-	 *
-	 * @private
-	 * @param {!FileStructure} struct - file structure
-	 * @param {string} value - directive value
-	 */
-	_if(struct, value) {
-		value = value.trim();
-
-		if (!value) {
 			throw new SyntaxError('Bad "#if" directive');
 		}
 
-		struct.beginIf(...value.split(/\s+/));
+		struct.beginIf(...args);
 	}
 
 	/**
@@ -545,11 +518,24 @@ export default class Parser {
 	_unless(struct, value) {
 		value = value.trim();
 
-		if (!value) {
+		const
+			args = value.split(/\s+/);
+
+		switch (args.length) {
+			case 1:
+				args.push('eq', true);
+				break;
+
+			case 2:
+				args.push(true);
+				break;
+		}
+
+		if (!value || args.length !== 3) {
 			throw new SyntaxError('Bad "#unless" directive');
 		}
 
-		struct.beginUnless(...value.split(/\s+/));
+		struct.beginUnless(...args);
 	}
 
 	/**
