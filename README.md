@@ -326,56 +326,55 @@ Flags can take values.
 ```js
 //#set ie 7
 
-//#if ie 7
+//#if ie = 7
 alert('OMG!');
 //#endif
 
-//#unless ie 7
+//#unless ie = 7
 alert('Cool!');
 //#endunless
 ```
 
-The `#match` provides the most flexible interface to work with conditions.
+More examples:
 
 ```js
 //#set foo
 
-//#match foo
+//#if foo
 alert('foo');
-/*? Or //#end match */
-//#endmatch
+//#endif
 
 //#unset foo
 
-//#match foo !=
+//#unless foo
 alert('foo !=');
-//#endmatch
+//#endunless
 
 //#set ie 7
 
-//#match ie = 7
+//#if ie = 7
 alert('ie = 7');
-//#endmatch
+//#endif
 
-//#match ie != 8
+//#if ie != 8
 alert('ie != 8');
-//#endmatch
+//#endif
 
-//#match ie > 6
+//#if ie > 6
 alert('ie > 6');
-//#endmatch
+//#endif
 
-//#match ie >= 7
+//#if ie >= 7
 alert('ie >= 7');
-//#endmatch
+//#endif
 
-//#match ie < 8
+//#if ie < 8
 alert('ie < 8');
-//#endmatch
+//#endif
 
-//#match ie <= 7
+//#if ie <= 7
 alert('ie <= 7');
-//#endmatch
+//#endif
 ```
 
 All the flags are declared globally. To set them in your code, you should use the directives `#set` and `#unset`,
