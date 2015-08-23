@@ -377,10 +377,10 @@ export class FileStructure {
 				return true;
 
 			case 'if':
-				return Boolean(flags[block.varName]) === Boolean(block.value);
+				return flags[block.varName] === block.value;
 
 			case 'unless':
-				return Boolean(flags[block.varName]) !== Boolean(block.value);
+				return flags[block.varName] !== block.value;
 
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
