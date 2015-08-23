@@ -48,8 +48,11 @@
       "#endlabel",
       "#if",
       "#endif",
+      "#unless",
+      "#endunless",
       "#set",
-      "#unset"
+      "#unset",
+      "#end"
     ]
   },
 
