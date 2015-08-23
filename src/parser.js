@@ -102,9 +102,11 @@ export default class Parser {
 			parts = src.split('::'),
 			dirname = path.dirname(base);
 
+		parts[0] = parts[0].replace(/\$\{(.*?)}/g, (sstr, flag) =>
+			flag in this.flags ? this.flags[flag] : '');
+
 		const
-			pattern = path.join(dirname, parts[0]).replace(/\$\{(.*?)}/, (sstr, flag) =>
-				flag in this.flags ? this.flags[flag] : '');
+			pattern = path.join(dirname, parts[0]);
 
 		if (glob.hasMagic(pattern)) {
 			glob(pattern, null, ok(callback, (files) => {
