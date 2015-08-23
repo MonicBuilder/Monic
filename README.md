@@ -424,6 +424,7 @@ var String = {};
 String.truncate = function () {
 
 };
+/*? Or //#end label */
 //#endlabel truncate
 
 //#label escapeHTML
