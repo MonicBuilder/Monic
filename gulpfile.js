@@ -105,7 +105,7 @@ gulp.task('head', function (cb) {
 	});
 });
 
-gulp.task('build', function (cb) {
+gulp.task('build', ['bump'], function (cb) {
 	const fullHead =
 		getHead(true) +
 		' *\n' +
@@ -187,4 +187,4 @@ gulp.task('watch', ['default'], function () {
 	);
 });
 
-gulp.task('default', ['copyright', 'head', 'full-build', 'bump', 'yaspeller', 'npmignore']);
+gulp.task('default', ['copyright', 'head', 'full-build', 'yaspeller', 'npmignore']);
