@@ -335,7 +335,7 @@ alert('Cool!');
 //#endunless
 ```
 
-The `#math` provides the most flexible interface to work with conditions.
+The `#match` provides the most flexible interface to work with conditions.
 
 ```js
 //#set ie 7
