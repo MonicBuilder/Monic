@@ -21,7 +21,7 @@ const
 	assign = require('object-assign');
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 0];
+exports.VERSION = [2, 3, 1];
 
 /**
  * Builds a file

@@ -338,35 +338,43 @@ alert('Cool!');
 The `#match` provides the most flexible interface to work with conditions.
 
 ```js
-//#set ie 7
+//#set foo
 
-//#match eq ie 7
-alert('eq ie 7');
+//#match foo
+alert('foo');
 /*? Or //#end match */
 //#endmatch
 
-//#match ne ie 8
-alert('ne ie 8');
+//#unset foo
+
+//#match foo !=
+alert('foo !=');
 //#endmatch
 
-//#match ne ie 7
-alert('ne ie 7');
+//#set ie 7
+
+//#match ie = 7
+alert('ie = 7');
 //#endmatch
 
-//#match gt ie 6
-alert('gt ie 6');
+//#match ie != 8
+alert('ie != 8');
 //#endmatch
 
-//#match gte ie 7
-alert('gte ie 7');
+//#match ie > 6
+alert('ie > 6');
 //#endmatch
 
-//#match lt ie 8
-alert('lt ie 6');
+//#match ie >= 7
+alert('ie >= 7');
 //#endmatch
 
-//#match lte ie 7
-alert('lte ie 7');
+//#match ie < 8
+alert('ie < 8');
+//#endmatch
+
+//#match ie <= 7
+alert('ie <= 7');
 //#endmatch
 ```
 

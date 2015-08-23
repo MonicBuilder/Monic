@@ -139,15 +139,21 @@ export class FileStructure {
 	/**
 	 * Sets matching
 	 *
-	 * @param {string} type - condition type
 	 * @param {string} flag - condition
+	 * @param {string} type - condition type
 	 * @param {(boolean|string)=} [opt_value] - condition value
 	 * @return {!FileStructure}
 	 */
-	beginMatch(type, flag, opt_value = true) {
+	beginMatch(flag, type, opt_value = true) {
 		const aliases = {
 			eq: 'if',
-			ne: 'unless'
+			ne: 'unless',
+			'=': 'if',
+			'!=': 'unless',
+			'>': 'gt',
+			'>=': 'gte',
+			'<': 'lt',
+			'<=': 'lte'
 		};
 
 		const ifBlock = {

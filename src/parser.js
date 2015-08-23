@@ -478,11 +478,24 @@ export default class Parser {
 	_match(struct, value) {
 		value = value.trim();
 
-		if (!value) {
+		const
+			args = value.split(/\s+/);
+
+		switch (args.length) {
+			case 1:
+				args.push('eq', true);
+				break;
+
+			case 2:
+				args.push(true);
+				break;
+		}
+
+		if (!value || args.length !== 3) {
 			throw new SyntaxError('Bad "#match" directive');
 		}
 
-		struct.beginMatch(...value.split(/\s+/));
+		struct.beginMatch(...args);
 	}
 
 	/**

@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.0
+ * Monic v2.3.1
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 10:36:26 GMT
+ * Date: Sun, 23 Aug 2015 12:03:35 GMT
  */
 
 'use strict';
@@ -537,11 +537,23 @@ var Parser = (function () {
 	Parser.prototype._match = function _match(struct, value) {
 		value = value.trim();
 
-		if (!value) {
+		var args = value.split(/\s+/);
+
+		switch (args.length) {
+			case 1:
+				args.push('eq', true);
+				break;
+
+			case 2:
+				args.push(true);
+				break;
+		}
+
+		if (!value || args.length !== 3) {
 			throw new SyntaxError('Bad "#match" directive');
 		}
 
-		struct.beginMatch.apply(struct, value.split(/\s+/));
+		struct.beginMatch.apply(struct, args);
 	};
 
 	/**

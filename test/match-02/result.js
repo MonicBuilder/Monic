@@ -1,0 +1,3 @@
+alert('ie');
+
+alert('ie !=');

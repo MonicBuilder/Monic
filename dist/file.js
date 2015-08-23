@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.0
+ * Monic v2.3.1
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 10:36:26 GMT
+ * Date: Sun, 23 Aug 2015 12:03:35 GMT
  */
 
 'use strict';
@@ -180,18 +180,24 @@ var FileStructure = (function () {
 	/**
   * Sets matching
   *
-  * @param {string} type - condition type
   * @param {string} flag - condition
+  * @param {string} type - condition type
   * @param {(boolean|string)=} [opt_value] - condition value
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.beginMatch = function beginMatch(type, flag) {
+	FileStructure.prototype.beginMatch = function beginMatch(flag, type) {
 		var opt_value = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
 		var aliases = {
 			eq: 'if',
-			ne: 'unless'
+			ne: 'unless',
+			'=': 'if',
+			'!=': 'unless',
+			'>': 'gt',
+			'>=': 'gte',
+			'<': 'lt',
+			'<=': 'lte'
 		};
 
 		var ifBlock = {
