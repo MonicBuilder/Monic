@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.2
+ * Monic v2.3.3
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 12:38:27 GMT
+ * Date: Sun, 23 Aug 2015 13:08:15 GMT
  */
 
 'use strict';
@@ -183,11 +183,13 @@ var FileStructure = (function () {
   * @param {string} flag - condition
   * @param {string} type - condition type
   * @param {(boolean|string)=} [opt_value] - condition value
+  * @param {boolean=} [opt_unless] - unless mode
   * @return {!FileStructure}
   */
 
 	FileStructure.prototype.beginIf = function beginIf(flag, type) {
 		var opt_value = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+		var opt_unless = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 
 		var aliases = {
 			'=': 'eq',
@@ -203,7 +205,8 @@ var FileStructure = (function () {
 			type: aliases[type] || type,
 			content: [],
 			varName: flag,
-			value: opt_value
+			value: opt_value,
+			unless: opt_unless
 		};
 
 		this.currentBlock.content.push(ifBlock);
@@ -220,58 +223,7 @@ var FileStructure = (function () {
 
 	FileStructure.prototype.endIf = function endIf() {
 		if (!({ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true })[this.currentBlock.type]) {
-			throw new SyntaxError('Attempt to close an unopened block "#if"');
-		}
-
-		this.currentBlock = this.currentBlock.parent;
-		return this;
-	};
-
-	/**
-  * Sets a condition
-  *
-  * @param {string} flag - condition
-  * @param {string} type - condition type
-  * @param {(boolean|string)=} [opt_value] - condition value
-  * @return {!FileStructure}
-  */
-
-	FileStructure.prototype.beginUnless = function beginUnless(flag, type) {
-		var opt_value = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-
-		var aliases = {
-			'=': 'eq',
-			'!=': 'ne',
-			'>': 'gt',
-			'>=': 'gte',
-			'<': 'lt',
-			'<=': 'lte'
-		};
-
-		var ifBlock = {
-			parent: this.currentBlock,
-			type: aliases[type] || type,
-			unless: true,
-			content: [],
-			varName: flag,
-			value: opt_value
-		};
-
-		this.currentBlock.content.push(ifBlock);
-		this.currentBlock = ifBlock;
-
-		return this;
-	};
-
-	/**
-  * Ends a condition
-  *
-  * @return {!FileStructure}
-  */
-
-	FileStructure.prototype.endUnless = function endUnless() {
-		if (!({ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true })[this.currentBlock.type]) {
-			throw new SyntaxError('Attempt to close an unopened block "#if"');
+			throw new SyntaxError('Attempt to close an unopened block "#' + (this.currentBlock.unless ? 'unless' : 'if') + '"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;

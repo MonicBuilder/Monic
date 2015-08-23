@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.2
+ * Monic v2.3.3
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 12:38:27 GMT
+ * Date: Sun, 23 Aug 2015 13:08:15 GMT
  */
 
 'use strict';
@@ -532,9 +532,10 @@ var Parser = (function () {
   * @private
   * @param {!FileStructure} struct - file structure
   * @param {string} value - directive value
+  * @param {boolean=} [opt_unless] - unless mode
   */
 
-	Parser.prototype._if = function _if(struct, value) {
+	Parser.prototype._if = function _if(struct, value, opt_unless) {
 		value = value.trim();
 
 		var args = value.split(/\s+/);
@@ -550,10 +551,10 @@ var Parser = (function () {
 		}
 
 		if (!value || args.length !== 3) {
-			throw new SyntaxError('Bad "#if" directive');
+			throw new SyntaxError('Bad "#' + (opt_unless ? 'unless' : 'if') + '" directive');
 		}
 
-		struct.beginIf.apply(struct, args);
+		struct.beginIf.apply(struct, args.concat(opt_unless));
 	};
 
 	/**
@@ -576,25 +577,7 @@ var Parser = (function () {
   */
 
 	Parser.prototype._unless = function _unless(struct, value) {
-		value = value.trim();
-
-		var args = value.split(/\s+/);
-
-		switch (args.length) {
-			case 1:
-				args.push('eq', true);
-				break;
-
-			case 2:
-				args.push(true);
-				break;
-		}
-
-		if (!value || args.length !== 3) {
-			throw new SyntaxError('Bad "#unless" directive');
-		}
-
-		struct.beginUnless.apply(struct, args);
+		this._if(struct, value, true);
 	};
 
 	/**
@@ -605,7 +588,7 @@ var Parser = (function () {
   */
 
 	Parser.prototype._endunless = function _endunless(struct) {
-		struct.endUnless();
+		struct.endIf();
 	};
 
 	/**
