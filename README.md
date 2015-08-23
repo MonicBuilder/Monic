@@ -303,7 +303,7 @@ The path format in the directive is the same as in the `#include`.
 
 ### Conditional build
 
-In the build process can be defined boolean flags that define whether or not to include selected code sections.
+In the build process can be defined special flags that define whether or not to include selected code sections.
 
 ```js
 //#set flag
