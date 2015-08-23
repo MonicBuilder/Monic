@@ -21,8 +21,10 @@ const
 	run = require('gulp-run');
 
 function getVersion() {
-	delete require.cache[require.resolve('./monic')];
-	return require('./monic').VERSION.join('.');
+	const file = fs.readFileSync('./monic.js');
+	return /VERSION\s*(?::|=)\s*\[(\d+,\s*\d+,\s*\d+)]/.exec(file)[1]
+		.split(/\s*,\s*/)
+		.join('.');
 }
 
 function getHead(opt_version) {
