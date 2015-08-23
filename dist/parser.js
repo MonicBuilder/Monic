@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 10:03:37 GMT
+ * Date: Sun, 23 Aug 2015 10:36:26 GMT
  */
 
 'use strict';
@@ -524,6 +524,35 @@ var Parser = (function () {
 
 	Parser.prototype._endlabel = function _endlabel(struct) {
 		struct.endLabel();
+	};
+
+	/**
+  * Directive #match
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+
+	Parser.prototype._match = function _match(struct, value) {
+		value = value.trim();
+
+		if (!value) {
+			throw new SyntaxError('Bad "#match" directive');
+		}
+
+		struct.beginMatch.apply(struct, value.split(/\s+/));
+	};
+
+	/**
+  * Directive #endmatch
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  */
+
+	Parser.prototype._endmatch = function _endmatch(struct) {
+		struct.endMatch();
 	};
 
 	/**

@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 10:03:37 GMT
+ * Date: Sun, 23 Aug 2015 10:36:26 GMT
  */
 
 'use strict';
@@ -178,10 +178,57 @@ var FileStructure = (function () {
 	};
 
 	/**
+  * Sets matching
+  *
+  * @param {string} type - condition type
+  * @param {string} flag - condition
+  * @param {(boolean|string)=} [opt_value] - condition value
+  * @return {!FileStructure}
+  */
+
+	FileStructure.prototype.beginMatch = function beginMatch(type, flag) {
+		var opt_value = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+		var aliases = {
+			eq: 'if',
+			ne: 'unless'
+		};
+
+		var ifBlock = {
+			parent: this.currentBlock,
+			type: aliases[type] || type,
+			content: [],
+			varName: flag,
+			value: opt_value
+		};
+
+		this.currentBlock.content.push(ifBlock);
+		this.currentBlock = ifBlock;
+
+		return this;
+	};
+
+	/**
+  * Ends matching
+  *
+  * @return {!FileStructure}
+  */
+
+	FileStructure.prototype.endMatch = function endMatch() {
+		if (!({ 'if': true, unless: true, gt: true, gte: true, lt: true, lte: true })[this.currentBlock.type]) {
+			console.log(this.currentBlock.type);
+			throw new SyntaxError('Attempt to close an unopened block "#match"');
+		}
+
+		this.currentBlock = this.currentBlock.parent;
+		return this;
+	};
+
+	/**
   * Sets a condition
   *
   * @param {string} flag - condition
-  * @param {boolean} [opt_value] - condition value
+  * @param {(boolean|string)=} [opt_value] - condition value
   * @return {!FileStructure}
   */
 
@@ -221,7 +268,7 @@ var FileStructure = (function () {
   * Sets an unless condition
   *
   * @param {string} flag - condition
-  * @param {boolean} [opt_value] - condition value
+  * @param {(boolean|string)=} [opt_value] - condition value
   * @return {!FileStructure}
   */
 
@@ -438,6 +485,18 @@ var FileStructure = (function () {
 
 			case 'unless':
 				return flags[block.varName] !== block.value;
+
+			case 'gt':
+				return Number(flags[block.varName]) > Number(block.value);
+
+			case 'gte':
+				return Number(flags[block.varName]) >= Number(block.value);
+
+			case 'lt':
+				return Number(flags[block.varName]) < Number(block.value);
+
+			case 'lte':
+				return Number(flags[block.varName]) <= Number(block.value);
 
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
