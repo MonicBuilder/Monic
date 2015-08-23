@@ -474,8 +474,9 @@ export default class Parser {
 	 * @private
 	 * @param {!FileStructure} struct - file structure
 	 * @param {string} value - directive value
+	 * @param {boolean=} [opt_unless] - unless mode
 	 */
-	_if(struct, value) {
+	_if(struct, value, opt_unless) {
 		value = value.trim();
 
 		const
@@ -492,10 +493,10 @@ export default class Parser {
 		}
 
 		if (!value || args.length !== 3) {
-			throw new SyntaxError('Bad "#if" directive');
+			throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
 		}
 
-		struct.beginIf(...args);
+		struct.beginIf(...args.concat(opt_unless));
 	}
 
 	/**
@@ -516,26 +517,7 @@ export default class Parser {
 	 * @param {string} value - directive value
 	 */
 	_unless(struct, value) {
-		value = value.trim();
-
-		const
-			args = value.split(/\s+/);
-
-		switch (args.length) {
-			case 1:
-				args.push('eq', true);
-				break;
-
-			case 2:
-				args.push(true);
-				break;
-		}
-
-		if (!value || args.length !== 3) {
-			throw new SyntaxError('Bad "#unless" directive');
-		}
-
-		struct.beginUnless(...args);
+		this._if(struct, value, true);
 	}
 
 	/**
@@ -545,7 +527,7 @@ export default class Parser {
 	 * @param {!FileStructure} struct - file structure
 	 */
 	_endunless(struct) {
-		struct.endUnless();
+		struct.endIf();
 	}
 
 	/**

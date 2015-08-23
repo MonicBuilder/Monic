@@ -142,9 +142,10 @@ export class FileStructure {
 	 * @param {string} flag - condition
 	 * @param {string} type - condition type
 	 * @param {(boolean|string)=} [opt_value] - condition value
+	 * @param {boolean=} [opt_unless] - unless mode
 	 * @return {!FileStructure}
 	 */
-	beginIf(flag, type, opt_value = true) {
+	beginIf(flag, type, opt_value = true, opt_unless = false) {
 		const aliases = {
 			'=': 'eq',
 			'!=': 'ne',
@@ -159,7 +160,8 @@ export class FileStructure {
 			type: aliases[type] || type,
 			content: [],
 			varName: flag,
-			value: opt_value
+			value: opt_value,
+			unless: opt_unless
 		};
 
 		this.currentBlock.content.push(ifBlock);
@@ -175,54 +177,7 @@ export class FileStructure {
 	 */
 	endIf() {
 		if (!{eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
-			throw new SyntaxError('Attempt to close an unopened block "#if"');
-		}
-
-		this.currentBlock = this.currentBlock.parent;
-		return this;
-	}
-
-	/**
-	 * Sets a condition
-	 *
-	 * @param {string} flag - condition
-	 * @param {string} type - condition type
-	 * @param {(boolean|string)=} [opt_value] - condition value
-	 * @return {!FileStructure}
-	 */
-	beginUnless(flag, type, opt_value = true) {
-		const aliases = {
-			'=': 'eq',
-			'!=': 'ne',
-			'>': 'gt',
-			'>=': 'gte',
-			'<': 'lt',
-			'<=': 'lte'
-		};
-
-		const ifBlock = {
-			parent: this.currentBlock,
-			type: aliases[type] || type,
-			unless: true,
-			content: [],
-			varName: flag,
-			value: opt_value
-		};
-
-		this.currentBlock.content.push(ifBlock);
-		this.currentBlock = ifBlock;
-
-		return this;
-	}
-
-	/**
-	 * Ends a condition
-	 *
-	 * @return {!FileStructure}
-	 */
-	endUnless() {
-		if (!{eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
-			throw new SyntaxError('Attempt to close an unopened block "#if"');
+			throw new SyntaxError(`Attempt to close an unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
 		}
 
 		this.currentBlock = this.currentBlock.parent;
