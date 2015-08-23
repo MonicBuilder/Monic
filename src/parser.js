@@ -469,6 +469,33 @@ export default class Parser {
 	}
 
 	/**
+	 * Directive #match
+	 *
+	 * @private
+	 * @param {!FileStructure} struct - file structure
+	 * @param {string} value - directive value
+	 */
+	_match(struct, value) {
+		value = value.trim();
+
+		if (!value) {
+			throw new SyntaxError('Bad "#match" directive');
+		}
+
+		struct.beginMatch(...value.split(/\s+/));
+	}
+
+	/**
+	 * Directive #endmatch
+	 *
+	 * @private
+	 * @param {!FileStructure} struct - file structure
+	 */
+	_endmatch(struct) {
+		struct.endMatch();
+	}
+
+	/**
 	 * Directive #if
 	 *
 	 * @private
