@@ -358,31 +358,27 @@ export default class Parser {
 	 */
 	_include(struct, value, callback) {
 		this.parsePath(struct.file, value, ok(callback, (arr) => {
-			const
-				actions = [];
-
-			$C(arr).forEach((paramsParts) => {
-				actions.push((next) => action.call(this, paramsParts, next));
-			});
+			const actions = $C(arr).reduce((arr, el) =>
+				(arr.push((next) => action.call(this, el, next)), arr), []);
 
 			async.series(actions, callback);
 		}));
 
-		function action(paramsParts, next) {
+		function action(param, next) {
 			const
-				includeFileName = paramsParts.shift();
+				includeFileName = String(param.shift());
 
-			paramsParts = $C(paramsParts).reduce((map, el) =>
+			param = $C(param).reduce((map, el) =>
 				(map[el] = true, map), {});
 
 			if (includeFileName) {
 				this.parseFile(struct.getRelativePathOf(includeFileName), ok(next, (includeFile) => {
-					struct.addInclude(includeFile, paramsParts);
+					struct.addInclude(includeFile, param);
 					next();
 				}));
 
 			} else {
-				$C(paramsParts).forEach((el, key) => struct.root.labels[key] = true);
+				$C(param).forEach((el, key) => struct.root.labels[key] = true);
 				next();
 			}
 		}
@@ -398,25 +394,21 @@ export default class Parser {
 	 */
 	_without(struct, value, callback) {
 		this.parsePath(struct.file, value, ok(callback, (arr) => {
-			const
-				actions = [];
-
-			$C(arr).forEach((paramsParts) => {
-				actions.push((next) => action.call(this, paramsParts, next));
-			});
+			const actions = $C(arr).reduce((arr, el) =>
+				(arr.push((next) => action.call(this, el, next)), arr), []);
 
 			async.series(actions, callback);
 		}));
 
-		function action(paramsParts, next) {
+		function action(param, next) {
 			const
-				includedFile = struct.getRelativePathOf(paramsParts.shift());
+				includedFile = struct.getRelativePathOf(String(param.shift()));
 
-			paramsParts = $C(paramsParts).reduce((map, el) =>
+			param = $C(param).reduce((map, el) =>
 				(map[el] = true, map), {});
 
 			this.parseFile(includedFile, ok(next, (includeFile) => {
-				struct.addWithout(includeFile, paramsParts);
+				struct.addWithout(includeFile, param);
 				next();
 			}));
 		}
