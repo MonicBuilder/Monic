@@ -228,7 +228,7 @@ export default class Parser {
 
 		async.series(actions, ok(callback, () => {
 			const
-				fileStructure = new FileStructure({file, eol: this.eol, globals: this.flags}),
+				fileStructure = new FileStructure({file, globals: this.flags}),
 				lines = content.split(/\r?\n|\r/);
 
 			this.cache[file] = fileStructure;

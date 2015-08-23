@@ -17,13 +17,10 @@ import { $C } from 'collection.js';
 export class FileStructure {
 	/**
 	 * @param {string} file - file path
-	 * @param {string} eol - EOL symbol
 	 * @param {!Object} globals - map of global Monic flags
 	 */
-	constructor({file, eol, globals}) {
+	constructor({file, globals}) {
 		this.file = file;
-		this.eol = eol;
-
 		this.root = {
 			type: 'root',
 			content: [],
