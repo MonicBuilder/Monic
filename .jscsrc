@@ -46,6 +46,7 @@
       "#without",
       "#label",
       "#endlabel",
+      "#match",
       "#if",
       "#endif",
       "#unless",
