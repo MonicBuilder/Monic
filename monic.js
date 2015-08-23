@@ -17,7 +17,8 @@ const
 	async = require('async'),
 	mkdirp = require('mkdirp'),
 	ok = require('okay'),
-	promisify = require('promisify-any');
+	promisify = require('promisify-any'),
+	assign = require('object-assign');
 
 /** @type {!Array} */
 exports.VERSION = [2, 3, 0];
@@ -52,22 +53,18 @@ exports.compile = function (file, opt_params, opt_callback) {
 };
 
 function compile(file, params, callback) {
-	params = params || {};
-
-	params.flags = params.flags || {};
-	params.labels = params.labels || {};
-	params.mode = params.mode || '0777';
+	file = url(file);
+	params = assign({
+		flags: {},
+		labels: {},
+		eol: '\n',
+		mode: '0777'
+	}, params);
 
 	const
 		sourceMaps = params.sourceMaps,
-		eol = params.eol || '\n';
-
-	file = url(file);
-
-	const
 		sourceRoot = url(params.sourceRoot),
-		fileToSave = params.file ?
-			url(params.file) : file;
+		fileToSave = params.file ? url(params.file) : file;
 
 	const
 		sourceMapFile = sourceMaps && (params.sourceMapFile ? url(params.sourceMapFile) : fileToSave + '.map'),
@@ -148,7 +145,7 @@ function compile(file, params, callback) {
 	}
 
 	const parser = new Parser({
-		eol: eol,
+		eol: params.eol,
 		replacers: params.replacers,
 		flags: params.flags,
 		sourceMaps: Boolean(sourceMaps),
