@@ -310,13 +310,64 @@ In the build process can be defined boolean flags that define whether or not to 
 
 //#if flag
 alert('flag');
-//#endif
-
-//#if not flag
-alert('not flag');
+/*? Or //#end if */
 //#endif
 
 //#unset flag
+
+//#unless flag
+alert('not flag');
+/*? Or //#end unless */
+//#endunless
+```
+
+Flags can take values.
+
+```js
+//#set ie 7
+
+//#if ie 7
+alert('OMG!');
+//#endif
+
+//#unless ie 7
+alert('Cool!');
+//#endunless
+```
+
+The `#math` provides the most flexible interface to work with conditions.
+
+```js
+//#set ie 7
+
+//#match eq ie 7
+alert('eq ie 7');
+/*? Or //#end match */
+//#endmatch
+
+//#match ne ie 8
+alert('ne ie 8');
+//#endmatch
+
+//#match ne ie 7
+alert('ne ie 7');
+//#endmatch
+
+//#match gt ie 6
+alert('gt ie 6');
+//#endmatch
+
+//#match gte ie 7
+alert('gte ie 7');
+//#endmatch
+
+//#match lt ie 8
+alert('lt ie 6');
+//#endmatch
+
+//#match lte ie 7
+alert('lte ie 7');
+//#endmatch
 ```
 
 All the flags are declared globally. To set them in your code, you should use the directives `#set` and `#unset`,
@@ -345,6 +396,18 @@ alert('IE only');
 
 Similarly, you can create a debug flag and write debug code within `//#if debug ... //#endif`,
 that code never gets to production server.
+
+#### Using the flags inside a path patterns
+
+The flags that were specified as a build parameter or in the global scope of a file can be used inside
+`#include` and `#without` with using a special syntax.
+
+```js
+//#set lang en
+//#include lang/${lang}.json
+```
+
+If the flag doesn't exist, then will be inserted an empty string.
 
 ### Including chunks of files
 
