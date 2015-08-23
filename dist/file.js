@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.1
+ * Monic v2.3.2
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 12:03:35 GMT
+ * Date: Sun, 23 Aug 2015 12:38:27 GMT
  */
 
 'use strict';
@@ -178,7 +178,7 @@ var FileStructure = (function () {
 	};
 
 	/**
-  * Sets matching
+  * Sets a condition
   *
   * @param {string} flag - condition
   * @param {string} type - condition type
@@ -186,14 +186,12 @@ var FileStructure = (function () {
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.beginMatch = function beginMatch(flag, type) {
+	FileStructure.prototype.beginIf = function beginIf(flag, type) {
 		var opt_value = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
 		var aliases = {
-			eq: 'if',
-			ne: 'unless',
-			'=': 'if',
-			'!=': 'unless',
+			'=': 'eq',
+			'!=': 'ne',
 			'>': 'gt',
 			'>=': 'gte',
 			'<': 'lt',
@@ -215,15 +213,14 @@ var FileStructure = (function () {
 	};
 
 	/**
-  * Ends matching
+  * Ends a condition
   *
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.endMatch = function endMatch() {
-		if (!({ 'if': true, unless: true, gt: true, gte: true, lt: true, lte: true })[this.currentBlock.type]) {
-			console.log(this.currentBlock.type);
-			throw new SyntaxError('Attempt to close an unopened block "#match"');
+	FileStructure.prototype.endIf = function endIf() {
+		if (!({ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true })[this.currentBlock.type]) {
+			throw new SyntaxError('Attempt to close an unopened block "#if"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -234,16 +231,27 @@ var FileStructure = (function () {
   * Sets a condition
   *
   * @param {string} flag - condition
+  * @param {string} type - condition type
   * @param {(boolean|string)=} [opt_value] - condition value
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.beginIf = function beginIf(flag) {
-		var opt_value = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+	FileStructure.prototype.beginUnless = function beginUnless(flag, type) {
+		var opt_value = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+
+		var aliases = {
+			'=': 'eq',
+			'!=': 'ne',
+			'>': 'gt',
+			'>=': 'gte',
+			'<': 'lt',
+			'<=': 'lte'
+		};
 
 		var ifBlock = {
 			parent: this.currentBlock,
-			type: 'if',
+			type: aliases[type] || type,
+			unless: true,
 			content: [],
 			varName: flag,
 			value: opt_value
@@ -261,49 +269,9 @@ var FileStructure = (function () {
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.endIf = function endIf() {
-		if (this.currentBlock.type != 'if') {
-			throw new SyntaxError('Attempt to close an unopened block "#if"');
-		}
-
-		this.currentBlock = this.currentBlock.parent;
-		return this;
-	};
-
-	/**
-  * Sets an unless condition
-  *
-  * @param {string} flag - condition
-  * @param {(boolean|string)=} [opt_value] - condition value
-  * @return {!FileStructure}
-  */
-
-	FileStructure.prototype.beginUnless = function beginUnless(flag) {
-		var opt_value = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
-
-		var ifBlock = {
-			parent: this.currentBlock,
-			type: 'unless',
-			content: [],
-			varName: flag,
-			value: opt_value
-		};
-
-		this.currentBlock.content.push(ifBlock);
-		this.currentBlock = ifBlock;
-
-		return this;
-	};
-
-	/**
-  * Ends an unless condition
-  *
-  * @return {!FileStructure}
-  */
-
 	FileStructure.prototype.endUnless = function endUnless() {
-		if (this.currentBlock.type != 'unless') {
-			throw new SyntaxError('Attempt to close an unopened block "#unless"');
+		if (!({ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true })[this.currentBlock.type]) {
+			throw new SyntaxError('Attempt to close an unopened block "#if"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -482,33 +450,44 @@ var FileStructure = (function () {
   */
 
 	FileStructure.isValidContentBlock = function isValidContentBlock(block, labels, flags) {
+		var res = undefined;
 		switch (block.type) {
 			case 'root':
 				return true;
 
-			case 'if':
-				return flags[block.varName] === block.value;
-
-			case 'unless':
-				return flags[block.varName] !== block.value;
-
-			case 'gt':
-				return Number(flags[block.varName]) > Number(block.value);
-
-			case 'gte':
-				return Number(flags[block.varName]) >= Number(block.value);
-
-			case 'lt':
-				return Number(flags[block.varName]) < Number(block.value);
-
-			case 'lte':
-				return Number(flags[block.varName]) <= Number(block.value);
-
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
+
+			case 'eq':
+				res = flags[block.varName] === block.value;
+				break;
+
+			case 'ne':
+				res = flags[block.varName] !== block.value;
+				break;
+
+			case 'gt':
+				res = Number(flags[block.varName]) > Number(block.value);
+				break;
+
+			case 'gte':
+				res = Number(flags[block.varName]) >= Number(block.value);
+				break;
+
+			case 'lt':
+				res = Number(flags[block.varName]) < Number(block.value);
+				break;
+
+			case 'lte':
+				res = Number(flags[block.varName]) <= Number(block.value);
+				break;
 		}
 
-		return false;
+		if (block.unless) {
+			res = !res;
+		}
+
+		return res || false;
 	};
 
 	return FileStructure;

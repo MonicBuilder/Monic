@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.1
+ * Monic v2.3.2
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 12:03:35 GMT
+ * Date: Sun, 23 Aug 2015 12:38:27 GMT
  */
 
 'use strict';
@@ -527,14 +527,14 @@ var Parser = (function () {
 	};
 
 	/**
-  * Directive #match
+  * Directive #if
   *
   * @private
   * @param {!FileStructure} struct - file structure
   * @param {string} value - directive value
   */
 
-	Parser.prototype._match = function _match(struct, value) {
+	Parser.prototype._if = function _if(struct, value) {
 		value = value.trim();
 
 		var args = value.split(/\s+/);
@@ -550,39 +550,10 @@ var Parser = (function () {
 		}
 
 		if (!value || args.length !== 3) {
-			throw new SyntaxError('Bad "#match" directive');
-		}
-
-		struct.beginMatch.apply(struct, args);
-	};
-
-	/**
-  * Directive #endmatch
-  *
-  * @private
-  * @param {!FileStructure} struct - file structure
-  */
-
-	Parser.prototype._endmatch = function _endmatch(struct) {
-		struct.endMatch();
-	};
-
-	/**
-  * Directive #if
-  *
-  * @private
-  * @param {!FileStructure} struct - file structure
-  * @param {string} value - directive value
-  */
-
-	Parser.prototype._if = function _if(struct, value) {
-		value = value.trim();
-
-		if (!value) {
 			throw new SyntaxError('Bad "#if" directive');
 		}
 
-		struct.beginIf.apply(struct, value.split(/\s+/));
+		struct.beginIf.apply(struct, args);
 	};
 
 	/**
@@ -607,11 +578,23 @@ var Parser = (function () {
 	Parser.prototype._unless = function _unless(struct, value) {
 		value = value.trim();
 
-		if (!value) {
+		var args = value.split(/\s+/);
+
+		switch (args.length) {
+			case 1:
+				args.push('eq', true);
+				break;
+
+			case 2:
+				args.push(true);
+				break;
+		}
+
+		if (!value || args.length !== 3) {
 			throw new SyntaxError('Bad "#unless" directive');
 		}
 
-		struct.beginUnless.apply(struct, value.split(/\s+/));
+		struct.beginUnless.apply(struct, args);
 	};
 
 	/**
