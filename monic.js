@@ -150,6 +150,7 @@ function compile(file, params, callback) {
 	const parser = new Parser({
 		eol: eol,
 		replacers: params.replacers,
+		flags: params.flags,
 		sourceMaps: Boolean(sourceMaps),
 		sourceRoot: sourceRoot,
 		inputSourceMap: params.inputSourceMap

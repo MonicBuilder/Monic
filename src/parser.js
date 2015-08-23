@@ -24,13 +24,15 @@ export default class Parser {
 	/**
 	 * @param {string} eol - EOL symbol
 	 * @param {Array=} [replacers] - array of transform functions
+	 * @param {Object=} [flags] - map of global Monic flags
 	 * @param {boolean} sourceMaps - if is true, then will be enabled support for source maps
 	 * @param {Object=} [inputSourceMap] - base source map object for the output source map
 	 * @param {?string=} [sourceRoot] - root for all URLs in the generated source map
 	 */
-	constructor({eol, replacers, sourceMaps, sourceRoot, inputSourceMap}) {
+	constructor({eol, replacers, flags, sourceMaps, sourceRoot, inputSourceMap}) {
 		this.eol = eol;
 		this.replacers = replacers;
+		this.flags = JSON.parse(JSON.stringify(flags));
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;
@@ -98,8 +100,11 @@ export default class Parser {
 	parsePath(base, src, callback) {
 		const
 			parts = src.split('::'),
-			dirname = path.dirname(base),
-			pattern = path.join(dirname, parts[0]);
+			dirname = path.dirname(base);
+
+		const
+			pattern = path.join(dirname, parts[0]).replace(/\$\{(.*?)}/, (sstr, flag) =>
+				flag in this.flags ? this.flags[flag] : '');
 
 		if (glob.hasMagic(pattern)) {
 			glob(pattern, null, ok(callback, (files) => {
@@ -220,7 +225,7 @@ export default class Parser {
 
 		async.series(actions, ok(callback, () => {
 			const
-				fileStructure = new FileStructure({file, eol: this.eol}),
+				fileStructure = new FileStructure({file, eol: this.eol, globals: this.flags}),
 				lines = content.split(/\r?\n|\r/);
 
 			this.cache[file] = fileStructure;

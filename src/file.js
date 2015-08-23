@@ -18,8 +18,9 @@ export class FileStructure {
 	/**
 	 * @param {string} file - file path
 	 * @param {string} eol - EOL symbol
+	 * @param {!Object} globals - map of global Monic flags
 	 */
-	constructor({file, eol}) {
+	constructor({file, eol, globals}) {
 		this.file = file;
 		this.eol = eol;
 
@@ -32,6 +33,7 @@ export class FileStructure {
 		this.uid = uid();
 		this.currentBlock = this.root;
 		this.included = {};
+		this.globals = globals;
 	}
 
 	/**
@@ -104,6 +106,10 @@ export class FileStructure {
 	 * @return {!FileStructure}
 	 */
 	addSet(flag, opt_value = true) {
+		if (this.currentBlock.type === 'root') {
+			this.globals[flag] = opt_value;
+		}
+
 		this.currentBlock.content.push({
 			type: 'set',
 			varName: flag,
@@ -120,6 +126,10 @@ export class FileStructure {
 	 * @return {!FileStructure}
 	 */
 	addUnset(flag) {
+		if (this.currentBlock.type === 'root') {
+			delete this.globals[flag];
+		}
+
 		this.currentBlock.content.push({
 			type: 'set',
 			varName: flag,
