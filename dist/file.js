@@ -1,16 +1,20 @@
 /*!
- * Monic v2.2.2
+ * Monic v2.3.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Thu, 30 Jul 2015 09:47:47 GMT
+ * Date: Sun, 23 Aug 2015 10:03:37 GMT
  */
 
 'use strict';
 
 exports.__esModule = true;
+// istanbul ignore next
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
 // istanbul ignore next
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -25,7 +29,7 @@ var _uid2 = _interopRequireDefault(_uid);
 
 var _path = require('path');
 
-var _path2 = _interopRequireDefault(_path);
+var path = _interopRequireWildcard(_path);
 
 var _parser = require('./parser');
 
@@ -40,18 +44,16 @@ var _collectionJs = require('collection.js');
 var FileStructure = (function () {
 	/**
   * @param {string} file - file path
-  * @param {string} eol - EOL symbol
+  * @param {!Object} globals - map of global Monic flags
   */
 
 	function FileStructure(_ref) {
 		var file = _ref.file;
-		var eol = _ref.eol;
+		var globals = _ref.globals;
 
 		_classCallCheck(this, FileStructure);
 
 		this.file = file;
-		this.eol = eol;
-
 		this.root = {
 			type: 'root',
 			content: [],
@@ -61,6 +63,7 @@ var FileStructure = (function () {
 		this.uid = _uid2['default']();
 		this.currentBlock = this.root;
 		this.included = {};
+		this.globals = globals;
 	}
 
 	/**
@@ -71,7 +74,7 @@ var FileStructure = (function () {
   */
 
 	FileStructure.prototype.getRelativePathOf = function getRelativePathOf(src) {
-		return _parser2['default'].normalizePath(_path2['default'].resolve(_path2['default'].dirname(this.file), src));
+		return _parser2['default'].normalizePath(path.resolve(path.dirname(this.file), src));
 	};
 
 	/**
@@ -133,14 +136,21 @@ var FileStructure = (function () {
   * Sets a flag
   *
   * @param {string} flag - flag name
+  * @param {boolean=} [opt_value] - flag value
   * @return {!FileStructure}
   */
 
 	FileStructure.prototype.addSet = function addSet(flag) {
+		var opt_value = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+		if (this.currentBlock.type === 'root') {
+			this.globals[flag] = opt_value;
+		}
+
 		this.currentBlock.content.push({
 			type: 'set',
 			varName: flag,
-			value: true
+			value: opt_value
 		});
 
 		return this;
@@ -154,6 +164,10 @@ var FileStructure = (function () {
   */
 
 	FileStructure.prototype.addUnset = function addUnset(flag) {
+		if (this.currentBlock.type === 'root') {
+			delete this.globals[flag];
+		}
+
 		this.currentBlock.content.push({
 			type: 'set',
 			varName: flag,
@@ -167,17 +181,19 @@ var FileStructure = (function () {
   * Sets a condition
   *
   * @param {string} flag - condition
-  * @param {boolean} value - condition value
+  * @param {boolean} [opt_value] - condition value
   * @return {!FileStructure}
   */
 
-	FileStructure.prototype.beginIf = function beginIf(flag, value) {
+	FileStructure.prototype.beginIf = function beginIf(flag) {
+		var opt_value = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
 		var ifBlock = {
 			parent: this.currentBlock,
 			type: 'if',
 			content: [],
 			varName: flag,
-			value: value
+			value: opt_value
 		};
 
 		this.currentBlock.content.push(ifBlock);
@@ -195,6 +211,46 @@ var FileStructure = (function () {
 	FileStructure.prototype.endIf = function endIf() {
 		if (this.currentBlock.type != 'if') {
 			throw new SyntaxError('Attempt to close an unopened block "#if"');
+		}
+
+		this.currentBlock = this.currentBlock.parent;
+		return this;
+	};
+
+	/**
+  * Sets an unless condition
+  *
+  * @param {string} flag - condition
+  * @param {boolean} [opt_value] - condition value
+  * @return {!FileStructure}
+  */
+
+	FileStructure.prototype.beginUnless = function beginUnless(flag) {
+		var opt_value = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+		var ifBlock = {
+			parent: this.currentBlock,
+			type: 'unless',
+			content: [],
+			varName: flag,
+			value: opt_value
+		};
+
+		this.currentBlock.content.push(ifBlock);
+		this.currentBlock = ifBlock;
+
+		return this;
+	};
+
+	/**
+  * Ends an unless condition
+  *
+  * @return {!FileStructure}
+  */
+
+	FileStructure.prototype.endUnless = function endUnless() {
+		if (this.currentBlock.type != 'unless') {
+			throw new SyntaxError('Attempt to close an unopened block "#unless"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -378,7 +434,10 @@ var FileStructure = (function () {
 				return true;
 
 			case 'if':
-				return Boolean(flags[block.varName]) === Boolean(block.value);
+				return flags[block.varName] === block.value;
+
+			case 'unless':
+				return flags[block.varName] !== block.value;
 
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);

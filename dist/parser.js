@@ -1,16 +1,20 @@
 /*!
- * Monic v2.2.2
+ * Monic v2.3.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Thu, 30 Jul 2015 09:47:47 GMT
+ * Date: Sun, 23 Aug 2015 10:03:37 GMT
  */
 
 'use strict';
 
 exports.__esModule = true;
+// istanbul ignore next
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
 // istanbul ignore next
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -19,25 +23,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _path = require('path');
+var _okay = require('okay');
 
-var _path2 = _interopRequireDefault(_path);
+var _okay2 = _interopRequireDefault(_okay);
 
 var _glob = require('glob');
 
 var _glob2 = _interopRequireDefault(_glob);
 
+var _objectAssign = require('object-assign');
+
+var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
+var _path = require('path');
+
+var path = _interopRequireWildcard(_path);
+
 var _fs = require('fs');
 
-var _fs2 = _interopRequireDefault(_fs);
-
-var _okay = require('okay');
-
-var _okay2 = _interopRequireDefault(_okay);
+var fs = _interopRequireWildcard(_fs);
 
 var _async = require('async');
 
-var _async2 = _interopRequireDefault(_async);
+var async = _interopRequireWildcard(_async);
 
 var _file = require('./file');
 
@@ -53,6 +61,7 @@ var Parser = (function () {
 	/**
   * @param {string} eol - EOL symbol
   * @param {Array=} [replacers] - array of transform functions
+  * @param {Object=} [flags] - map of global Monic flags
   * @param {boolean} sourceMaps - if is true, then will be enabled support for source maps
   * @param {Object=} [inputSourceMap] - base source map object for the output source map
   * @param {?string=} [sourceRoot] - root for all URLs in the generated source map
@@ -61,6 +70,7 @@ var Parser = (function () {
 	function Parser(_ref) {
 		var eol = _ref.eol;
 		var replacers = _ref.replacers;
+		var flags = _ref.flags;
 		var sourceMaps = _ref.sourceMaps;
 		var sourceRoot = _ref.sourceRoot;
 		var inputSourceMap = _ref.inputSourceMap;
@@ -69,6 +79,7 @@ var Parser = (function () {
 
 		this.eol = eol;
 		this.replacers = replacers;
+		this.flags = _objectAssign2['default']({}, flags);
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;
@@ -84,7 +95,7 @@ var Parser = (function () {
   */
 
 	Parser.normalizePath = function normalizePath(src) {
-		return _path2['default'].normalize(src).split(_path2['default'].sep).join('/');
+		return path.normalize(src).split(path.sep).join('/');
 	};
 
 	/**
@@ -96,7 +107,7 @@ var Parser = (function () {
   */
 
 	Parser.getRelativePath = function getRelativePath(from, to) {
-		return Parser.normalizePath(_path2['default'].relative(from, to));
+		return Parser.normalizePath(path.relative(from, to));
 	};
 
 	/**
@@ -112,13 +123,13 @@ var Parser = (function () {
 
 		var _this = this;
 
-		file = Parser.normalizePath(_path2['default'].resolve(file));
+		file = Parser.normalizePath(path.resolve(file));
 
 		if (this.realpathCache[file]) {
 			callback(null, file);
 		} else {
-			_async2['default'].waterfall([function (next) {
-				return _fs2['default'].stat(file, next);
+			async.waterfall([function (next) {
+				return fs.stat(file, next);
 			}, function (stat, next) {
 				if (!stat.isFile()) {
 					return next(new Error('"' + file + '" is not a file'));
@@ -139,14 +150,23 @@ var Parser = (function () {
   */
 
 	Parser.prototype.parsePath = function parsePath(base, src, callback) {
+		// istanbul ignore next
+
+		var _this2 = this;
+
 		var parts = src.split('::'),
-		    dirname = _path2['default'].dirname(base),
-		    pattern = _path2['default'].join(dirname, parts[0]);
+		    dirname = path.dirname(base);
+
+		parts[0] = parts[0].replace(/\$\{(.*?)}/g, function (sstr, flag) {
+			return flag in _this2.flags ? _this2.flags[flag] : '';
+		});
+
+		var pattern = path.join(dirname, parts[0]);
 
 		if (_glob2['default'].hasMagic(pattern)) {
 			_glob2['default'](pattern, null, _okay2['default'](callback, function (files) {
 				callback(null, _collectionJs.$C(files).reduce(function (res, el) {
-					parts[0] = _path2['default'].relative(dirname, el);
+					parts[0] = path.relative(dirname, el);
 					res.push(parts.slice());
 					return res;
 				}, []));
@@ -166,16 +186,16 @@ var Parser = (function () {
 	Parser.prototype.parseFile = function parseFile(file, callback) {
 		// istanbul ignore next
 
-		var _this2 = this;
+		var _this3 = this;
 
-		_async2['default'].waterfall([function (next) {
-			return _this2.testFile(file, next);
+		async.waterfall([function (next) {
+			return _this3.testFile(file, next);
 		}, function (src, next) {
-			if (_this2.cache[src]) {
-				return next(null, src, _this2.cache[src]);
+			if (_this3.cache[src]) {
+				return next(null, src, _this3.cache[src]);
 			}
 
-			_fs2['default'].readFile(src, 'utf8', function (err, content) {
+			fs.readFile(src, 'utf8', function (err, content) {
 				return next(err, src, content);
 			});
 		}, function (src, content, next) {
@@ -183,7 +203,7 @@ var Parser = (function () {
 				return next(null, content, src);
 			}
 
-			_this2.parse(src, content, next);
+			_this3.parse(src, content, next);
 		}], callback);
 	};
 
@@ -198,7 +218,7 @@ var Parser = (function () {
 	Parser.prototype.parse = function parse(file, content, callback) {
 		// istanbul ignore next
 
-		var _this3 = this;
+		var _this4 = this;
 
 		if (this.cache[file]) {
 			return callback(null, this.cache[file], file);
@@ -209,12 +229,12 @@ var Parser = (function () {
 		_collectionJs.$C(this.replacers).forEach(function (replacer) {
 			actions.push(function (next) {
 				if (replacer.length > 2) {
-					replacer.call(_this3, content, file, function (err, res) {
+					replacer.call(_this4, content, file, function (err, res) {
 						return next(err, err ? void 0 : content = res);
 					});
 				} else {
 					try {
-						content = replacer.call(_this3, content, file);
+						content = replacer.call(_this4, content, file);
 						next();
 					} catch (err) {
 						err.fileName = file;
@@ -234,7 +254,7 @@ var Parser = (function () {
 						if (/data:application\/json;base64,(.*)/.exec(url)) {
 							parse(new Buffer(RegExp.$1, 'base64').toString());
 						} else {
-							_fs2['default'].readFile(_path2['default'].normalize(_path2['default'].resolve(_path2['default'].dirname(file), url)), 'utf8', function (err, str) {
+							fs.readFile(path.normalize(path.resolve(path.dirname(file), url)), 'utf8', function (err, str) {
 								parse(str);
 							});
 						}
@@ -254,11 +274,11 @@ var Parser = (function () {
 			}
 		}
 
-		_async2['default'].series(actions, _okay2['default'](callback, function () {
-			var fileStructure = new _file.FileStructure({ file: file, eol: _this3.eol }),
+		async.series(actions, _okay2['default'](callback, function () {
+			var fileStructure = new _file.FileStructure({ file: file, globals: _this4.flags }),
 			    lines = content.split(/\r?\n|\r/);
 
-			_this3.cache[file] = fileStructure;
+			_this4.cache[file] = fileStructure;
 			var parseLines = function parseLines(start) {
 				var info = undefined,
 				    i = undefined;
@@ -300,10 +320,10 @@ var Parser = (function () {
 
 								_collectionJs.$C(originalMap).forEach(function (el) {
 									if (el.source === src) {
-										el.source = Parser.normalizePath(_path2['default'].resolve(el.source));
+										el.source = Parser.normalizePath(path.resolve(el.source));
 
-										if (_this3.sourceRoot) {
-											el.source = Parser.getRelativePath(_this3.sourceRoot, el.source);
+										if (_this4.sourceRoot) {
+											el.source = Parser.getRelativePath(_this4.sourceRoot, el.source);
 										}
 
 										el.sourcesContent = content;
@@ -319,9 +339,9 @@ var Parser = (function () {
 				for (i = start; i < lines.length; i++) {
 					var pos = i + 1,
 					    line = lines[i],
-					    val = line + _this3.eol;
+					    val = line + _this4.eol;
 
-					if (_this3.sourceMaps) {
+					if (_this4.sourceMaps) {
 						if (original) {
 							info = original[pos] || { ignore: true };
 						} else {
@@ -335,9 +355,9 @@ var Parser = (function () {
 									column: 0
 								},
 
-								source: _this3.sourceRoot ? Parser.getRelativePath(_this3.sourceRoot, file) : file,
+								source: _this4.sourceRoot ? Parser.getRelativePath(_this4.sourceRoot, file) : file,
 
-								sourcesContent: content || _this3.eol,
+								sourcesContent: content || _this4.eol,
 								line: line
 							};
 						}
@@ -352,10 +372,10 @@ var Parser = (function () {
 							    params = command.join(' ');
 
 							if (/^(?:include|without)$/.test(dir)) {
-								return _this3[key](fileStructure, params, asyncParseCallback);
-							} else if (_this3[key]) {
+								return _this4[key](fileStructure, params, asyncParseCallback);
+							} else if (_this4[key]) {
 								try {
-									_this3[key](fileStructure, params);
+									_this4[key](fileStructure, params);
 								} catch (err) {
 									return error(err);
 								}
@@ -387,34 +407,32 @@ var Parser = (function () {
 	Parser.prototype._include = function _include(struct, value, callback) {
 		// istanbul ignore next
 
-		var _this4 = this;
+		var _this5 = this;
 
 		this.parsePath(struct.file, value, _okay2['default'](callback, function (arr) {
-			var actions = [];
+			var actions = _collectionJs.$C(arr).reduce(function (arr, el) {
+				return (arr.push(function (next) {
+					return action.call(_this5, el, next);
+				}), arr);
+			}, []);
 
-			_collectionJs.$C(arr).forEach(function (paramsParts) {
-				actions.push(function (next) {
-					return action.call(_this4, paramsParts, next);
-				});
-			});
-
-			_async2['default'].series(actions, callback);
+			async.series(actions, callback);
 		}));
 
-		function action(paramsParts, next) {
-			var includeFileName = paramsParts.shift();
+		function action(param, next) {
+			var includeFileName = String(param.shift());
 
-			paramsParts = _collectionJs.$C(paramsParts).reduce(function (map, el) {
+			param = _collectionJs.$C(param).reduce(function (map, el) {
 				return (map[el] = true, map);
 			}, {});
 
 			if (includeFileName) {
 				this.parseFile(struct.getRelativePathOf(includeFileName), _okay2['default'](next, function (includeFile) {
-					struct.addInclude(includeFile, paramsParts);
+					struct.addInclude(includeFile, param);
 					next();
 				}));
 			} else {
-				_collectionJs.$C(paramsParts).forEach(function (el, key) {
+				_collectionJs.$C(param).forEach(function (el, key) {
 					return struct.root.labels[key] = true;
 				});
 				next();
@@ -434,32 +452,55 @@ var Parser = (function () {
 	Parser.prototype._without = function _without(struct, value, callback) {
 		// istanbul ignore next
 
-		var _this5 = this;
+		var _this6 = this;
 
 		this.parsePath(struct.file, value, _okay2['default'](callback, function (arr) {
-			var actions = [];
+			var actions = _collectionJs.$C(arr).reduce(function (arr, el) {
+				return (arr.push(function (next) {
+					return action.call(_this6, el, next);
+				}), arr);
+			}, []);
 
-			_collectionJs.$C(arr).forEach(function (paramsParts) {
-				actions.push(function (next) {
-					return action.call(_this5, paramsParts, next);
-				});
-			});
-
-			_async2['default'].series(actions, callback);
+			async.series(actions, callback);
 		}));
 
-		function action(paramsParts, next) {
-			var includedFile = struct.getRelativePathOf(paramsParts.shift());
+		function action(param, next) {
+			var includedFile = struct.getRelativePathOf(String(param.shift()));
 
-			paramsParts = _collectionJs.$C(paramsParts).reduce(function (map, el) {
+			param = _collectionJs.$C(param).reduce(function (map, el) {
 				return (map[el] = true, map);
 			}, {});
 
 			this.parseFile(includedFile, _okay2['default'](next, function (includeFile) {
-				struct.addWithout(includeFile, paramsParts);
+				struct.addWithout(includeFile, param);
 				next();
 			}));
 		}
+	};
+
+	/**
+  * Directive #end
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+
+	Parser.prototype._end = function _end(struct, value) {
+		value = value.trim();
+
+		if (!value) {
+			throw new SyntaxError('Bad "#end" directive');
+		}
+
+		var args = value.split(/\s+/),
+		    key = '_end' + args[0];
+
+		if (!this[key]) {
+			throw new SyntaxError('Bad value (' + args[0] + ') for "#end" directive');
+		}
+
+		this[key](struct, args.join(' '));
 	};
 
 	/**
@@ -497,19 +538,10 @@ var Parser = (function () {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "if" directive');
+			throw new SyntaxError('Bad "#if" directive');
 		}
 
-		var args = value.split(/\s+/);
-
-		var res = true;
-
-		if (args.length > 1 && args[0] === 'not') {
-			res = false;
-			args.shift();
-		}
-
-		struct.beginIf(args[0], res);
+		struct.beginIf.apply(struct, value.split(/\s+/));
 	};
 
 	/**
@@ -524,6 +556,35 @@ var Parser = (function () {
 	};
 
 	/**
+  * Directive #unless
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+
+	Parser.prototype._unless = function _unless(struct, value) {
+		value = value.trim();
+
+		if (!value) {
+			throw new SyntaxError('Bad "#unless" directive');
+		}
+
+		struct.beginUnless.apply(struct, value.split(/\s+/));
+	};
+
+	/**
+  * Directive #endunless
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  */
+
+	Parser.prototype._endunless = function _endunless(struct) {
+		struct.endUnless();
+	};
+
+	/**
   * Directive #set
   *
   * @private
@@ -535,10 +596,10 @@ var Parser = (function () {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "set" directive');
+			throw new SyntaxError('Bad "#set" directive');
 		}
 
-		struct.addSet(value);
+		struct.addSet.apply(struct, value.split(/\s+/));
 	};
 
 	/**
@@ -553,7 +614,7 @@ var Parser = (function () {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "unset" directive');
+			throw new SyntaxError('Bad "#unset" directive');
 		}
 
 		struct.addUnset(value);
