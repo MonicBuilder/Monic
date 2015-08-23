@@ -397,7 +397,7 @@ alert('IE only');
 Similarly, you can create a debug flag and write debug code within `//#if debug ... //#endif`,
 that code never gets to production server.
 
-#### Using the flags inside a path patterns
+#### Using the flags inside path patterns
 
 The flags that were specified as a build parameter or in the global scope of a file can be used inside
 `#include` and `#without` with using a special syntax.
