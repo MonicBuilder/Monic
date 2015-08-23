@@ -1,19 +1,19 @@
 //#set a
 //#if a
 alert('a');
-//#endif
+//#end if
 
-//#if not a
+//#unless a
 alert('not a');
-//#endif
+//#end unless
 
 alert('-');
 
 //#unset a
 //#if a
 alert('a');
-//#endif
+//#end if
 
-//#if not a
+//#unless a
 alert('not a');
-//#endif
+//#end unless

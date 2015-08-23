@@ -1,18 +1,18 @@
 //#include ::
-//#if not foo
+//#unless foo
 alert(4);
-//#endif
+//#end unless
 //#label bar
 alert(5);
-//#endlabel
+//#end label
 //#include test-1.js
 alert(2);
 //#if foo
 alert(3);
-//#endif
-//#if not foo
+//#end if
+//#unless foo
 alert(4);
-//#endif
+//#end unless
 //#label car
 alert(6);
-//#endlabel
+//#end label
