@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.3
+ * Monic v2.3.4
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 23 Aug 2015 13:08:15 GMT
+ * Date: Sat, 05 Sep 2015 13:08:56 GMT
  */
 
 'use strict';
@@ -30,10 +30,6 @@ var _okay2 = _interopRequireDefault(_okay);
 var _glob = require('glob');
 
 var _glob2 = _interopRequireDefault(_glob);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
 var _path = require('path');
 
@@ -79,7 +75,7 @@ var Parser = (function () {
 
 		this.eol = eol;
 		this.replacers = replacers;
-		this.flags = _objectAssign2['default']({}, flags);
+		this.flags = _collectionJs.$C.extend(false, {}, flags);
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;

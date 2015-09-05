@@ -203,6 +203,7 @@ monic.compile(
   {
     replacers: [
       // Replaces require to #include
+      // ("this" refers to the instance of the compiler)
       function (text, file) {
         return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
       }

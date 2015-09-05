@@ -204,6 +204,7 @@ monic.compile(
   {
     replacers: [
       // Замена require конструкций на #include
+      // (this ссылается на экземпляр сборщика)
       function (text, file) {
         return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
       }

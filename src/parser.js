@@ -8,7 +8,6 @@
 
 import ok from 'okay';
 import glob from 'glob';
-import assign from 'object-assign';
 
 import * as path from 'path';
 import * as fs from 'fs';
@@ -33,7 +32,7 @@ export default class Parser {
 	constructor({eol, replacers, flags, sourceMaps, sourceRoot, inputSourceMap}) {
 		this.eol = eol;
 		this.replacers = replacers;
-		this.flags = assign({}, flags);
+		this.flags = $C.extend(false, {}, flags);
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;

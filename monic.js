@@ -17,11 +17,13 @@ const
 	async = require('async'),
 	mkdirp = require('mkdirp'),
 	ok = require('okay'),
-	promisify = require('promisify-any'),
-	assign = require('object-assign');
+	promisify = require('promisify-any');
+
+const
+	$C = require('collection.js').$C;
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 3];
+exports.VERSION = [2, 3, 4];
 
 /**
  * Builds a file
@@ -54,7 +56,7 @@ exports.compile = function (file, opt_params, opt_callback) {
 
 function compile(file, params, callback) {
 	file = url(file);
-	params = assign({
+	params = $C.extend(false, {
 		flags: {},
 		labels: {},
 		eol: '\n',
