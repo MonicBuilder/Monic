@@ -10,7 +10,7 @@
 
 const
 	monic = require('../monic'),
-	Parser = require('../dist/parser'),
+	Parser = require('../dist/parser').default,
 	program = require('commander');
 
 const

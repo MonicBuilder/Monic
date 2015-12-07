@@ -11,7 +11,7 @@ const
 	SourceMapGenerator = sourceMapFile.SourceMapGenerator;
 
 const
-	Parser = require('./dist/parser'),
+	Parser = require('./dist/parser').default,
 	path = require('path'),
 	fs = require('fs'),
 	async = require('async'),
