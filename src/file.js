@@ -6,10 +6,14 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-import uid from 'uid';
-import * as path from 'path';
 import Parser from './parser';
-import { $C } from 'collection.js';
+
+const
+	uid = require('uid'),
+	path = require('path');
+
+const
+	{$C} = require('collection.js');
 
 /**
  * File structure class
@@ -297,7 +301,7 @@ export class FileStructure {
 							}
 
 							const
-								info = block.info;
+								{info} = block;
 
 							let
 								compiledBlock = this._compileBlock(block, labels, flags, opt_sourceMap);

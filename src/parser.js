@@ -6,16 +6,20 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-import ok from 'okay';
-import glob from 'glob';
-
-import * as path from 'path';
-import * as fs from 'fs';
-import * as async from 'async';
-
 import { FileStructure } from './file';
-import { SourceMapConsumer } from 'source-map';
-import { $C } from 'collection.js';
+
+const
+	ok = require('okay'),
+	glob = require('glob');
+
+const
+	path = require('path'),
+	fs = require('fs'),
+	async = require('async');
+
+const
+	{SourceMapConsumer} = require('source-map'),
+	{$C} = require('collection.js');
 
 /**
  * Parser class
