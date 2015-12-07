@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Monic
  * https://github.com/MonicBuilder/Monic
@@ -38,21 +40,21 @@ function getHead(opt_version) {
 }
 
 function error(cb) {
-	return function (err) {
+	return (err) => {
 		console.error(err.message);
 		cb();
 	};
 }
 
 const
-	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/;
+	headRgxp = /(\/\*![\s\S]*?\*\/(?:\r?\n|\r){2})/;
 
-var
+let
 	readyToWatcher = null;
 
-gulp.task('copyright', function (cb) {
+gulp.task('copyright', (cb) => {
 	gulp.src('./LICENSE')
-		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, function (sstr, intro, from, to) {
+		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, (sstr, intro, from, to) => {
 			const year = new Date().getFullYear();
 			return intro + from + (to || from != year ? '-' + year : '');
 		}))
@@ -61,7 +63,7 @@ gulp.task('copyright', function (cb) {
 		.on('end', cb);
 });
 
-gulp.task('head', function (cb) {
+gulp.task('head', (cb) => {
 	readyToWatcher = false;
 	const fullHead =
 		getHead() +
@@ -78,7 +80,7 @@ gulp.task('head', function (cb) {
 	}
 
 	async.parallel([
-		function (cb) {
+		(cb) => {
 			gulp.src(['./@(src|test)/*.js', './@(monic|gulpfile).js'], {base: './'})
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
@@ -87,25 +89,22 @@ gulp.task('head', function (cb) {
 				.on('end', cb);
 		},
 
-		function (cb) {
+		(cb) => {
 			gulp.src('./bin/monic.js')
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
-				.pipe(replace(/^#!.*\n{2}/, function (sstr) {
-					return sstr + fullHead;
-				}))
-
+				.pipe(replace(/^#!.*\n{2}/, (sstr) => sstr + fullHead))
 				.pipe(gulp.dest('./bin'))
 				.on('end', cb);
 		}
 
-	], function () {
+	], () => {
 		readyToWatcher = true;
 		cb();
 	});
 });
 
-gulp.task('build', ['bump'], function (cb) {
+gulp.task('build', ['bump'], (cb) => {
 	const fullHead =
 		getHead(true) +
 		' *\n' +
@@ -115,29 +114,21 @@ gulp.task('build', ['bump'], function (cb) {
 	gulp.src('./src/*.js')
 		.pipe(cached('build'))
 		.pipe(replace(headRgxp, ''))
-		.pipe(babel({
-			compact: false,
-			auxiliaryCommentBefore: 'istanbul ignore next',
-			loose: 'all',
-			optional: [
-				'spec.undefinedToVoid'
-			]
-		}))
-
+		.pipe(babel())
 		.on('error', error(cb))
 		.pipe(header(fullHead))
 		.pipe(gulp.dest('./dist'))
 		.on('end', cb);
 });
 
-gulp.task('bump', function (cb) {
+gulp.task('bump', (cb) => {
 	gulp.src('./*.json')
 		.pipe(bump({version: getVersion()}))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
 });
 
-gulp.task('npmignore', function (cb) {
+gulp.task('npmignore', (cb) => {
 	gulp.src('./.npmignore')
 		.pipe(replace(/([\s\S]*?)(?=# NPM ignore list)/, fs.readFileSync('./.gitignore') + '\n'))
 		.pipe(gulp.dest('./'))
@@ -152,15 +143,15 @@ function test(cb) {
 
 gulp.task('full-build', ['build'], test);
 gulp.task('test', test);
-gulp.task('yaspeller', function (cb) {
+gulp.task('yaspeller', (cb) => {
 	run('yaspeller ./').exec()
 		.on('error', error(cb))
 		.on('finish', cb);
 });
 
-gulp.task('watch', ['default'], function () {
+gulp.task('watch', ['default'], () => {
 	function unbind(name) {
-		return function (e) {
+		return (e) => {
 			if (e.type === 'deleted') {
 				delete cached.caches[name][e.path];
 			}
@@ -168,15 +159,13 @@ gulp.task('watch', ['default'], function () {
 	}
 
 	async.whilst(
-		function () {
-			return readyToWatcher === false;
-		},
+		() =>
+			readyToWatcher === false,
 
-		function (cb) {
-			setTimeout(cb, 500);
-		},
+		(cb) =>
+			setTimeout(cb, 500),
 
-		function () {
+		() => {
 			gulp.watch('./src/*.js', ['full-build']).on('change', unbind('build'));
 			gulp.watch('./monic.js', ['bump']);
 			gulp.watch(['./test/**/*', './monic.js'], ['test']);
