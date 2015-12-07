@@ -178,7 +178,6 @@ export class FileStructure {
 
 	/**
 	 * Ends a condition
-	 *
 	 * @return {!FileStructure}
 	 */
 	endIf() {
@@ -212,7 +211,6 @@ export class FileStructure {
 
 	/**
 	 * Ends a label
-	 *
 	 * @return {!FileStructure}
 	 */
 	endLabel() {
