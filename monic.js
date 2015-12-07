@@ -6,11 +6,11 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-const
+var
 	sourceMapFile = require('source-map'),
 	SourceMapGenerator = sourceMapFile.SourceMapGenerator;
 
-const
+var
 	Parser = require('./dist/parser').default,
 	path = require('path'),
 	fs = require('fs'),
@@ -19,11 +19,11 @@ const
 	ok = require('okay'),
 	promisify = require('promisify-any');
 
-const
+var
 	$C = require('collection.js').$C;
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 5];
+exports.VERSION = [2, 3, 6];
 
 /**
  * Builds a file
@@ -63,23 +63,23 @@ function compile(file, params, callback) {
 		mode: '0777'
 	}, params);
 
-	const
+	var
 		sourceMaps = params.sourceMaps,
 		sourceRoot = url(params.sourceRoot),
 		fileToSave = params.file ? url(params.file) : file;
 
-	const
+	var
 		sourceMapFile = sourceMaps && (params.sourceMapFile ? url(params.sourceMapFile) : fileToSave + '.map'),
 		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
-	const finish = ok(callback, function (fileStructure) {
-		const map = sourceMaps ?
+	var finish = ok(callback, function (fileStructure) {
+		var map = sourceMaps ?
 			new SourceMapGenerator({
 				file: Parser.getRelativePath(path.dirname(sourceMapFile), fileToSave),
 				sourceRoot: sourceRoot
 			}) : undefined;
 
-		const
+		var
 			tasks = [];
 
 		var
@@ -146,7 +146,7 @@ function compile(file, params, callback) {
 		return Parser.normalizePath(url);
 	}
 
-	const parser = new Parser({
+	var parser = new Parser({
 		eol: params.eol,
 		replacers: params.replacers,
 		flags: params.flags,

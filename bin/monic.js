@@ -8,12 +8,12 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-const
+var
 	monic = require('../monic'),
 	Parser = require('../dist/parser').default,
 	program = require('commander');
 
-const
+var
 	path = require('path'),
 	fs = require('fs');
 
@@ -38,7 +38,7 @@ var
 	file,
 	input;
 
-const
+var
 	args = program['args'],
 	out = program['output'],
 	eol = program['eol'] || '\n',
@@ -138,7 +138,7 @@ function action(file, input) {
 }
 
 if (!file && input == null) {
-	const
+	var
 		stdin = process.stdin,
 		stdout = process.stdout;
 
