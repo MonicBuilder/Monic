@@ -1,15 +1,16 @@
 /*!
- * Monic v2.3.6
+ * Monic v2.3.7
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 07 Dec 2015 14:35:26 GMT
+ * Date: Mon, 07 Dec 2015 14:47:12 GMT
  */
 
-/*istanbul ignore next*/'use strict';
+'use strict';
 
+/*istanbul ignore next*/
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {

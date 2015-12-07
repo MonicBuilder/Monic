@@ -6,13 +6,13 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-const
+var
 	fs = require('fs'),
 	path = require('path'),
 	$C = require('collection.js').$C,
 	eol = '\n';
 
-const
+var
 	basePath = __dirname.split(path.sep).slice(-1).join(),
 	monic = require('../');
 

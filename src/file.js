@@ -1,3 +1,5 @@
+'use strict';
+
 /*!
  * Monic
  * https://github.com/MonicBuilder/Monic
