@@ -32,7 +32,7 @@ function getVersion() {
 function getHead(opt_version) {
 	return '' +
 		'/*!\n' +
-		' * Monic' + (opt_version ? ' v' + getVersion() : '') + '\n' +
+		` * Monic${opt_version ? ' v' + getVersion() : ''}\n` +
 		' * https://github.com/MonicBuilder/Monic\n' +
 		' *\n' +
 		' * Released under the MIT license\n' +
@@ -108,7 +108,7 @@ gulp.task('build', ['bump'], (cb) => {
 	const fullHead =
 		getHead(true) +
 		' *\n' +
-		' * Date: ' + new Date().toUTCString() + '\n' +
+		` * Date: ${new Date().toUTCString()}\n` +
 		' */\n\n';
 
 	gulp.src('./src/*.js')
@@ -130,7 +130,7 @@ gulp.task('bump', (cb) => {
 
 gulp.task('npmignore', (cb) => {
 	gulp.src('./.npmignore')
-		.pipe(replace(/([\s\S]*?)(?=# NPM ignore list)/, fs.readFileSync('./.gitignore') + '\n'))
+		.pipe(replace(/([\s\S]*?)(?=# NPM ignore list)/, `${fs.readFileSync('./.gitignore')}\n`))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
 });
