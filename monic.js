@@ -23,7 +23,7 @@ var
 	$C = require('collection.js').$C;
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 7];
+exports.VERSION = [2, 3, 8];
 
 /**
  * Builds a file

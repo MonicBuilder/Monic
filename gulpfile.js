@@ -18,6 +18,7 @@ const
 	babel = require('gulp-babel'),
 	bump = require('gulp-bump'),
 	header = require('gulp-header'),
+	wrap = require('gulp-wrap'),
 	replace = require('gulp-replace'),
 	cached = require('gulp-cached'),
 	run = require('gulp-run');
@@ -117,6 +118,7 @@ gulp.task('build', ['bump'], (cb) => {
 		.pipe(babel())
 		.on('error', error(cb))
 		.pipe(header(fullHead))
+		.pipe(wrap('<%= contents %>\n\n'))
 		.pipe(gulp.dest('./dist'))
 		.on('end', cb);
 });
