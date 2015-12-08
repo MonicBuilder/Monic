@@ -51,8 +51,6 @@
   "requireCapitalizedComments": true,
   "requireSpaceAfterLineComment": {
     "allExcept": [
-      "#",
-      "=",
       "#include",
       "#without",
       "#label",
@@ -63,7 +61,9 @@
       "#endunless",
       "#set",
       "#unset",
-      "#end"
+      "#end",
+      "#",
+      "="
     ]
   },
 
