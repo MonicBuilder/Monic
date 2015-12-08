@@ -32,7 +32,7 @@ function getVersion() {
 function getHead(opt_version) {
 	return '' +
 		'/*!\n' +
-		` * Monic${opt_version ? ' v' + getVersion() : ''}\n` +
+		` * Monic${opt_version ? ` v${getVersion()}` : ''}\n` +
 		' * https://github.com/MonicBuilder/Monic\n' +
 		' *\n' +
 		' * Released under the MIT license\n' +
