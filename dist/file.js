@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.8
+ * Monic v2.3.9
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 08 Dec 2015 20:47:22 GMT
+ * Date: Tue, 08 Dec 2015 21:02:10 GMT
  */
 
 'use strict';
