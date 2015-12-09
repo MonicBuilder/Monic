@@ -152,14 +152,6 @@ gulp.task('yaspeller', (cb) => {
 });
 
 gulp.task('watch', ['default'], () => {
-	function unbind(name) {
-		return (e) => {
-			if (e.type === 'deleted') {
-				delete cached.caches[name][e.path];
-			}
-		};
-	}
-
 	async.whilst(
 		() =>
 			readyToWatcher === false,
@@ -174,8 +166,15 @@ gulp.task('watch', ['default'], () => {
 			gulp.watch('./*.md', ['yaspeller']);
 			gulp.watch('./.gitignore', ['npmignore']);
 		}
-
 	);
+
+	function unbind(name) {
+		return (e) => {
+			if (e.type === 'deleted') {
+				delete cached.caches[name][e.path];
+			}
+		};
+	}
 });
 
 gulp.task('default', ['copyright', 'head', 'full-build', 'yaspeller', 'npmignore']);
