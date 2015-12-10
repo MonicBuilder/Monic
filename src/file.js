@@ -269,6 +269,7 @@ export class FileStructure {
 				break;
 
 			case 'include':
+				// jscs:disable
 				const cacheKey =
 					block.fileStructure.file +
 					'@' + Object.keys(block.labels).sort() +

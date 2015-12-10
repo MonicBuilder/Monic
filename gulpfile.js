@@ -31,6 +31,7 @@ function getVersion() {
 }
 
 function getHead(opt_version) {
+	// jscs:disable
 	return '' +
 		'/*!\n' +
 		` * Monic${opt_version ? ` v${getVersion()}` : ''}\n` +
