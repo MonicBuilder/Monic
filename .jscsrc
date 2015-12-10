@@ -31,6 +31,9 @@
   "requireSpread": true,
   "requireParenthesesAroundArrowParam": true,
   "requireShorthandArrowFunctions": true,
+  "requireTemplateStrings": {
+    "allExcept": ["stringConcatenation"]
+  },
 
   "requireSemicolons": true,
   "requireSpaceAfterComma": true,
@@ -140,6 +143,7 @@
   },
 
   "requireCapitalizedConstructors": true,
+  "requireEarlyReturn": true,
   "disallowSpacesInGenerator": {
     "beforeStar": true
   },
