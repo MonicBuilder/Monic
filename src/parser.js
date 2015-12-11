@@ -335,8 +335,9 @@ export default class Parser {
 
 							if (/^(?:include|without)$/.test(dir)) {
 								return this[key](fileStructure, params, asyncParseCallback);
+							}
 
-							} else if (this[key]) {
+							if (this[key]) {
 								try {
 									this[key](fileStructure, params);
 
