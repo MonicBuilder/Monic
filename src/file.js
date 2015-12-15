@@ -269,11 +269,14 @@ export class FileStructure {
 				break;
 
 			case 'include':
-				// jscs:disable
+				// jscs:disable requireTemplateStrings
+
 				const cacheKey =
 					block.fileStructure.file +
 					'@' + Object.keys(block.labels).sort() +
 					'@' + Object.keys(flags).sort();
+
+				// jscs:enable
 
 				$C(labels).forEach((el, key) =>
 					block.labels[key] = true);
