@@ -274,7 +274,7 @@ export class FileStructure {
 					block.fileStructure.file +
 					'@' + Object.keys(block.labels).sort() +
 					'@' + Object.keys(flags).sort();
-				// jscs:enable
+				// jscs:enable requireTemplateStrings
 
 				$C(labels).forEach((el, key) =>
 					block.labels[key] = true);
