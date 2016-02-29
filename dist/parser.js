@@ -1,21 +1,20 @@
 /*!
- * Monic v2.3.9
+ * Monic v2.3.10
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 08 Dec 2015 21:02:10 GMT
+ * Date: Mon, 29 Feb 2016 12:37:28 GMT
  */
 
 'use strict';
 
-/*istanbul ignore next*/
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _file = require('./file');
 
@@ -30,21 +29,19 @@ var path = require('path'),
     fs = require('fs'),
     async = require('async');
 
-/*istanbul ignore next*/
 var _require = require('source-map');
 
-var /*istanbul ignore next*/SourceMapConsumer = _require.SourceMapConsumer;
-/*istanbul ignore next*/
+var SourceMapConsumer = _require.SourceMapConsumer;
+
 var _require2 = require('collection.js');
 
-/*istanbul ignore next*/var $C = _require2.$C;
+var $C = _require2.$C;
 
 /**
  * Parser class
  */
 
-/*istanbul ignore next*/
-var Parser = (function () {
+var Parser = function () {
 	/**
   * @param {string} eol - EOL symbol
   * @param {Array=} [replacers] - array of transform functions
@@ -54,19 +51,19 @@ var Parser = (function () {
   * @param {?string=} [sourceRoot] - root for all URLs in the generated source map
   */
 
-	function Parser( /*istanbul ignore next*/_ref) {
-		/*istanbul ignore next*/var eol = _ref.eol;
-		/*istanbul ignore next*/var replacers = _ref.replacers;
-		/*istanbul ignore next*/var flags = _ref.flags;
-		/*istanbul ignore next*/var sourceMaps = _ref.sourceMaps;
-		/*istanbul ignore next*/var sourceRoot = _ref.sourceRoot;
-		/*istanbul ignore next*/var inputSourceMap = _ref.inputSourceMap;
-		/*istanbul ignore next*/
+	function Parser(_ref) {
+		var eol = _ref.eol;
+		var replacers = _ref.replacers;
+		var flags = _ref.flags;
+		var sourceMaps = _ref.sourceMaps;
+		var sourceRoot = _ref.sourceRoot;
+		var inputSourceMap = _ref.inputSourceMap;
+
 		_classCallCheck(this, Parser);
 
 		this.eol = eol;
 		this.replacers = replacers;
-		this.flags = $C.extend(false, {}, flags);
+		this.flags = Object.assign({}, flags);
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;
@@ -81,8 +78,10 @@ var Parser = (function () {
   * @return {string}
   */
 
+
 	_createClass(Parser, [{
 		key: 'testFile',
+
 
 		/**
    * Checks a file for existence
@@ -92,7 +91,6 @@ var Parser = (function () {
    * @param {function(Error, string=)} callback - callback function
    */
 		value: function testFile(file, callback) {
-			/*istanbul ignore next*/
 			var _this = this;
 
 			file = Parser.normalizePath(path.resolve(file));
@@ -100,14 +98,14 @@ var Parser = (function () {
 			if (this.realpathCache[file]) {
 				callback(null, file);
 			} else {
-				async.waterfall([function (next) /*istanbul ignore next*/{
+				async.waterfall([function (next) {
 					return fs.stat(file, next);
 				}, function (stat, next) {
 					if (!stat.isFile()) {
-						return next(new Error( /*istanbul ignore next*/'"' + file + '" is not a file'));
+						return next(new Error('"' + file + '" is not a file'));
 					}
 
-					/*istanbul ignore next*/_this.realpathCache[file] = true;
+					_this.realpathCache[file] = true;
 					next(null, file);
 				}], callback);
 			}
@@ -124,14 +122,13 @@ var Parser = (function () {
 	}, {
 		key: 'parsePath',
 		value: function parsePath(base, src, callback) {
-			/*istanbul ignore next*/
 			var _this2 = this;
 
 			var parts = src.split('::'),
 			    dirname = path.dirname(base);
 
-			parts[0] = parts[0].replace(/\$\{(.*?)}/g, function (sstr, flag) /*istanbul ignore next*/{
-				return flag in /*istanbul ignore next*/_this2.flags ? /*istanbul ignore next*/_this2.flags[flag] : '';
+			parts[0] = parts[0].replace(/\$\{(.*?)}/g, function (sstr, flag) {
+				return flag in _this2.flags ? _this2.flags[flag] : '';
 			});
 
 			var pattern = path.join(dirname, parts[0]);
@@ -159,18 +156,16 @@ var Parser = (function () {
 	}, {
 		key: 'parseFile',
 		value: function parseFile(file, callback) {
-			/*istanbul ignore next*/
 			var _this3 = this;
 
-			async.waterfall([function (next) /*istanbul ignore next*/{
-				return (/*istanbul ignore next*/_this3.testFile(file, next)
-				);
+			async.waterfall([function (next) {
+				return _this3.testFile(file, next);
 			}, function (src, next) {
-				if ( /*istanbul ignore next*/_this3.cache[src]) {
-					return next(null, src, /*istanbul ignore next*/_this3.cache[src]);
+				if (_this3.cache[src]) {
+					return next(null, src, _this3.cache[src]);
 				}
 
-				fs.readFile(src, 'utf8', function (err, content) /*istanbul ignore next*/{
+				fs.readFile(src, 'utf8', function (err, content) {
 					return next(err, src, content);
 				});
 			}, function (src, content, next) {
@@ -178,7 +173,7 @@ var Parser = (function () {
 					return next(null, content, src);
 				}
 
-				/*istanbul ignore next*/_this3.parse(src, content, next);
+				_this3.parse(src, content, next);
 			}], callback);
 		}
 
@@ -193,7 +188,6 @@ var Parser = (function () {
 	}, {
 		key: 'parse',
 		value: function parse(file, content, callback) {
-			/*istanbul ignore next*/
 			var _this4 = this;
 
 			if (this.cache[file]) {
@@ -205,12 +199,12 @@ var Parser = (function () {
 			$C(this.replacers).forEach(function (replacer) {
 				actions.push(function (next) {
 					if (replacer.length > 2) {
-						replacer.call( /*istanbul ignore next*/_this4, content, file, function (err, res) /*istanbul ignore next*/{
-							return next(err, err ? /*istanbul ignore next*/void 0 : content = res);
+						replacer.call(_this4, content, file, function (err, res) {
+							return next(err, err ? undefined : content = res);
 						});
 					} else {
 						try {
-							content = replacer.call( /*istanbul ignore next*/_this4, content, file);
+							content = replacer.call(_this4, content, file);
 							next();
 						} catch (err) {
 							err.fileName = file;
@@ -220,7 +214,7 @@ var Parser = (function () {
 				});
 			});
 
-			var sourceMap = /*istanbul ignore next*/void 0;
+			var sourceMap = undefined;
 			if (this.sourceMaps) {
 				if (this.inputSourceMap) {
 					sourceMap = new SourceMapConsumer(this.inputSourceMap);
@@ -251,13 +245,13 @@ var Parser = (function () {
 			}
 
 			async.series(actions, ok(callback, function () {
-				var fileStructure = new /*istanbul ignore next*/_file.FileStructure({ file: file, globals: /*istanbul ignore next*/_this4.flags }),
+				var fileStructure = new _file.FileStructure({ file: file, globals: _this4.flags }),
 				    lines = content.split(/\r?\n|\r/);
 
-				/*istanbul ignore next*/_this4.cache[file] = fileStructure;
+				_this4.cache[file] = fileStructure;
 				var parseLines = function parseLines(start) {
-					var info = /*istanbul ignore next*/void 0,
-					    i = /*istanbul ignore next*/void 0;
+					var info = undefined,
+					    i = undefined;
 
 					function error(err) {
 						err.fileName = file;
@@ -265,13 +259,12 @@ var Parser = (function () {
 						callback(err);
 					}
 
-					var asyncParseCallback = ok(error, function () /*istanbul ignore next*/{
+					var asyncParseCallback = ok(error, function () {
 						return parseLines(i + 1);
 					});
 
-					var original = /*istanbul ignore next*/void 0;
+					var original = undefined;
 					if (sourceMap) {
-						/*istanbul ignore next*/
 						(function () {
 							var originalMap = [];
 							sourceMap.eachMapping(function (el) {
@@ -299,8 +292,8 @@ var Parser = (function () {
 										if (el.source === src) {
 											el.source = Parser.normalizePath(path.resolve(el.source));
 
-											if ( /*istanbul ignore next*/_this4.sourceRoot) {
-												el.source = Parser.getRelativePath( /*istanbul ignore next*/_this4.sourceRoot, el.source);
+											if (_this4.sourceRoot) {
+												el.source = Parser.getRelativePath(_this4.sourceRoot, el.source);
 											}
 
 											el.sourcesContent = content;
@@ -316,9 +309,9 @@ var Parser = (function () {
 					for (i = start; i < lines.length; i++) {
 						var pos = i + 1,
 						    line = lines[i],
-						    val = line + /*istanbul ignore next*/_this4.eol;
+						    val = line + _this4.eol;
 
-						if ( /*istanbul ignore next*/_this4.sourceMaps) {
+						if (_this4.sourceMaps) {
 							if (original) {
 								info = original[pos] || { ignore: true };
 							} else {
@@ -332,9 +325,9 @@ var Parser = (function () {
 										column: 0
 									},
 
-									source: /*istanbul ignore next*/_this4.sourceRoot ? Parser.getRelativePath( /*istanbul ignore next*/_this4.sourceRoot, file) : file,
+									source: _this4.sourceRoot ? Parser.getRelativePath(_this4.sourceRoot, file) : file,
 
-									sourcesContent: content || /*istanbul ignore next*/_this4.eol,
+									sourcesContent: content || _this4.eol,
 									line: line
 								};
 							}
@@ -345,15 +338,16 @@ var Parser = (function () {
 								var command = RegExp.$1.split(' '),
 								    dir = command.shift();
 
-								var key = /*istanbul ignore next*/'_' + dir,
+								var key = '_' + dir,
 								    params = command.join(' ');
 
 								if (/^(?:include|without)$/.test(dir)) {
-									return (/*istanbul ignore next*/_this4[key](fileStructure, params, asyncParseCallback)
-									);
-								} else if ( /*istanbul ignore next*/_this4[key]) {
+									return _this4[key](fileStructure, params, asyncParseCallback);
+								}
+
+								if (_this4[key]) {
 									try {
-										/*istanbul ignore next*/_this4[key](fileStructure, params);
+										_this4[key](fileStructure, params);
 									} catch (err) {
 										return error(err);
 									}
@@ -385,13 +379,12 @@ var Parser = (function () {
 	}, {
 		key: '_include',
 		value: function _include(struct, value, callback) {
-			/*istanbul ignore next*/
 			var _this5 = this;
 
 			this.parsePath(struct.file, value, ok(callback, function (arr) {
-				var actions = $C(arr).reduce(function (arr, el) /*istanbul ignore next*/{
-					return arr.push(function (next) /*istanbul ignore next*/{
-						return action.call( /*istanbul ignore next*/_this5, el, next);
+				var actions = $C(arr).reduce(function (arr, el) {
+					return arr.push(function (next) {
+						return action.call(_this5, el, next);
 					}), arr;
 				}, []);
 
@@ -401,7 +394,7 @@ var Parser = (function () {
 			function action(param, next) {
 				var includeFileName = String(param.shift());
 
-				param = $C(param).reduce(function (map, el) /*istanbul ignore next*/{
+				param = $C(param).reduce(function (map, el) {
 					return map[el] = true, map;
 				}, {});
 
@@ -411,7 +404,7 @@ var Parser = (function () {
 						next();
 					}));
 				} else {
-					$C(param).forEach(function (el, key) /*istanbul ignore next*/{
+					$C(param).forEach(function (el, key) {
 						return struct.root.labels[key] = true;
 					});
 					next();
@@ -431,13 +424,12 @@ var Parser = (function () {
 	}, {
 		key: '_without',
 		value: function _without(struct, value, callback) {
-			/*istanbul ignore next*/
 			var _this6 = this;
 
 			this.parsePath(struct.file, value, ok(callback, function (arr) {
-				var actions = $C(arr).reduce(function (arr, el) /*istanbul ignore next*/{
-					return arr.push(function (next) /*istanbul ignore next*/{
-						return action.call( /*istanbul ignore next*/_this6, el, next);
+				var actions = $C(arr).reduce(function (arr, el) {
+					return arr.push(function (next) {
+						return action.call(_this6, el, next);
 					}), arr;
 				}, []);
 
@@ -447,7 +439,7 @@ var Parser = (function () {
 			function action(param, next) {
 				var includedFile = struct.getRelativePathOf(String(param.shift()));
 
-				param = $C(param).reduce(function (map, el) /*istanbul ignore next*/{
+				param = $C(param).reduce(function (map, el) {
 					return map[el] = true, map;
 				}, {});
 
@@ -476,10 +468,10 @@ var Parser = (function () {
 			}
 
 			var args = value.split(/\s+/),
-			    key = /*istanbul ignore next*/'_end' + args[0];
+			    key = '_end' + args[0];
 
 			if (!this[key]) {
-				throw new SyntaxError( /*istanbul ignore next*/'Bad value (' + args[0] + ') for "#end" directive');
+				throw new SyntaxError('Bad value (' + args[0] + ') for "#end" directive');
 			}
 
 			this[key](struct, args.join(' '));
@@ -539,10 +531,10 @@ var Parser = (function () {
 			}
 
 			if (!value || args.length !== 3) {
-				throw new SyntaxError( /*istanbul ignore next*/'Bad "#' + (opt_unless ? 'unless' : 'if') + '" directive');
+				throw new SyntaxError('Bad "#' + (opt_unless ? 'unless' : 'if') + '" directive');
 			}
 
-			/*istanbul ignore next*/struct.beginIf. /*istanbul ignore next*/apply(struct, /*istanbul ignore next*/_toConsumableArray(args.concat(opt_unless)));
+			struct.beginIf.apply(struct, _toConsumableArray(args.concat(opt_unless)));
 		}
 
 		/**
@@ -602,7 +594,7 @@ var Parser = (function () {
 				throw new SyntaxError('Bad "#set" directive');
 			}
 
-			/*istanbul ignore next*/struct.addSet. /*istanbul ignore next*/apply(struct, /*istanbul ignore next*/_toConsumableArray(value.split(/\s+/)));
+			struct.addSet.apply(struct, _toConsumableArray(value.split(/\s+/)));
 		}
 
 		/**
@@ -646,6 +638,6 @@ var Parser = (function () {
 	}]);
 
 	return Parser;
-})();
+}();
 
-/*istanbul ignore next*/exports.default = Parser;
+exports.default = Parser;

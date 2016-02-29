@@ -38,7 +38,7 @@ export default class Parser {
 	constructor({eol, replacers, flags, sourceMaps, sourceRoot, inputSourceMap}) {
 		this.eol = eol;
 		this.replacers = replacers;
-		this.flags = $C.extend(false, {}, flags);
+		this.flags = Object.assign({}, flags);
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;

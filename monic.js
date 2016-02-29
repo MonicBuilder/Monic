@@ -6,6 +6,8 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
+require('core-js/es6/object');
+
 var
 	sourceMapFile = require('source-map'),
 	SourceMapGenerator = sourceMapFile.SourceMapGenerator;
@@ -19,11 +21,8 @@ var
 	ok = require('okay'),
 	promisify = require('promisify-any');
 
-var
-	$C = require('collection.js').$C;
-
 /** @type {!Array} */
-exports.VERSION = [2, 3, 9];
+exports.VERSION = [2, 3, 10];
 
 /**
  * Builds a file
@@ -56,7 +55,7 @@ exports.compile = function (file, opt_params, opt_callback) {
 
 function compile(file, params, callback) {
 	file = url(file);
-	params = $C.extend(false, {
+	params = Object.assign({
 		flags: {},
 		labels: {},
 		eol: '\n',

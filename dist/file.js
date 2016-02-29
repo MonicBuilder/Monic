@@ -1,22 +1,21 @@
 /*!
- * Monic v2.3.9
+ * Monic v2.3.10
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 08 Dec 2015 21:02:10 GMT
+ * Date: Mon, 29 Feb 2016 12:37:28 GMT
  */
 
 'use strict';
 
-/*istanbul ignore next*/
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.FileStructure = void 0;
+exports.FileStructure = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _parser = require('./parser');
 
@@ -29,26 +28,24 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var uid = require('uid'),
     path = require('path');
 
-/*istanbul ignore next*/
 var _require = require('collection.js');
 
-/*istanbul ignore next*/var $C = _require.$C;
+var $C = _require.$C;
 
 /**
  * File structure class
  */
 
-/*istanbul ignore next*/
-var FileStructure = exports.FileStructure = (function () {
+var FileStructure = exports.FileStructure = function () {
 	/**
   * @param {string} file - file path
   * @param {!Object} globals - map of global Monic flags
   */
 
-	function FileStructure( /*istanbul ignore next*/_ref) {
-		/*istanbul ignore next*/var file = _ref.file;
-		/*istanbul ignore next*/var globals = _ref.globals;
-		/*istanbul ignore next*/
+	function FileStructure(_ref) {
+		var file = _ref.file;
+		var globals = _ref.globals;
+
 		_classCallCheck(this, FileStructure);
 
 		this.file = file;
@@ -71,11 +68,11 @@ var FileStructure = exports.FileStructure = (function () {
   * @return {string}
   */
 
+
 	_createClass(FileStructure, [{
 		key: 'getRelativePathOf',
 		value: function getRelativePathOf(src) {
-			return (/*istanbul ignore next*/_parser2.default.normalizePath(path.resolve(path.dirname(this.file), src))
-			);
+			return _parser2.default.normalizePath(path.resolve(path.dirname(this.file), src));
 		}
 
 		/**
@@ -150,7 +147,7 @@ var FileStructure = exports.FileStructure = (function () {
 	}, {
 		key: 'addSet',
 		value: function addSet(flag) {
-			/*istanbul ignore next*/var opt_value = arguments.length <= 1 || arguments[1] === void 0 ? true : arguments[1];
+			var opt_value = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
 			if (this.currentBlock.type === 'root') {
 				this.globals[flag] = opt_value;
@@ -201,8 +198,8 @@ var FileStructure = exports.FileStructure = (function () {
 	}, {
 		key: 'beginIf',
 		value: function beginIf(flag, type) {
-			/*istanbul ignore next*/var opt_value = arguments.length <= 2 || arguments[2] === void 0 ? true : arguments[2];
-			/*istanbul ignore next*/var opt_unless = arguments.length <= 3 || arguments[3] === void 0 ? false : arguments[3];
+			var opt_value = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+			var opt_unless = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 
 			var aliases = {
 				'=': 'eq',
@@ -236,8 +233,8 @@ var FileStructure = exports.FileStructure = (function () {
 	}, {
 		key: 'endIf',
 		value: function endIf() {
-			if (!({ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true })[this.currentBlock.type]) {
-				throw new SyntaxError( /*istanbul ignore next*/'Attempt to close an unopened block "#' + (this.currentBlock.unless ? 'unless' : 'if') + '"');
+			if (!{ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true }[this.currentBlock.type]) {
+				throw new SyntaxError('Attempt to close an unopened block "#' + (this.currentBlock.unless ? 'unless' : 'if') + '"');
 			}
 
 			this.currentBlock = this.currentBlock.parent;
@@ -295,12 +292,10 @@ var FileStructure = exports.FileStructure = (function () {
 	}, {
 		key: 'compile',
 		value: function compile(opt_labels, opt_flags, opt_sourceMap) {
-			/*istanbul ignore next*/
 			var _this = this;
 
-			$C(opt_labels).forEach(function (el, key) /*istanbul ignore next*/{
-				return (/*istanbul ignore next*/_this.root.labels[key] = true
-				);
+			$C(opt_labels).forEach(function (el, key) {
+				return _this.root.labels[key] = true;
 			});
 			return this._compileBlock(this.root, this.root.labels, opt_flags || {}, opt_sourceMap);
 		}
@@ -335,7 +330,6 @@ var FileStructure = exports.FileStructure = (function () {
 	}, {
 		key: '_compileBlock',
 		value: function _compileBlock(block, labels, flags, opt_sourceMap) {
-			/*istanbul ignore next*/
 			var _this2 = this;
 
 			switch (block.type) {
@@ -350,7 +344,7 @@ var FileStructure = exports.FileStructure = (function () {
 				case 'include':
 					var cacheKey = block.fileStructure.file + '@' + Object.keys(block.labels).sort() + '@' + Object.keys(flags).sort();
 
-					$C(labels).forEach(function (el, key) /*istanbul ignore next*/{
+					$C(labels).forEach(function (el, key) {
 						return block.labels[key] = true;
 					});
 
@@ -372,26 +366,26 @@ var FileStructure = exports.FileStructure = (function () {
 				default:
 					if (FileStructure.isValidContentBlock(block, labels, flags)) {
 						return $C(block.content).map(function (block) {
-							if (! /*istanbul ignore next*/_parser2.default.current || /*istanbul ignore next*/_this2.uid !== /*istanbul ignore next*/_parser2.default.current) {
-								/*istanbul ignore next*/_parser2.default.current = /*istanbul ignore next*/_this2.uid;
+							if (!_parser2.default.current || _this2.uid !== _parser2.default.current) {
+								_parser2.default.current = _this2.uid;
 							}
 
-							/*istanbul ignore next*/var info = block.info;
+							var info = block.info;
 
-							var compiledBlock = /*istanbul ignore next*/_this2._compileBlock(block, labels, flags, opt_sourceMap);
+
+							var compiledBlock = _this2._compileBlock(block, labels, flags, opt_sourceMap);
 
 							if (opt_sourceMap && info && compiledBlock) {
 								if (!info.ignore) {
-									/*istanbul ignore next*/
 									(function () {
 										var test = {},
 										    selfMap = info.source;
 
 										$C(selfMap ? [info] : info).forEach(function (info) {
 											if (selfMap) {
-												info.generated.line = /*istanbul ignore next*/_parser2.default.cursor;
+												info.generated.line = _parser2.default.cursor;
 											} else {
-												info.generated.line += /*istanbul ignore next*/_parser2.default.cursor - info.generated.line;
+												info.generated.line += _parser2.default.cursor - info.generated.line;
 											}
 
 											opt_sourceMap.addMapping(info);
@@ -404,7 +398,7 @@ var FileStructure = exports.FileStructure = (function () {
 									})();
 								}
 
-								/*istanbul ignore next*/_parser2.default.cursor++;
+								_parser2.default.cursor++;
 							}
 
 							return compiledBlock;
@@ -427,7 +421,7 @@ var FileStructure = exports.FileStructure = (function () {
 	}], [{
 		key: 'isValidContentBlock',
 		value: function isValidContentBlock(block, labels, flags) {
-			var res = /*istanbul ignore next*/void 0;
+			var res = undefined;
 			switch (block.type) {
 				case 'root':
 					return true;
@@ -469,4 +463,4 @@ var FileStructure = exports.FileStructure = (function () {
 	}]);
 
 	return FileStructure;
-})();
+}();
