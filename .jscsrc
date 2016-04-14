@@ -24,6 +24,7 @@
   "disallowYodaConditions": true,
   "validateQuoteMarks": "'",
 
+  "requireSpacesInsideImportedObjectBraces": true,
   "disallowIdenticalDestructuringNames": true,
   "requireEnhancedObjectLiterals": true,
   "requireObjectDestructuring": true,
