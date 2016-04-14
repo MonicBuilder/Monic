@@ -55,14 +55,14 @@
     "coveralls": "^2.11.2",
     "gulp": "^3.8.9",
     "gulp-babel": "^6.1.1",
-    "gulp-bump": "^1.0.0",
+    "gulp-bump": "^2.0.0",
     "gulp-cached": "^1.0.4",
     "gulp-eol": "^0.1.1",
     "gulp-header": "^1.2.2",
     "gulp-replace": "^0.5.3",
     "gulp-run": "^1.6.7",
     "istanbul": "^0.4.1",
-    "jscs": "^2.0.0",
+    "jscs": "^3.0.0",
     "through2": "^2.0.0",
     "yaspeller": "^2.0.0"
   }
