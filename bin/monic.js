@@ -20,15 +20,15 @@ var
 program
 	.version(monic.VERSION.join('.'))
 	.usage('[options] [file ...]')
-	.option('-f, --file [string]', 'Set a path to the source file (meta-information)')
-	.option('-o, --output [string]', 'Set a path to save the generated file')
-	.option('-m, --mode [string]', 'Set a mode for any folders that need to be created for the output file')
-	.option('--eol [char]', 'Set EOL symbol')
-	.option('--flags [list]', 'Set a list of flags separated by commas')
-	.option('--labels [list]', 'Set a list of labels separated by commas')
+	.option('-f, --file [string]', 'set a path to the source file (meta-information)')
+	.option('-o, --output [string]', 'set a path to save the generated file')
+	.option('-m, --mode [string]', 'set a mode for any folders that need to be created for the output file')
+	.option('--eol [char]', 'set EOL symbol')
+	.option('--flags [list]', 'set a list of flags separated by commas')
+	.option('--labels [list]', 'set a list of labels separated by commas')
 	.option('-s, --source-maps [string]', '[true|false|inline]')
-	.option('--source-map-file [string]', 'Set a path to save the generated source map')
-	.option('--source-root [string]', 'Set the root for all URLs in the generated source map')
+	.option('--source-map-file [string]', 'set a path to save the generated source map')
+	.option('--source-root [string]', 'set the root for all URLs in the generated source map')
 	.parse(process.argv);
 
 var
