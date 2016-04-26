@@ -130,7 +130,7 @@ monic.compile(
     // (optional, by default false)
     saveFiles: true,
 
-    // The mode for any folders that need to be created for the output folder
+    // The mode for any folders that need to be created for the output file
     // (optional, by default 0777)
     mode: '0666',
 
