@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.10
+ * Monic v2.3.11
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 29 Feb 2016 12:37:28 GMT
+ * Date: Tue, 26 Apr 2016 19:17:21 GMT
  */
 
 'use strict';
@@ -214,7 +214,7 @@ var Parser = function () {
 				});
 			});
 
-			var sourceMap = undefined;
+			var sourceMap = void 0;
 			if (this.sourceMaps) {
 				if (this.inputSourceMap) {
 					sourceMap = new SourceMapConsumer(this.inputSourceMap);
@@ -250,8 +250,8 @@ var Parser = function () {
 
 				_this4.cache[file] = fileStructure;
 				var parseLines = function parseLines(start) {
-					var info = undefined,
-					    i = undefined;
+					var info = void 0,
+					    i = void 0;
 
 					function error(err) {
 						err.fileName = file;
@@ -263,7 +263,7 @@ var Parser = function () {
 						return parseLines(i + 1);
 					});
 
-					var original = undefined;
+					var original = void 0;
 					if (sourceMap) {
 						(function () {
 							var originalMap = [];

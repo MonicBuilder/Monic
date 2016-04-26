@@ -39,7 +39,7 @@ monic [options] [file ...]
 -f, --file [string]          Set a path to the source file (meta-information)
 -o, --output [string]        Set a path to save the generated file
 -m, --mode [string]          Set a mode for any folders that need to be created
-                             for the output folder
+                             for the output file
 --eol [char]                 Set EOL symbol
 --flags [list]               Set a list of flags separated by commas
 --labels [list]              Set a list of labels separated by commas

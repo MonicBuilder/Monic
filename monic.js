@@ -22,7 +22,7 @@ var
 	promisify = require('promisify-any');
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 10];
+exports.VERSION = [2, 3, 11];
 
 /**
  * Builds a file
@@ -36,7 +36,7 @@ exports.VERSION = [2, 3, 10];
  * @param {?string=} [opt_params.eol] - EOL symbol
  * @param {Array<function(this:Parser, string, string, function(Error=, string=)=)>=} [opt_params.replacers] - array of transform functions
  * @param {?boolean=} [opt_params.saveFiles=false] - if is true, then generated files will be saved
- * @param {?string=} [opt_params.mode='0777'] - mode for any folders that need to be created for the output folder
+ * @param {?string=} [opt_params.mode='0777'] - mode for created folders
  * @param {?string=} [opt_params.file] - path to the generated file
  * @param {(boolean|string|null)=} [opt_params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
  * @param {Object=} [opt_params.inputSourceMap] - base source map object for the output source map

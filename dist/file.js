@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.10
+ * Monic v2.3.11
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 29 Feb 2016 12:37:28 GMT
+ * Date: Tue, 26 Apr 2016 19:17:21 GMT
  */
 
 'use strict';
@@ -421,7 +421,7 @@ var FileStructure = exports.FileStructure = function () {
 	}], [{
 		key: 'isValidContentBlock',
 		value: function isValidContentBlock(block, labels, flags) {
-			var res = undefined;
+			var res = void 0;
 			switch (block.type) {
 				case 'root':
 					return true;
