@@ -34,8 +34,8 @@ monic [options] [file ...]
 ### options
 
 ```
--h, --help                   Call help
--V, --version                Return Monic version
+-h, --help                   Output usage information
+-V, --version                Output the version number
 -f, --file [string]          Set a path to the source file (meta-information)
 -o, --output [string]        Set a path to save the generated file
 -m, --mode [string]          Set a mode for any folders that need to be created
