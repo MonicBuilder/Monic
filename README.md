@@ -228,7 +228,7 @@ In the file path can also be used [templates](https://github.com/isaacs/node-glo
 
 Technically, the line with the directive is simply replaced to a text of the attached file.
 However, if the specified file is already included to the current module before, then it won't be included again.
-For example,
+For example:
 
 **f1.js**
 
@@ -373,7 +373,7 @@ alert('ie <= 7');
 ```
 
 All the flags are declared globally. To set them in your code, you should use the directives `#set` and `#unset`,
-and also you can specify them when you run Monic. For example,
+and also you can specify them when you run Monic. For example:
 
 **file.js**
 
@@ -476,7 +476,7 @@ String.truncate = function () {};
 Please note that the marked-thus the area of the file in built code can change the order between them and may
 receive another code.
 
-For example,
+For example:
 
 ```js
 //#include String.js::escapeHTML
