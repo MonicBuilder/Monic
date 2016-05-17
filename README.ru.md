@@ -34,18 +34,16 @@ monic [options] [file ...]
 ### options
 
 ```
--h, --help                   Вызов справки
--V, --version                Вернуть версию Monic
--f, --file [string]          Задать путь к исходному файлу (мета-информация)
--o, --output [string]        Задать путь для сохранения сгенерированного файла
--m, --mode [string]          Задать режим для создания папок
-                             при сохранении сгенерированного файла
---eol [char]                 Задать разделитель строки (EOL)
---flags [list]               Задать список флагов через запятую
---labels [list]              Задать список меток через запятую
+-h, --help
+-V, --version
+-f, --file [string]          путь к исходному файлу (мета-информация)
+-o, --output [string]        путь для сохранения сгенерированного файла
+--eol [char]                 разделитель строки (EOL)
+--flags [list]               список флагов через запятую
+--labels [list]              список меток через запятую
 -s, --source-maps [string]   [true|false|inline]
---source-map-file [string]   Задать путь для сохранения SourceMap
---source-root [string]       Задать корень для всех ссылок в SourceMap
+--source-map-file [string]   путь для сохранения SourceMap
+--source-root [string]       корень для всех ссылок внутри SourceMap
 ```
 
 ### Дополнение
@@ -131,10 +129,6 @@ monic.compile(
     // (опционально, по умолчанию false)
     saveFiles: true,
 
-    // Режим для создания папок при сохранении сгенерированного файла
-    // (опционально, по умолчанию 0777)
-    mode: '0666',
-
     // Путь к сгенерированному файлу (опционально)
     file: 'myFiled-compiled.js',
 
@@ -149,7 +143,7 @@ monic.compile(
     // Путь к сгенерированному source map (опционально, по умолчанию ${file}.map)
     sourceMapFile: 'myFiled.map',
 
-    // Корень для всех ссылок в SourceMap (опционально)
+    // Корень для всех ссылок внутри SourceMap (опционально)
     sourceRoot: 'myDir/'
   },
 
