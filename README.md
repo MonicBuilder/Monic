@@ -62,7 +62,7 @@ monic file.js --flags ie --labels escapeHTML -o _file.js
 
 ### Examples
 
-**Builds a file and output to stdout**
+**Builds a file and outputs to stdout**
 
 ```bash
 monic myFile.js
@@ -87,7 +87,7 @@ monic myFile.js -s -o myFile-compiled.js --source-map myFile-map.js
 monic myFile.js -s inline -o myFile-compiled.js
 ```
 
-**Builds a text and output to stdout**
+**Builds a text and outputs to stdout**
 
 ```bash
 monic '//#include foo/*.js' -f myFile.js
