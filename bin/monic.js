@@ -20,14 +20,14 @@ var
 program
 	.version(monic.VERSION.join('.'))
 	.usage('[options] [file ...]')
-	.option('-f, --file [string]', 'path to the source file (meta information)')
-	.option('-o, --output [string]', 'path to the output file')
+	.option('-f, --file [src]', 'path to the source file (meta information)')
+	.option('-o, --output [src]', 'path to the output file')
 	.option('--eol [char]', 'EOL symbol')
 	.option('--flags [list]', 'list of flags separated by commas')
 	.option('--labels [list]', 'list of labels separated by commas')
-	.option('-s, --source-maps [string]', '[true|false|inline]')
-	.option('--source-map-file [string]', 'path to the generated source map')
-	.option('--source-root [string]', 'root for all URLs inside the generated source map')
+	.option('-s, --source-maps [val]', '[true|false|inline]')
+	.option('--source-map-file [src]', 'path to the generated source map')
+	.option('--source-root [path]', 'root for all URLs inside the generated source map')
 	.parse(process.argv);
 
 var

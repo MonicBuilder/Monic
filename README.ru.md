@@ -36,14 +36,14 @@ monic [options] [file ...]
 ```
 -h, --help
 -V, --version
--f, --file [string]          путь к исходному файлу (мета-информация)
--o, --output [string]        путь для сохранения сгенерированного файла
+-f, --file [src]             путь к исходному файлу (мета-информация)
+-o, --output [src]           путь для сохранения сгенерированного файла
 --eol [char]                 разделитель строки (EOL)
 --flags [list]               список флагов через запятую
 --labels [list]              список меток через запятую
--s, --source-maps [string]   [true|false|inline]
---source-map-file [string]   путь для сохранения SourceMap
---source-root [string]       корень для всех ссылок внутри SourceMap
+-s, --source-maps [val]      [true|false|inline]
+--source-map-file [src]      путь для сохранения SourceMap
+--source-root [path]         корень для всех ссылок внутри SourceMap
 ```
 
 ### Дополнение

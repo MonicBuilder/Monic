@@ -36,14 +36,14 @@ monic [options] [file ...]
 ```
 -h, --help
 -V, --version
--f, --file [string]          path to the source file (meta information)
--o, --output [string]        path to the output file
+-f, --file [src]             path to the source file (meta information)
+-o, --output [src]           path to the output file
 --eol [char]                 EOL symbol
 --flags [list]               list of flags separated by commas
 --labels [list]              list of labels separated by commas
--s, --source-maps [string]   [true|false|inline]
---source-map-file [string]   path to the generated source map
---source-root [string]       root for all URLs inside the generated source map
+-s, --source-maps [val]      [true|false|inline]
+--source-map-file [src]      path to the generated source map
+--source-root [path]         root for all URLs inside the generated source map
 ```
 
 ### Addition
