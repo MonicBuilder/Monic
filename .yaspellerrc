@@ -17,7 +17,7 @@
     "jossy",
     "monic",
     "/node.?js/i",
-    "/ie/i",
+    "/ie|stdout|stdin|stdio/i",
     "/f\\d+/",
     "webPack",
     "sourceMap",

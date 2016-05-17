@@ -34,18 +34,16 @@ monic [options] [file ...]
 ### options
 
 ```
--h, --help                   Output usage information
--V, --version                Output the version number
--f, --file [string]          Set a path to the source file (meta-information)
--o, --output [string]        Set a path to save the generated file
--m, --mode [string]          Set a mode for any folders that need to be created
-                             for the output file
---eol [char]                 Set EOL symbol
---flags [list]               Set a list of flags separated by commas
---labels [list]              Set a list of labels separated by commas
+-h, --help
+-V, --version
+-f, --file [string]          path to the source file (meta information)
+-o, --output [string]        path to the output file
+--eol [char]                 EOL symbol
+--flags [list]               list of flags separated by commas
+--labels [list]              list of labels separated by commas
 -s, --source-maps [string]   [true|false|inline]
---source-map-file [string]   Set a path to save the generated source map
---source-root [string]       Set the root for all URLs in the generated source map
+--source-map-file [string]   path to the generated source map
+--source-root [string]       root for all URLs inside the generated source map
 ```
 
 ### Addition
@@ -64,7 +62,7 @@ monic file.js --flags ie --labels escapeHTML -o _file.js
 
 ### Examples
 
-**Builds a file and returns the result to `stdout`**
+**Builds a file and output to stdout**
 
 ```bash
 monic myFile.js
@@ -89,13 +87,13 @@ monic myFile.js -s -o myFile-compiled.js --source-map myFile-map.js
 monic myFile.js -s inline -o myFile-compiled.js
 ```
 
-**Builds a text and returns the result to `stdout`**
+**Builds a text and output to stdout**
 
 ```bash
 monic '//#include foo/*.js' -f myFile.js
 ```
 
-**Over `stdio`**
+**Over stdio**
 
 ```bash
 echo '//#include foo/*.js' | monic -f myFile.js
@@ -129,10 +127,6 @@ monic.compile(
     // If is true, then generated files will be saved
     // (optional, by default false)
     saveFiles: true,
-
-    // The mode for any folders that need to be created for the output file
-    // (optional, by default 0777)
-    mode: '0666',
 
     // The path to the generated file (optional)
     file: 'myFiled-compiled.js',

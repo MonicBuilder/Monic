@@ -22,7 +22,7 @@ var
 	promisify = require('promisify-any');
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 11];
+exports.VERSION = [2, 3, 12];
 
 /**
  * Builds a file
@@ -36,12 +36,11 @@ exports.VERSION = [2, 3, 11];
  * @param {?string=} [opt_params.eol] - EOL symbol
  * @param {Array<function(this:Parser, string, string, function(Error=, string=)=)>=} [opt_params.replacers] - array of transform functions
  * @param {?boolean=} [opt_params.saveFiles=false] - if is true, then generated files will be saved
- * @param {?string=} [opt_params.mode='0777'] - mode for created folders
  * @param {?string=} [opt_params.file] - path to the generated file
  * @param {(boolean|string|null)=} [opt_params.sourceMaps=false] - if is true or 'inline', then will be generated a source map
  * @param {Object=} [opt_params.inputSourceMap] - base source map object for the output source map
  * @param {?string=} [opt_params.sourceMapFile] - path to the generated source map
- * @param {?string=} [opt_params.sourceRoot] - root for all URLs in the generated source map
+ * @param {?string=} [opt_params.sourceRoot] - root for all URLs inside the generated source map
  * @param {?function(Error, string=, {map: !Object, decl: string, url: string, isExternal: boolean}=)=} [opt_callback] - callback function
  *   (if not declared, then will be used Promise API)
  */
@@ -58,8 +57,7 @@ function compile(file, params, callback) {
 	params = Object.assign({
 		flags: {},
 		labels: {},
-		eol: '\n',
-		mode: '0777'
+		eol: '\n'
 	}, params);
 
 	var
@@ -101,7 +99,7 @@ function compile(file, params, callback) {
 		if (params.saveFiles) {
 			if (externalSourceMap) {
 				tasks.push(function (cb) {
-					mkdirp(path.dirname(sourceMapFile), {mode: params.mode}, ok(cb, function () {
+					mkdirp(path.dirname(sourceMapFile), ok(cb, function () {
 						fs.writeFile(sourceMapFile, map.toString(), cb);
 					}));
 				});
@@ -113,7 +111,7 @@ function compile(file, params, callback) {
 						result += sourceMapDecl + sourceMapUrl;
 					}
 
-					mkdirp(path.dirname(fileToSave), {mode: params.mode}, ok(cb, function () {
+					mkdirp(path.dirname(fileToSave), ok(cb, function () {
 						fs.writeFile(fileToSave, result, cb);
 					}));
 				});
