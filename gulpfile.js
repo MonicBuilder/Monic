@@ -31,14 +31,14 @@ function getVersion() {
 }
 
 function getHead(opt_version) {
-	// jscs:disable
-	return '' +
+	return (
 		'/*!\n' +
 		` * Monic${opt_version ? ` v${getVersion()}` : ''}\n` +
 		' * https://github.com/MonicBuilder/Monic\n' +
 		' *\n' +
 		' * Released under the MIT license\n' +
-		' * https://github.com/MonicBuilder/Monic/blob/master/LICENSE\n';
+		' * https://github.com/MonicBuilder/Monic/blob/master/LICENSE\n'
+	);
 }
 
 function error(cb) {
@@ -58,7 +58,7 @@ gulp.task('copyright', (cb) => {
 	gulp.src('./LICENSE')
 		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, (sstr, intro, from, to) => {
 			const year = new Date().getFullYear();
-			return intro + from + (to || from != year ? `-${year}` : '');
+			return intro + from + (to || from !== year ? `-${year}` : '');
 		}))
 
 		.pipe(gulp.dest('./'))
@@ -107,11 +107,15 @@ gulp.task('head', (cb) => {
 });
 
 gulp.task('build', ['bump'], (cb) => {
+	/* eslint-disable prefer-template */
+
 	const fullHead =
 		getHead(true) +
 		' *\n' +
 		` * Date: ${new Date().toUTCString()}\n` +
 		' */\n\n';
+
+	/* eslint-enable prefer-template */
 
 	gulp.src('./src/*.js')
 		.pipe(cached('build'))

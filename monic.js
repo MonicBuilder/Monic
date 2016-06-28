@@ -22,7 +22,7 @@ var
 	promisify = require('promisify-any');
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 12];
+exports.VERSION = [2, 3, 13];
 
 /**
  * Builds a file

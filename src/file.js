@@ -301,7 +301,7 @@ export class FileStructure {
 							const
 								{info} = block;
 
-							let
+							const
 								compiledBlock = this._compileBlock(block, labels, flags, opt_sourceMap);
 
 							if (opt_sourceMap && info && compiledBlock) {

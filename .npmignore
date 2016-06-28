@@ -55,7 +55,9 @@ error.txt
 /src
 /gulpfile.js
 /.editorconfig
-/.jscsrc
+/.eslintrc
+/.eslintignore
+/.babelrc
 /.yaspellerrc
 /.travis.yml
 /.gitignore
