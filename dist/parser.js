@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 11 Jul 2016 10:51:35 GMT
+ * Date: Mon, 11 Jul 2016 11:18:55 GMT
  */
 
 'use strict';
@@ -29,7 +29,7 @@ var path = require('path'),
     fs = require('fs');
 
 var async = require('async'),
-    $C = require('collection.js/dist/collection');
+    $C = require('collection.js/compiled');
 
 var _require = require('source-map');
 

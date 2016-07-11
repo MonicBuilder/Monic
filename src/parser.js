@@ -20,7 +20,7 @@ const
 
 const
 	async = require('async'),
-	$C = require('collection.js/dist/collection');
+	$C = require('collection.js/compiled');
 
 const
 	{SourceMapConsumer} = require('source-map');

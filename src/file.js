@@ -15,7 +15,7 @@ const
 	path = require('path');
 
 const
-	$C = require('collection.js/dist/collection');
+	$C = require('collection.js/compiled');
 
 /**
  * File structure class

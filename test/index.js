@@ -12,7 +12,7 @@ var
 var
 	fs = require('fs'),
 	path = require('path'),
-	$C = require('collection.js/dist/collection'),
+	$C = require('collection.js/compiled'),
 	eol = '\n';
 
 var
