@@ -53,6 +53,7 @@ error.txt
 
 # NPM ignore list
 /src
+/CODE_OF_CONDUCT.md
 /gulpfile.js
 /.editorconfig
 /.eslintrc
