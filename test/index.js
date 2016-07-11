@@ -7,7 +7,6 @@
  */
 
 var
-	basePath = __dirname.split(path.sep).slice(-1).join(),
 	monic = require('../');
 
 var
@@ -18,6 +17,7 @@ var
 
 var
 	logPath = path.join(__dirname, 'error.txt'),
+	basePath = __dirname.split(path.sep).slice(-1).join(),
 	log = '';
 
 if (fs.existsSync(logPath)) {
