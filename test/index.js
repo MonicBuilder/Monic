@@ -7,14 +7,14 @@
  */
 
 var
+	basePath = __dirname.split(path.sep).slice(-1).join(),
+	monic = require('../');
+
+var
 	fs = require('fs'),
 	path = require('path'),
 	$C = require('collection.js/dist/collection'),
 	eol = '\n';
-
-var
-	basePath = __dirname.split(path.sep).slice(-1).join(),
-	monic = require('../');
 
 var
 	logPath = path.join(__dirname, 'error.txt'),
