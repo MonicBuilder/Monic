@@ -9,7 +9,7 @@
 var
 	fs = require('fs'),
 	path = require('path'),
-	$C = require('collection.js').$C,
+	$C = require('collection.js/dist/collection'),
 	eol = '\n';
 
 var

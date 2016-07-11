@@ -16,12 +16,14 @@ const
 
 const
 	path = require('path'),
-	fs = require('fs'),
-	async = require('async');
+	fs = require('fs');
 
 const
-	{SourceMapConsumer} = require('source-map'),
-	{$C} = require('collection.js');
+	async = require('async'),
+	$C = require('collection.js/dist/collection');
+
+const
+	{SourceMapConsumer} = require('source-map');
 
 /**
  * Parser class

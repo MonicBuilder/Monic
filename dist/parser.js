@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.13
+ * Monic v2.3.14
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 28 Jun 2016 12:51:43 GMT
+ * Date: Mon, 11 Jul 2016 10:51:35 GMT
  */
 
 'use strict';
@@ -26,16 +26,14 @@ var ok = require('okay'),
     glob = require('glob');
 
 var path = require('path'),
-    fs = require('fs'),
-    async = require('async');
+    fs = require('fs');
+
+var async = require('async'),
+    $C = require('collection.js/dist/collection');
 
 var _require = require('source-map');
 
 var SourceMapConsumer = _require.SourceMapConsumer;
-
-var _require2 = require('collection.js');
-
-var $C = _require2.$C;
 
 /**
  * Parser class
