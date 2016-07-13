@@ -38,7 +38,7 @@
     "pack"
   ],
   "dependencies": {
-    "async": "^1.0.0",
+    "async": "^2.0.0",
     "collection.js": "^6.0.0-beta.5",
     "commander": "^2.5.0",
     "core-js": "^2.1.2",
