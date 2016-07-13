@@ -6,7 +6,7 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-require('core-js/es6/object');
+require('core-js');
 
 var
 	sourceMapFile = require('source-map'),
@@ -22,7 +22,7 @@ var
 	promisify = require('promisify-any');
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 14];
+exports.VERSION = [2, 3, 15];
 
 /**
  * Builds a file
