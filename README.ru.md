@@ -5,11 +5,11 @@ Monic — сборщик JS-файлов ([форк Jossy](https://github.com/Ko
 При правильном использовании позволяет не только легко собирать модули, но и также легко пересобирать их при изменении
 принципов сборки.
 
-[:gb: Документация на английском](https://github.com/MonicBuilder/Monic/blob/master/README.md)
+[Документация на английском](https://github.com/MonicBuilder/Monic/blob/master/README.md)
 
 [![NPM version](http://img.shields.io/npm/v/monic.svg?style=flat)](http://badge.fury.io/js/monic)
-[![NPM dependencies](http://img.shields.io/david/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic#info=dependencies&view=table)
-[![NPM devDependencies](http://img.shields.io/david/dev/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic#info=devDependencies&view=table)
+[![NPM dependencies](http://img.shields.io/david/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic)
+[![NPM devDependencies](http://img.shields.io/david/dev/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic?type=dev)
 [![Build Status](http://img.shields.io/travis/MonicBuilder/Monic.svg?style=flat&branch=master)](https://travis-ci.org/MonicBuilder/Monic)
 [![Coverage Status](http://img.shields.io/coveralls/MonicBuilder/Monic.svg?style=flat)](https://coveralls.io/r/MonicBuilder/Monic?branch=master)
 
