@@ -146,12 +146,12 @@ monic.compile(
     sourceRoot: 'myDir/'
   },
 
-  function (err, data, {map, decl, url, isExternal}) {
+  function (err, result, {map, decl, url, isExternal}) {
     if (err) {
       throw err;
     }
 
-    console.log(data);
+    console.log(result);
   }
 );
 ```
@@ -161,7 +161,7 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile('myFile.js')
-  .then(function ([data, {map, decl, url, isExternal}]) {
+  .then(function ({result, sourceMap: {map, decl, url, isExternal}}) {
     ...
   })
 
