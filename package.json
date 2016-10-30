@@ -65,6 +65,6 @@
     "gulp-run": "^1.6.7",
     "istanbul": "^0.4.1",
     "through2": "^2.0.0",
-    "yaspeller": "^2.0.0"
+    "yaspeller": "^3.0.0"
   }
 }

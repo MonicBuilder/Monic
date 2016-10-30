@@ -154,7 +154,7 @@ async@^1.4.0, async@1.x:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
 
-async@^2.0.0:
+async@^2.0.0, async@~2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/async/-/async-2.1.2.tgz#612a4ab45ef42a70cde806bad86ee6db047e8385"
   dependencies:
@@ -163,12 +163,6 @@ async@^2.0.0:
 async@~0.2.6:
   version "0.2.10"
   resolved "https://registry.yarnpkg.com/async/-/async-0.2.10.tgz#b6bbe0b0674b9d719708ca38de8c237cb526c3d1"
-
-async@~2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.0.1.tgz#b709cc0280a9c36f09f4536be823c838a9049e25"
-  dependencies:
-    lodash "^4.8.0"
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -905,6 +899,10 @@ es6-weak-map@^2.0.1:
     es6-iterator "2"
     es6-symbol "3"
 
+escape-html@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
+
 escape-string-regexp@^1.0.0, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.3, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
@@ -1051,7 +1049,7 @@ extsprintf@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.0.2.tgz#e1080e0658e300b06294990cc70e1502235fd550"
 
-eyo-kernel@~1.0.4:
+eyo-kernel@~1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/eyo-kernel/-/eyo-kernel-1.0.6.tgz#e94874ac5ff470f725852b20463bf89c191adc31"
 
@@ -2171,7 +2169,7 @@ lodash.values@~2.4.1:
   dependencies:
     lodash.keys "~2.4.1"
 
-lodash@^4.0.0, lodash@^4.13.0, lodash@^4.14.0, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.8.0:
+lodash@^4.0.0, lodash@^4.14.0, lodash@^4.2.0, lodash@^4.3.0:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.16.4.tgz#01ce306b9bad1319f2a5528674f88297aeb70127"
 
@@ -2261,7 +2259,7 @@ minimatch@^2.0.1:
   dependencies:
     brace-expansion "^1.0.0"
 
-minimatch@^3.0.2, minimatch@~3.0.2, "minimatch@2 || 3":
+minimatch@^3.0.2, minimatch@~3.0.3, "minimatch@2 || 3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.3.tgz#2a4e4090b96b2db06a9d7df01055a62a77c9b774"
   dependencies:
@@ -2718,7 +2716,7 @@ replacestream@^4.0.0:
     object-assign "^4.0.1"
     readable-stream "^2.0.2"
 
-request@^2.65.0, request@^2.73.0:
+request@^2.75.0:
   version "2.76.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.76.0.tgz#be44505afef70360a0436955106be3945d95560e"
   dependencies:
@@ -3287,11 +3285,9 @@ y18n@^3.2.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-3.2.1.tgz#6d15fba884c08679c0d77e88e7759e811e07fa41"
 
-yandex-speller@~1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/yandex-speller/-/yandex-speller-1.0.0.tgz#60da7d8969b486e36222a070c9d50de1cacb0944"
-  dependencies:
-    request "^2.65.0"
+yandex-speller@~2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/yandex-speller/-/yandex-speller-2.0.1.tgz#4f17f77d274be4ab72e388affd7369683187d5f8"
 
 yargs@^3.15.0:
   version "3.32.0"
@@ -3314,21 +3310,21 @@ yargs@~3.10.0:
     decamelize "^1.0.0"
     window-size "0.1.0"
 
-yaspeller@^2.0.0:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/yaspeller/-/yaspeller-2.9.1.tgz#d31eab660be408a53dbc04aea62d625bf4db5435"
+yaspeller@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/yaspeller/-/yaspeller-3.0.0.tgz#0c3025c9b4982fd62f079fa2712a8857fda4c0e9"
   dependencies:
-    async "~2.0.1"
+    async "~2.1.1"
     chalk "~1.1.3"
     commander "~2.9.0"
     entities "~1.1.1"
-    eyo-kernel "~1.0.4"
+    escape-html "1.0.3"
+    eyo-kernel "~1.0.6"
     isutf8 "~2.0.0"
-    lodash "^4.13.0"
-    minimatch "~3.0.2"
-    request "^2.73.0"
+    minimatch "~3.0.3"
+    request "^2.75.0"
     showdown "~1.4.2"
     strip-json-comments "~2.0.1"
     xml2js "~0.4.17"
-    yandex-speller "~1.0.0"
+    yandex-speller "~2.0.0"
 
