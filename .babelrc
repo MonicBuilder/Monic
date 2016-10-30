@@ -1,4 +1,6 @@
 {
-  "presets": ["es2015"],
-  "compact": false
+  "presets": ["es2016-node4"],
+  "plugins": [
+    ["transform-object-rest-spread", {"useBuiltIns": true}]
+  ]
 }
