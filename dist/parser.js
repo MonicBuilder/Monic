@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 30 Oct 2016 20:13:54 GMT
+ * Date: Sun, 30 Oct 2016 20:45:23 GMT
  */
 
 'use strict';
@@ -183,7 +183,7 @@ class Parser {
 			yield $C(_this4.replacers).async.forEach((() => {
 				var _ref2 = _asyncToGenerator(function* (replacer) {
 					if (replacer.length > 2) {
-						yield new Promise(function (resolve, reject) {
+						return new Promise(function (resolve, reject) {
 							replacer.call(_this4, content, file, function (err, res) {
 								if (err) {
 									err.fileName = file;
@@ -194,13 +194,13 @@ class Parser {
 								resolve(content = res);
 							});
 						});
-					} else {
-						try {
-							content = yield replacer.call(_this4, content, file);
-						} catch (err) {
-							err.fileName = file;
-							throw err;
-						}
+					}
+
+					try {
+						content = yield replacer.call(_this4, content, file);
+					} catch (err) {
+						err.fileName = file;
+						throw err;
 					}
 				});
 

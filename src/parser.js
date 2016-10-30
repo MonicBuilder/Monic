@@ -147,7 +147,7 @@ export default class Parser {
 
 		await $C(this.replacers).async.forEach(async (replacer) => {
 			if (replacer.length > 2) {
-				await new Promise((resolve, reject) => {
+				return new Promise((resolve, reject) => {
 					replacer.call(this, content, file, (err, res) => {
 						if (err) {
 							err.fileName = file;
@@ -158,15 +158,14 @@ export default class Parser {
 						resolve(content = res);
 					});
 				});
+			}
 
-			} else {
-				try {
-					content = await replacer.call(this, content, file);
+			try {
+				content = await replacer.call(this, content, file);
 
-				} catch (err) {
-					err.fileName = file;
-					throw err;
-				}
+			} catch (err) {
+				err.fileName = file;
+				throw err;
 			}
 		});
 
