@@ -127,7 +127,7 @@ export default class Parser {
 			content = this.cache[src] || await fs.readFileAsync(src, 'utf8');
 
 		if (typeof content !== 'string') {
-			return {struct: content, file: src};
+			return {fileStructure: content, file: src};
 		}
 
 		return this.parse(src, content);

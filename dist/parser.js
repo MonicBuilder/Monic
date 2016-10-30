@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Wed, 13 Jul 2016 08:56:06 GMT
+ * Date: Sun, 30 Oct 2016 19:19:59 GMT
  */
 
 'use strict';
@@ -14,32 +14,33 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _file = require('./file');
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-var ok = require('okay'),
-    glob = require('glob');
+const $C = require('collection.js/compiled');
 
-var path = require('path'),
-    fs = require('fs');
-
-var async = require('async'),
-    $C = require('collection.js/compiled');
+const path = require('path'),
+      fs = require('fs-extra-promise'),
+      glob = require('glob-promise');
 
 var _require = require('source-map');
 
-var SourceMapConsumer = _require.SourceMapConsumer;
+const SourceMapConsumer = _require.SourceMapConsumer;
+
+var _require2 = require('glob');
+
+const hasMagic = _require2.hasMagic;
 
 /**
  * Parser class
  */
 
-var Parser = function () {
+class Parser {
 	/**
   * @param {string} eol - EOL symbol
   * @param {Array=} [replacers] - array of transform functions
@@ -48,20 +49,17 @@ var Parser = function () {
   * @param {Object=} [inputSourceMap] - base source map object for the output source map
   * @param {?string=} [sourceRoot] - root for all URLs in the generated source map
   */
-
-	function Parser(_ref) {
-		var eol = _ref.eol;
-		var replacers = _ref.replacers;
-		var flags = _ref.flags;
-		var sourceMaps = _ref.sourceMaps;
-		var sourceRoot = _ref.sourceRoot;
-		var inputSourceMap = _ref.inputSourceMap;
-
-		_classCallCheck(this, Parser);
+	constructor(_ref) {
+		let eol = _ref.eol;
+		let replacers = _ref.replacers;
+		let flags = _ref.flags;
+		let sourceMaps = _ref.sourceMaps;
+		let sourceRoot = _ref.sourceRoot;
+		let inputSourceMap = _ref.inputSourceMap;
 
 		this.eol = eol;
 		this.replacers = replacers;
-		this.flags = Object.assign({}, flags);
+		this.flags = _extends({}, flags);
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;
@@ -72,570 +70,480 @@ var Parser = function () {
 	/**
   * Normalizes a path
   *
-  * @param {string} src - path
-  * @return {string}
+  * @param {string} src
+  * @returns {string}
   */
+	static normalizePath(src) {
+		return path.normalize(src).split(path.sep).join('/');
+	}
 
+	/**
+  * Solves the relative path from "from" to "to"
+  *
+  * @param {string} from
+  * @param {string} to
+  * @returns {string}
+  */
+	static getRelativePath(from, to) {
+		return Parser.normalizePath(path.relative(from, to));
+	}
 
-	_createClass(Parser, [{
-		key: 'testFile',
+	/**
+  * Checks a file for existence and returns the absolute path to it
+  *
+  * @param {string} file - file path
+  * @returns {string}
+  */
+	testFile(file) {
+		var _this = this;
 
-
-		/**
-   * Checks a file for existence
-   * and returns an absolute path to it
-   *
-   * @param {string} file - file path
-   * @param {function(Error, string=)} callback - callback function
-   */
-		value: function testFile(file, callback) {
-			var _this = this;
-
+		return _asyncToGenerator(function* () {
 			file = Parser.normalizePath(path.resolve(file));
-
-			if (this.realpathCache[file]) {
-				callback(null, file);
-			} else {
-				async.waterfall([function (next) {
-					return fs.stat(file, next);
-				}, function (stat, next) {
-					if (!stat.isFile()) {
-						return next(new Error('"' + file + '" is not a file'));
-					}
-
-					_this.realpathCache[file] = true;
-					next(null, file);
-				}], callback);
+			if (_this.realpathCache[file]) {
+				return file;
 			}
-		}
 
-		/**
-   * Parses a path with glob
-   *
-   * @param {string} base - path to a base file
-   * @param {string} src - path
-   * @param {function(Error, !Array=)} callback - callback function
-   */
+			if (!(yield fs.statAsync(file)).isFile()) {
+				throw new Error(`"${ file }" is not a file`);
+			}
 
-	}, {
-		key: 'parsePath',
-		value: function parsePath(base, src, callback) {
-			var _this2 = this;
+			_this.realpathCache[file] = true;
+			return file;
+		})();
+	}
 
-			var parts = src.split('::'),
-			    dirname = path.dirname(base);
+	/**
+  * Parses a path with glob
+  *
+  * @param {string} base - path to a base file
+  * @param {string} src - path
+  * @returns {!Array}
+  */
+	parsePath(base, src) {
+		var _this2 = this;
+
+		return _asyncToGenerator(function* () {
+			const parts = src.split('::'),
+			      dirname = path.dirname(base);
 
 			parts[0] = parts[0].replace(/\$\{(.*?)}/g, function (sstr, flag) {
 				return flag in _this2.flags ? _this2.flags[flag] : '';
 			});
 
-			var pattern = path.join(dirname, parts[0]);
+			const pattern = path.join(dirname, parts[0]);
 
-			if (glob.hasMagic(pattern)) {
-				glob(pattern, null, ok(callback, function (files) {
-					callback(null, $C(files).reduce(function (res, el) {
-						parts[0] = path.relative(dirname, el);
-						res.push(parts.slice());
-						return res;
-					}, []));
-				}));
-			} else {
-				callback(null, [parts]);
-			}
-		}
-
-		/**
-   * Parses a file and returns it structure
-   *
-   * @param {string} file - file path
-   * @param {function(Error, !FileStructure=, string=)} callback - callback function
-   */
-
-	}, {
-		key: 'parseFile',
-		value: function parseFile(file, callback) {
-			var _this3 = this;
-
-			async.waterfall([function (next) {
-				return _this3.testFile(file, next);
-			}, function (src, next) {
-				if (_this3.cache[src]) {
-					return next(null, src, _this3.cache[src]);
-				}
-
-				fs.readFile(src, 'utf8', function (err, content) {
-					return next(err, src, content);
-				});
-			}, function (src, content, next) {
-				if (typeof content !== 'string') {
-					return next(null, content, src);
-				}
-
-				_this3.parse(src, content, next);
-			}], callback);
-		}
-
-		/**
-   * Parses a text and returns it structure
-   *
-   * @param {string} file - file path
-   * @param {string} content - source text
-   * @param {function(Error, !FileStructure=, string=)} callback - callback function
-   */
-
-	}, {
-		key: 'parse',
-		value: function parse(file, content, callback) {
-			var _this4 = this;
-
-			if (this.cache[file]) {
-				return callback(null, this.cache[file], file);
+			if (hasMagic(pattern)) {
+				return $C((yield glob(pattern))).reduce(function (res, el) {
+					parts[0] = path.relative(dirname, el);
+					res.push(parts.slice());
+					return res;
+				}, []);
 			}
 
-			var actions = [];
+			return [parts];
+		})();
+	}
 
-			$C(this.replacers).forEach(function (replacer) {
-				actions.push(function (next) {
+	/**
+  * Parses a file and returns it structure
+  *
+  * @param {string} file - file path
+  * @returns {{fileStructure: (!FileStructure|undefined), file: string}}
+  */
+	parseFile(file) {
+		var _this3 = this;
+
+		return _asyncToGenerator(function* () {
+			const src = yield _this3.testFile(file),
+			      content = _this3.cache[src] || (yield fs.readFileAsync(src, 'utf8'));
+
+			if (typeof content !== 'string') {
+				return { fileStructure: content, file: src };
+			}
+
+			return _this3.parse(src, content);
+		})();
+	}
+
+	/**
+  * Parses a text and returns it structure
+  *
+  * @param {string} file - file path
+  * @param {string} content - source text
+  * @returns {{fileStructure: (!FileStructure|undefined), file: string}}
+  */
+	parse(file, content) {
+		var _this4 = this;
+
+		return _asyncToGenerator(function* () {
+			if (_this4.cache[file]) {
+				return { fileStructure: _this4.cache[file], file: file };
+			}
+
+			const actions = [];
+
+			$C(_this4.replacers).forEach(function (replacer) {
+				actions.push(_asyncToGenerator(function* () {
 					if (replacer.length > 2) {
-						replacer.call(_this4, content, file, function (err, res) {
-							return next(err, err ? undefined : content = res);
+						yield new Promise(function (resolve, reject) {
+							replacer.call(_this4, content, file, function (err, res) {
+								if (err) {
+									err.fileName = file;
+									reject(err);
+									return;
+								}
+
+								resolve(content = res);
+							});
 						});
 					} else {
 						try {
-							content = replacer.call(_this4, content, file);
-							next();
+							content = yield replacer.call(_this4, content, file);
 						} catch (err) {
 							err.fileName = file;
-							next(err);
+							throw err;
 						}
 					}
-				});
+				}));
 			});
 
-			var sourceMap = void 0;
-			if (this.sourceMaps) {
-				if (this.inputSourceMap) {
-					sourceMap = new SourceMapConsumer(this.inputSourceMap);
+			let sourceMap;
+			if (_this4.sourceMaps) {
+				if (_this4.inputSourceMap) {
+					sourceMap = new SourceMapConsumer(_this4.inputSourceMap);
 				} else {
 					content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*$/, function (sstr, url) {
-						actions.push(function (next) {
+						actions.push(_asyncToGenerator(function* () {
+							let parse = (() => {
+								var _ref4 = _asyncToGenerator(function* (str) {
+									try {
+										sourceMap = new SourceMapConsumer(JSON.parse((yield str)));
+										content = content.replace(sstr, '');
+									} catch (ignore) {}
+								});
+
+								return function parse(_x) {
+									return _ref4.apply(this, arguments);
+								};
+							})();
+
 							if (/data:application\/json;base64,(.*)/.exec(url)) {
 								parse(new Buffer(RegExp.$1, 'base64').toString());
 							} else {
-								fs.readFile(path.normalize(path.resolve(path.dirname(file), url)), 'utf8', function (err, str) {
-									parse(str);
-								});
+								yield parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
 							}
-
-							function parse(str) {
-								try {
-									sourceMap = new SourceMapConsumer(JSON.parse(str));
-									content = content.replace(sstr, '');
-								} catch (ignore) {} finally {
-									next();
-								}
-							}
-						});
+						}));
 
 						return sstr;
 					});
 				}
 			}
 
-			async.series(actions, ok(callback, function () {
-				var fileStructure = new _file.FileStructure({ file: file, globals: _this4.flags }),
-				    lines = content.split(/\r?\n|\r/);
+			yield $C(actions).async.forEach(function (fn) {
+				return fn();
+			});
 
-				_this4.cache[file] = fileStructure;
-				var parseLines = function parseLines(start) {
-					var info = void 0,
-					    i = void 0;
+			const fileStructure = _this4.cache[file] = new _file.FileStructure({ file: file, globals: _this4.flags }),
+			      lines = content.split(/\r?\n|\r/);
 
-					function error(err) {
-						err.fileName = file;
-						err.lineNumber = i + 1;
-						callback(err);
-					}
+			let original, info;
 
-					var asyncParseCallback = ok(error, function () {
-						return parseLines(i + 1);
+			if (sourceMap) {
+				const originalMap = [];
+
+				sourceMap.eachMapping(function (el) {
+					originalMap.push({
+						generated: {
+							line: el.generatedLine,
+							column: el.generatedColumn
+						},
+
+						original: {
+							line: el.originalLine,
+							column: el.originalColumn
+						},
+
+						source: el.source,
+						name: el.name
 					});
+				});
 
-					var original = void 0;
-					if (sourceMap) {
-						(function () {
-							var originalMap = [];
-							sourceMap.eachMapping(function (el) {
-								originalMap.push({
-									generated: {
-										line: el.generatedLine,
-										column: el.generatedColumn
-									},
+				if (sourceMap.sourcesContent) {
+					$C(sourceMap.sourcesContent).forEach(function (content, i) {
+						const src = sourceMap.sources[i];
 
-									original: {
-										line: el.originalLine,
-										column: el.originalColumn
-									},
+						$C(originalMap).forEach(function (el) {
+							if (el.source === src) {
+								el.source = Parser.normalizePath(path.resolve(el.source));
 
-									source: el.source,
-									name: el.name
-								});
-							});
+								if (_this4.sourceRoot) {
+									el.source = Parser.getRelativePath(_this4.sourceRoot, el.source);
+								}
 
-							if (sourceMap.sourcesContent) {
-								$C(sourceMap.sourcesContent).forEach(function (content, i) {
-									var src = sourceMap.sources[i];
-
-									$C(originalMap).forEach(function (el) {
-										if (el.source === src) {
-											el.source = Parser.normalizePath(path.resolve(el.source));
-
-											if (_this4.sourceRoot) {
-												el.source = Parser.getRelativePath(_this4.sourceRoot, el.source);
-											}
-
-											el.sourcesContent = content;
-										}
-									});
-								});
+								el.sourcesContent = content;
 							}
+						});
+					});
+				}
 
-							original = $C(originalMap).group('generated > line');
-						})();
+				original = $C(originalMap).group('generated.line');
+			}
+
+			for (let i = 0; i < lines.length; i++) {
+				const pos = i + 1,
+				      line = lines[i],
+				      val = line + _this4.eol;
+
+				if (_this4.sourceMaps) {
+					if (original) {
+						info = original[pos] || { ignore: true };
+					} else {
+						info = {
+							generated: {
+								column: 0
+							},
+
+							original: {
+								line: pos,
+								column: 0
+							},
+
+							source: _this4.sourceRoot ? Parser.getRelativePath(_this4.sourceRoot, file) : file,
+							sourcesContent: content || _this4.eol,
+							line: line
+						};
 					}
+				}
 
-					for (i = start; i < lines.length; i++) {
-						var pos = i + 1,
-						    line = lines[i],
-						    val = line + _this4.eol;
+				if (line.match(/^\s*\/\/#(.*)/)) {
+					if (RegExp.$1) {
+						const command = RegExp.$1.split(' '),
+						      dir = command.shift();
 
-						if (_this4.sourceMaps) {
-							if (original) {
-								info = original[pos] || { ignore: true };
-							} else {
-								info = {
-									generated: {
-										column: 0
-									},
+						const key = `_${ dir }`,
+						      params = command.join(' ');
 
-									original: {
-										line: pos,
-										column: 0
-									},
-
-									source: _this4.sourceRoot ? Parser.getRelativePath(_this4.sourceRoot, file) : file,
-
-									sourcesContent: content || _this4.eol,
-									line: line
-								};
-							}
-						}
-
-						if (line.match(/^\s*\/\/#(.*)/)) {
-							if (RegExp.$1) {
-								var command = RegExp.$1.split(' '),
-								    dir = command.shift();
-
-								var key = '_' + dir,
-								    params = command.join(' ');
-
-								if (/^(?:include|without)$/.test(dir)) {
-									return _this4[key](fileStructure, params, asyncParseCallback);
-								}
-
-								if (_this4[key]) {
-									try {
-										_this4[key](fileStructure, params);
-									} catch (err) {
-										return error(err);
-									}
-								} else {
-									fileStructure.addCode(val, info);
-								}
+						if (_this4[key]) {
+							try {
+								yield _this4[key](fileStructure, params);
+							} catch (err) {
+								err.fileName = file;
+								err.lineNumber = i + 1;
+								throw err;
 							}
 						} else {
 							fileStructure.addCode(val, info);
 						}
 					}
-
-					callback(null, fileStructure, file);
-				};
-
-				parseLines(0);
-			}));
-		}
-
-		/**
-   * Directive #include
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   * @param {function(Error=)} callback - callback function
-   */
-
-	}, {
-		key: '_include',
-		value: function _include(struct, value, callback) {
-			var _this5 = this;
-
-			this.parsePath(struct.file, value, ok(callback, function (arr) {
-				var actions = $C(arr).reduce(function (arr, el) {
-					return arr.push(function (next) {
-						return action.call(_this5, el, next);
-					}), arr;
-				}, []);
-
-				async.series(actions, callback);
-			}));
-
-			function action(param, next) {
-				var includeFileName = String(param.shift());
-
-				param = $C(param).reduce(function (map, el) {
-					return map[el] = true, map;
-				}, {});
-
-				if (includeFileName) {
-					this.parseFile(struct.getRelativePathOf(includeFileName), ok(next, function (includeFile) {
-						struct.addInclude(includeFile, param);
-						next();
-					}));
 				} else {
-					$C(param).forEach(function (el, key) {
-						return struct.root.labels[key] = true;
-					});
-					next();
+					fileStructure.addCode(val, info);
 				}
 			}
+
+			return { fileStructure: fileStructure, file: file };
+		})();
+	}
+
+	/**
+  * Directive #include
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+	_include(struct, value) {
+		var _this5 = this;
+
+		return _asyncToGenerator(function* () {
+			return $C((yield _this5.parsePath(struct.file, value))).async.forEach((() => {
+				var _ref5 = _asyncToGenerator(function* (el) {
+					const includeFileName = String(el.shift());
+					el = $C(el).reduce(function (map, el) {
+						return map[el] = true, map;
+					}, {});
+
+					if (includeFileName) {
+						struct.addInclude((yield _this5.parseFile(struct.getRelativePathOf(includeFileName))).fileStructure, el);
+					} else {
+						$C(el).forEach(function (el, key) {
+							return struct.root.labels[key] = true;
+						});
+					}
+				});
+
+				return function (_x2) {
+					return _ref5.apply(this, arguments);
+				};
+			})());
+		})();
+	}
+
+	/**
+  * Directive #without
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+	_without(struct, value) {
+		var _this6 = this;
+
+		return _asyncToGenerator(function* () {
+			return $C((yield _this6.parsePath(struct.file, value))).async.forEach((() => {
+				var _ref6 = _asyncToGenerator(function* (el) {
+					const includeFileName = String(el.shift());
+					el = $C(el).reduce(function (map, el) {
+						return map[el] = true, map;
+					}, {});
+
+					struct.addWithout((yield _this6.parseFile(struct.getRelativePathOf(includeFileName))).fileStructure, el);
+				});
+
+				return function (_x3) {
+					return _ref6.apply(this, arguments);
+				};
+			})());
+		})();
+	}
+
+	/**
+  * Directive #end
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+	_end(struct, value) {
+		value = value.trim();
+
+		if (!value) {
+			throw new SyntaxError('Bad "#end" directive');
 		}
 
-		/**
-   * Directive #without
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   * @param {function(Error=)} callback - callback function
-   */
+		const args = value.split(/\s+/),
+		      key = `_end${ args[0] }`;
 
-	}, {
-		key: '_without',
-		value: function _without(struct, value, callback) {
-			var _this6 = this;
-
-			this.parsePath(struct.file, value, ok(callback, function (arr) {
-				var actions = $C(arr).reduce(function (arr, el) {
-					return arr.push(function (next) {
-						return action.call(_this6, el, next);
-					}), arr;
-				}, []);
-
-				async.series(actions, callback);
-			}));
-
-			function action(param, next) {
-				var includedFile = struct.getRelativePathOf(String(param.shift()));
-
-				param = $C(param).reduce(function (map, el) {
-					return map[el] = true, map;
-				}, {});
-
-				this.parseFile(includedFile, ok(next, function (includeFile) {
-					struct.addWithout(includeFile, param);
-					next();
-				}));
-			}
+		if (!this[key]) {
+			throw new SyntaxError(`Bad value (${ args[0] }) for "#end" directive`);
 		}
 
-		/**
-   * Directive #end
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   */
+		this[key](struct, args.join(' '));
+	}
 
-	}, {
-		key: '_end',
-		value: function _end(struct, value) {
-			value = value.trim();
+	/**
+  * Directive #label
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+	_label(struct, value) {
+		struct.beginLabel(value);
+	}
 
-			if (!value) {
-				throw new SyntaxError('Bad "#end" directive');
-			}
+	/**
+  * Directive #endlabel
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  */
+	_endlabel(struct) {
+		struct.endLabel();
+	}
 
-			var args = value.split(/\s+/),
-			    key = '_end' + args[0];
+	/**
+  * Directive #if
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  * @param {boolean=} [opt_unless] - unless mode
+  */
+	_if(struct, value, opt_unless) {
+		value = value.trim();
 
-			if (!this[key]) {
-				throw new SyntaxError('Bad value (' + args[0] + ') for "#end" directive');
-			}
+		const args = value.split(/\s+/);
 
-			this[key](struct, args.join(' '));
+		switch (args.length) {
+			case 1:
+				args.push('eq', true);
+				break;
+
+			case 2:
+				args.push(true);
+				break;
 		}
 
-		/**
-   * Directive #label
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   */
-
-	}, {
-		key: '_label',
-		value: function _label(struct, value) {
-			struct.beginLabel(value);
+		if (!value || args.length !== 3) {
+			throw new SyntaxError(`Bad "#${ opt_unless ? 'unless' : 'if' }" directive`);
 		}
 
-		/**
-   * Directive #endlabel
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   */
+		struct.beginIf.apply(struct, _toConsumableArray(args.concat(opt_unless)));
+	}
 
-	}, {
-		key: '_endlabel',
-		value: function _endlabel(struct) {
-			struct.endLabel();
+	/**
+  * Directive #endif
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  */
+	_endif(struct) {
+		struct.endIf();
+	}
+
+	/**
+  * Directive #unless
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+	_unless(struct, value) {
+		this._if(struct, value, true);
+	}
+
+	/**
+  * Directive #endunless
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  */
+	_endunless(struct) {
+		struct.endIf();
+	}
+
+	/**
+  * Directive #set
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+	_set(struct, value) {
+		value = value.trim();
+
+		if (!value) {
+			throw new SyntaxError('Bad "#set" directive');
 		}
 
-		/**
-   * Directive #if
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   * @param {boolean=} [opt_unless] - unless mode
-   */
+		struct.addSet.apply(struct, _toConsumableArray(value.split(/\s+/)));
+	}
 
-	}, {
-		key: '_if',
-		value: function _if(struct, value, opt_unless) {
-			value = value.trim();
+	/**
+  * Directive #unset
+  *
+  * @private
+  * @param {!FileStructure} struct - file structure
+  * @param {string} value - directive value
+  */
+	_unset(struct, value) {
+		value = value.trim();
 
-			var args = value.split(/\s+/);
-
-			switch (args.length) {
-				case 1:
-					args.push('eq', true);
-					break;
-
-				case 2:
-					args.push(true);
-					break;
-			}
-
-			if (!value || args.length !== 3) {
-				throw new SyntaxError('Bad "#' + (opt_unless ? 'unless' : 'if') + '" directive');
-			}
-
-			struct.beginIf.apply(struct, _toConsumableArray(args.concat(opt_unless)));
+		if (!value) {
+			throw new SyntaxError('Bad "#unset" directive');
 		}
 
-		/**
-   * Directive #endif
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   */
-
-	}, {
-		key: '_endif',
-		value: function _endif(struct) {
-			struct.endIf();
-		}
-
-		/**
-   * Directive #unless
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   */
-
-	}, {
-		key: '_unless',
-		value: function _unless(struct, value) {
-			this._if(struct, value, true);
-		}
-
-		/**
-   * Directive #endunless
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   */
-
-	}, {
-		key: '_endunless',
-		value: function _endunless(struct) {
-			struct.endIf();
-		}
-
-		/**
-   * Directive #set
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   */
-
-	}, {
-		key: '_set',
-		value: function _set(struct, value) {
-			value = value.trim();
-
-			if (!value) {
-				throw new SyntaxError('Bad "#set" directive');
-			}
-
-			struct.addSet.apply(struct, _toConsumableArray(value.split(/\s+/)));
-		}
-
-		/**
-   * Directive #unset
-   *
-   * @private
-   * @param {!FileStructure} struct - file structure
-   * @param {string} value - directive value
-   */
-
-	}, {
-		key: '_unset',
-		value: function _unset(struct, value) {
-			value = value.trim();
-
-			if (!value) {
-				throw new SyntaxError('Bad "#unset" directive');
-			}
-
-			struct.addUnset(value);
-		}
-	}], [{
-		key: 'normalizePath',
-		value: function normalizePath(src) {
-			return path.normalize(src).split(path.sep).join('/');
-		}
-
-		/**
-   * Solves the relative path from "from" to "to"
-   *
-   * @param {string} from
-   * @param {string} to
-   * @return {string}
-   */
-
-	}, {
-		key: 'getRelativePath',
-		value: function getRelativePath(from, to) {
-			return Parser.normalizePath(path.relative(from, to));
-		}
-	}]);
-
-	return Parser;
-}();
-
+		struct.addUnset(value);
+	}
+}
 exports.default = Parser;

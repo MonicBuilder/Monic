@@ -61,6 +61,7 @@ $C(fs.readdirSync(basePath)).forEach((dir) => {
 
 		const cbTest = (err, res) => {
 			if (err) {
+				console.error(err);
 				throw err;
 			}
 
