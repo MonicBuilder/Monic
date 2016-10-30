@@ -145,34 +145,29 @@ export default class Parser {
 			return {fileStructure: this.cache[file], file};
 		}
 
-		const
-			actions = [];
+		await $C(this.replacers).async.forEach(async (replacer) => {
+			if (replacer.length > 2) {
+				await new Promise((resolve, reject) => {
+					replacer.call(this, content, file, (err, res) => {
+						if (err) {
+							err.fileName = file;
+							reject(err);
+							return;
+						}
 
-		$C(this.replacers).forEach((replacer) => {
-			actions.push(async () => {
-				if (replacer.length > 2) {
-					await new Promise((resolve, reject) => {
-						replacer.call(this, content, file, (err, res) => {
-							if (err) {
-								err.fileName = file;
-								reject(err);
-								return;
-							}
-
-							resolve(content = res);
-						});
+						resolve(content = res);
 					});
+				});
 
-				} else {
-					try {
-						content = await replacer.call(this, content, file);
+			} else {
+				try {
+					content = await replacer.call(this, content, file);
 
-					} catch (err) {
-						err.fileName = file;
-						throw err;
-					}
+				} catch (err) {
+					err.fileName = file;
+					throw err;
 				}
-			});
+			}
 		});
 
 		let sourceMap;
@@ -180,31 +175,26 @@ export default class Parser {
 			if (this.inputSourceMap) {
 				sourceMap = new SourceMapConsumer(this.inputSourceMap);
 
-			} else {
-				content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*$/, (sstr, url) => {
-					actions.push(async () => {
-						if (/data:application\/json;base64,(.*)/.exec(url)) {
-							parse(new Buffer(RegExp.$1, 'base64').toString());
+			} else if (/((?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*)$/.test(content)) {
+				const
+					[sstr, url] = [RegExp.$1, RegExp.$2];
 
-						} else {
-							await parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
-						}
+				const parse = async (str) => {
+					try {
+						sourceMap = new SourceMapConsumer(JSON.parse(await str));
+						content = content.replace(sstr, '');
 
-						async function parse(str) {
-							try {
-								sourceMap = new SourceMapConsumer(JSON.parse(await str));
-								content = content.replace(sstr, '');
+					} catch (ignore) {}
+				};
 
-							} catch (ignore) {}
-						}
-					});
+				if (/data:application\/json;base64,(.*)/.exec(url)) {
+					parse(new Buffer(RegExp.$1, 'base64').toString());
 
-					return sstr;
-				});
+				} else {
+					await parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
+				}
 			}
 		}
-
-		await $C(actions).async.forEach((fn) => fn());
 
 		const
 			fileStructure = this.cache[file] = new FileStructure({file, globals: this.flags}),
