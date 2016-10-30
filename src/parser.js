@@ -12,14 +12,14 @@ import { FileStructure } from './file';
 
 const
 	ok = require('okay'),
-	glob = require('glob');
+	glob = require('glob-promise'),
+	{hasMagic} = require('glob');
 
 const
 	path = require('path'),
-	fs = require('fs');
+	fs = require('fs-extra-promise');
 
 const
-	async = require('async'),
 	$C = require('collection.js/compiled');
 
 const
@@ -51,8 +51,8 @@ export default class Parser {
 	/**
 	 * Normalizes a path
 	 *
-	 * @param {string} src - path
-	 * @return {string}
+	 * @param {string} src
+	 * @returns {string}
 	 */
 	static normalizePath(src) {
 		return path.normalize(src).split(path.sep).join('/');
@@ -63,39 +63,34 @@ export default class Parser {
 	 *
 	 * @param {string} from
 	 * @param {string} to
-	 * @return {string}
+	 * @returns {string}
 	 */
 	static getRelativePath(from, to) {
 		return Parser.normalizePath(path.relative(from, to));
 	}
 
 	/**
-	 * Checks a file for existence
-	 * and returns an absolute path to it
+	 * Checks a file for existence and returns the absolute path to it
 	 *
 	 * @param {string} file - file path
-	 * @param {function(Error, string=)} callback - callback function
+	 * @returns {string}
 	 */
-	testFile(file, callback) {
+	async testFile(file) {
 		file = Parser.normalizePath(path.resolve(file));
 
 		if (this.realpathCache[file]) {
-			callback(null, file);
-
-		} else {
-			async.waterfall([
-				(next) => fs.stat(file, next),
-				(stat, next) => {
-					if (!stat.isFile()) {
-						return next(new Error(`"${file}" is not a file`));
-					}
-
-					this.realpathCache[file] = true;
-					next(null, file);
-				}
-
-			], callback);
+			return file;
 		}
+
+		const
+			stat = await fs.statAsync(file);
+
+		if (stat.isFile()) {
+			throw new Error(`"${file}" is not a file`);
+		}
+
+		this.realpathCache[file] = true;
+		return file;
 	}
 
 	/**
@@ -103,9 +98,9 @@ export default class Parser {
 	 *
 	 * @param {string} base - path to a base file
 	 * @param {string} src - path
-	 * @param {function(Error, !Array=)} callback - callback function
+	 * @returns {!Array}
 	 */
-	parsePath(base, src, callback) {
+	async parsePath(base, src) {
 		const
 			parts = src.split('::'),
 			dirname = path.dirname(base);
@@ -116,52 +111,33 @@ export default class Parser {
 		const
 			pattern = path.join(dirname, parts[0]);
 
-		if (glob.hasMagic(pattern)) {
-			glob(pattern, null, ok(callback, (files) => {
-				callback(
-					null,
-
-					$C(files).reduce((res, el) => {
-						parts[0] = path.relative(dirname, el);
-						res.push(parts.slice());
-						return res;
-					}, [])
-
-				);
-			}));
-
-		} else {
-			callback(null, [parts]);
+		if (hasMagic(pattern)) {
+			return $C(await glob(pattern)).reduce((res, el) => {
+				parts[0] = path.relative(dirname, el);
+				res.push(parts.slice());
+				return res;
+			}, []);
 		}
+
+		return [parts];
 	}
 
 	/**
 	 * Parses a file and returns it structure
 	 *
 	 * @param {string} file - file path
-	 * @param {function(Error, !FileStructure=, string=)} callback - callback function
+	 * @returns {{fileStructure: (!FileStructure|undefined), file: string}}
 	 */
-	parseFile(file, callback) {
-		async.waterfall([
-			(next) => this.testFile(file, next),
+	async parseFile(file) {
+		const
+			src = await this.testFile(file),
+			content = this.cache[src] || await fs.readFileAsync(src, 'utf8');
 
-			(src, next) => {
-				if (this.cache[src]) {
-					return next(null, src, this.cache[src]);
-				}
+		if (typeof content !== 'string') {
+			return {struct: content, file: src};
+		}
 
-				fs.readFile(src, 'utf8', (err, content) => next(err, src, content));
-			},
-
-			(src, content, next) => {
-				if (typeof content !== 'string') {
-					return next(null, content, src);
-				}
-
-				this.parse(src, content, next);
-			}
-
-		], callback);
+		return this.parse(src, content);
 	}
 
 	/**
@@ -169,30 +145,38 @@ export default class Parser {
 	 *
 	 * @param {string} file - file path
 	 * @param {string} content - source text
-	 * @param {function(Error, !FileStructure=, string=)} callback - callback function
+	 * @returns {{fileStructure: (!FileStructure|undefined), file: string}}
 	 */
-	parse(file, content, callback) {
+	async parse(file, content) {
 		if (this.cache[file]) {
-			return callback(null, this.cache[file], file);
+			return {fileStructure: this.cache[file], file};
 		}
 
 		const
 			actions = [];
 
 		$C(this.replacers).forEach((replacer) => {
-			actions.push((next) => {
+			actions.push(async () => {
 				if (replacer.length > 2) {
-					replacer.call(this, content, file, (err, res) =>
-						next(err, err ? undefined : content = res));
+					await new Promise((resolve, reject) => {
+						replacer.call(this, content, file, (err, res) => {
+							if (err) {
+								err.fileName = file;
+								reject(err);
+								return;
+							}
+
+							resolve(content = res);
+						});
+					});
 
 				} else {
 					try {
-						content = replacer.call(this, content, file);
-						next();
+						content = await replacer.call(this, content, file);
 
 					} catch (err) {
 						err.fileName = file;
-						next(err);
+						throw err;
 					}
 				}
 			});
@@ -205,14 +189,12 @@ export default class Parser {
 
 			} else {
 				content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*$/, (sstr, url) => {
-					actions.push((next) => {
+					actions.push(async () => {
 						if (/data:application\/json;base64,(.*)/.exec(url)) {
 							parse(new Buffer(RegExp.$1, 'base64').toString());
 
 						} else {
-							fs.readFile(path.normalize(path.resolve(path.dirname(file), url)), 'utf8', (err, str) => {
-								parse(str);
-							});
+							parse(await fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
 						}
 
 						function parse(str) {
@@ -220,11 +202,7 @@ export default class Parser {
 								sourceMap = new SourceMapConsumer(JSON.parse(str));
 								content = content.replace(sstr, '');
 
-							} catch (ignore) {
-
-							} finally {
-								next();
-							}
+							} catch (ignore) {}
 						}
 					});
 
@@ -233,135 +211,135 @@ export default class Parser {
 			}
 		}
 
-		async.series(actions, ok(callback, () => {
+		await $C(actions).async.forEach((fn) => fn());
+
+		const
+			fileStructure = new FileStructure({file, globals: this.flags}),
+			lines = content.split(/\r?\n|\r/);
+
+		this.cache[file] = fileStructure;
+		const parseLines = (start) => {
+			let
+				info,
+				i;
+
+			function error(err) {
+				err.fileName = file;
+				err.lineNumber = i + 1;
+				callback(err);
+			}
+
 			const
-				fileStructure = new FileStructure({file, globals: this.flags}),
-				lines = content.split(/\r?\n|\r/);
+				asyncParseCallback = ok(error, () => parseLines(i + 1));
 
-			this.cache[file] = fileStructure;
-			const parseLines = (start) => {
-				let
-					info,
-					i;
+			let original;
+			if (sourceMap) {
+				const originalMap = [];
+				sourceMap.eachMapping((el) => {
+					originalMap.push({
+						generated: {
+							line: el.generatedLine,
+							column: el.generatedColumn
+						},
 
-				function error(err) {
-					err.fileName = file;
-					err.lineNumber = i + 1;
-					callback(err);
+						original: {
+							line: el.originalLine,
+							column: el.originalColumn
+						},
+
+						source: el.source,
+						name: el.name
+					});
+				});
+
+				if (sourceMap.sourcesContent) {
+					$C(sourceMap.sourcesContent).forEach((content, i) => {
+						const
+							src = sourceMap.sources[i];
+
+						$C(originalMap).forEach((el) => {
+							if (el.source === src) {
+								el.source = Parser.normalizePath(path.resolve(el.source));
+
+								if (this.sourceRoot) {
+									el.source = Parser.getRelativePath(this.sourceRoot, el.source);
+								}
+
+								el.sourcesContent = content;
+							}
+						});
+					});
 				}
 
-				const
-					asyncParseCallback = ok(error, () => parseLines(i + 1));
+				original = $C(originalMap).group('generated > line');
+			}
 
-				let original;
-				if (sourceMap) {
-					const originalMap = [];
-					sourceMap.eachMapping((el) => {
-						originalMap.push({
+			for (i = start; i < lines.length; i++) {
+				const
+					pos = i + 1,
+					line = lines[i],
+					val = line + this.eol;
+
+				if (this.sourceMaps) {
+					if (original) {
+						info = original[pos] || {ignore: true};
+
+					} else {
+						info = {
 							generated: {
-								line: el.generatedLine,
-								column: el.generatedColumn
+								column: 0
 							},
 
 							original: {
-								line: el.originalLine,
-								column: el.originalColumn
+								line: pos,
+								column: 0
 							},
 
-							source: el.source,
-							name: el.name
-						});
-					});
+							source: this.sourceRoot ?
+								Parser.getRelativePath(this.sourceRoot, file) : file,
 
-					if (sourceMap.sourcesContent) {
-						$C(sourceMap.sourcesContent).forEach((content, i) => {
-							const
-								src = sourceMap.sources[i];
-
-							$C(originalMap).forEach((el) => {
-								if (el.source === src) {
-									el.source = Parser.normalizePath(path.resolve(el.source));
-
-									if (this.sourceRoot) {
-										el.source = Parser.getRelativePath(this.sourceRoot, el.source);
-									}
-
-									el.sourcesContent = content;
-								}
-							});
-						});
+							sourcesContent: content || this.eol,
+							line
+						};
 					}
-
-					original = $C(originalMap).group('generated > line');
 				}
 
-				for (i = start; i < lines.length; i++) {
-					const
-						pos = i + 1,
-						line = lines[i],
-						val = line + this.eol;
+				if (line.match(/^\s*\/\/#(.*)/)) {
+					if (RegExp.$1) {
+						const
+							command = RegExp.$1.split(' '),
+							dir = command.shift();
 
-					if (this.sourceMaps) {
-						if (original) {
-							info = original[pos] || {ignore: true};
+						const
+							key = `_${dir}`,
+							params = command.join(' ');
+
+						if (/^(?:include|without)$/.test(dir)) {
+							return this[key](fileStructure, params, asyncParseCallback);
+						}
+
+						if (this[key]) {
+							try {
+								this[key](fileStructure, params);
+
+							} catch (err) {
+								return error(err);
+							}
 
 						} else {
-							info = {
-								generated: {
-									column: 0
-								},
-
-								original: {
-									line: pos,
-									column: 0
-								},
-
-								source: this.sourceRoot ?
-									Parser.getRelativePath(this.sourceRoot, file) : file,
-
-								sourcesContent: content || this.eol,
-								line
-							};
+							fileStructure.addCode(val, info);
 						}
 					}
 
-					if (line.match(/^\s*\/\/#(.*)/)) {
-						if (RegExp.$1) {
-							const
-								command = RegExp.$1.split(' '),
-								dir = command.shift();
-
-							const
-								key = `_${dir}`,
-								params = command.join(' ');
-
-							if (/^(?:include|without)$/.test(dir)) {
-								return this[key](fileStructure, params, asyncParseCallback);
-							}
-
-							if (this[key]) {
-								try {
-									this[key](fileStructure, params);
-
-								} catch (err) {
-									return error(err);
-								}
-
-							} else {
-								fileStructure.addCode(val, info);
-							}
-						}
-
-					} else {
-						fileStructure.addCode(val, info);
-					}
+				} else {
+					fileStructure.addCode(val, info);
 				}
+			}
 
-				callback(null, fileStructure, file);
-			};
+			callback(null, fileStructure, file);
+		};
 
-			parseLines(0);
-		}));
+		parseLines(0);
 	}
 
 	/**
@@ -370,34 +348,19 @@ export default class Parser {
 	 * @private
 	 * @param {!FileStructure} struct - file structure
 	 * @param {string} value - directive value
-	 * @param {function(Error=)} callback - callback function
 	 */
-	_include(struct, value, callback) {
-		this.parsePath(struct.file, value, ok(callback, (arr) => {
-			const actions = $C(arr).reduce((arr, el) =>
-				(arr.push((next) => action.call(this, el, next)), arr), []);
-
-			async.series(actions, callback);
-		}));
-
-		function action(param, next) {
-			const
-				includeFileName = String(param.shift());
-
-			param = $C(param).reduce((map, el) =>
-				(map[el] = true, map), {});
+	async _include(struct, value) {
+		$C(await this.parsePath(struct.file, value)).async.forEach(async (el) => {
+			const includeFileName = String(el.shift());
+			el = $C(el).reduce((map, el) => (map[el] = true, map), {});
 
 			if (includeFileName) {
-				this.parseFile(struct.getRelativePathOf(includeFileName), ok(next, (includeFile) => {
-					struct.addInclude(includeFile, param);
-					next();
-				}));
+				struct.addInclude((await this.parseFile(struct.getRelativePathOf(includeFileName))).fileStructure, el);
 
 			} else {
-				$C(param).forEach((el, key) => struct.root.labels[key] = true);
-				next();
+				$C(el).forEach((el, key) => struct.root.labels[key] = true);
 			}
-		}
+		});
 	}
 
 	/**
@@ -406,28 +369,14 @@ export default class Parser {
 	 * @private
 	 * @param {!FileStructure} struct - file structure
 	 * @param {string} value - directive value
-	 * @param {function(Error=)} callback - callback function
 	 */
-	_without(struct, value, callback) {
-		this.parsePath(struct.file, value, ok(callback, (arr) => {
-			const actions = $C(arr).reduce((arr, el) =>
-				(arr.push((next) => action.call(this, el, next)), arr), []);
+	async _without(struct, value) {
+		$C(await this.parsePath(struct.file, value)).async.forEach(async (el) => {
+			const includeFileName = String(el.shift());
+			el = $C(el).reduce((map, el) => (map[el] = true, map), {});
 
-			async.series(actions, callback);
-		}));
-
-		function action(param, next) {
-			const
-				includedFile = struct.getRelativePathOf(String(param.shift()));
-
-			param = $C(param).reduce((map, el) =>
-				(map[el] = true, map), {});
-
-			this.parseFile(includedFile, ok(next, (includeFile) => {
-				struct.addWithout(includeFile, param);
-				next();
-			}));
-		}
+			struct.addWithout((await this.parseFile(struct.getRelativePathOf(includeFileName))).fileStructure, el);
+		});
 	}
 
 	/**

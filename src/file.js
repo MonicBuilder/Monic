@@ -11,7 +11,7 @@
 import Parser from './parser';
 
 const
-	uid = require('uid'),
+	uuid = require('uuid'),
 	path = require('path');
 
 const
@@ -26,14 +26,14 @@ export class FileStructure {
 	 * @param {!Object} globals - map of global Monic flags
 	 */
 	constructor({file, globals}) {
-		this.file = file;
 		this.root = {
 			type: 'root',
 			content: [],
 			labels: {}
 		};
 
-		this.uid = uid();
+		this.file = file;
+		this.uid = uuid();
 		this.currentBlock = this.root;
 		this.included = {};
 		this.globals = globals;
@@ -43,7 +43,7 @@ export class FileStructure {
 	 * Returns a file path relative to the base folder
 	 *
 	 * @param {string} src - file path
-	 * @return {string}
+	 * @returns {string}
 	 */
 	getRelativePathOf(src) {
 		return Parser.normalizePath(path.resolve(path.dirname(this.file), src));
@@ -54,7 +54,7 @@ export class FileStructure {
 	 *
 	 * @param {string} code - some code
 	 * @param {Object=} [opt_info] - information object for a source map
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	addCode(code, opt_info) {
 		this.currentBlock.content.push({
@@ -72,7 +72,7 @@ export class FileStructure {
 	 *
 	 * @param {!FileStructure} fileStructure - structure of the adding file
 	 * @param {!Object} labels - map of Monic labels
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	addInclude(fileStructure, labels) {
 		this.currentBlock.content.push({
@@ -89,7 +89,7 @@ export class FileStructure {
 	 *
 	 * @param {!FileStructure} fileStructure - structure of the expulsion file
 	 * @param {!Object} labels - map of Monic labels
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	addWithout(fileStructure, labels) {
 		this.currentBlock.content.push({
@@ -106,7 +106,7 @@ export class FileStructure {
 	 *
 	 * @param {string} flag - flag name
 	 * @param {boolean=} [opt_value] - flag value
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	addSet(flag, opt_value = true) {
 		if (this.currentBlock.type === 'root') {
@@ -126,7 +126,7 @@ export class FileStructure {
 	 * Cancels a flag
 	 *
 	 * @param {string} flag - flag name
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	addUnset(flag) {
 		if (this.currentBlock.type === 'root') {
@@ -149,7 +149,7 @@ export class FileStructure {
 	 * @param {string} type - condition type
 	 * @param {(boolean|string)=} [opt_value] - condition value
 	 * @param {boolean=} [opt_unless] - unless mode
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	beginIf(flag, type, opt_value = true, opt_unless = false) {
 		const aliases = {
@@ -178,7 +178,7 @@ export class FileStructure {
 
 	/**
 	 * Ends a condition
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	endIf() {
 		if (!{eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
@@ -193,7 +193,7 @@ export class FileStructure {
 	 * Sets a label
 	 *
 	 * @param {string} label - label name
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	beginLabel(label) {
 		const labelBlock = {
@@ -211,7 +211,7 @@ export class FileStructure {
 
 	/**
 	 * Ends a label
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	endLabel() {
 		if (this.currentBlock.type !== 'label') {
@@ -228,7 +228,7 @@ export class FileStructure {
 	 * @param {Array=} [opt_labels] - map of Monic labels
 	 * @param {Object=} [opt_flags] - map of Monic flags
 	 * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
-	 * @return {string}
+	 * @returns {string}
 	 */
 	compile(opt_labels, opt_flags, opt_sourceMap) {
 		$C(opt_labels).forEach((el, key) => this.root.labels[key] = true);
@@ -241,7 +241,7 @@ export class FileStructure {
 	 * @param {Array=} [opt_labels] - a map of Monic labels
 	 * @param {Object=} [opt_flags] - map of Monic flags
 	 * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
-	 * @return {!FileStructure}
+	 * @returns {!FileStructure}
 	 */
 	without(opt_labels, opt_flags, opt_sourceMap) {
 		this._compileBlock(this.root, opt_labels || {}, opt_flags || {}, opt_sourceMap);
@@ -256,7 +256,7 @@ export class FileStructure {
 	 * @param {!Object} labels - map of Monic labels
 	 * @param {!Object} flags - map of Monic flags
 	 * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
-	 * @return {string}
+	 * @returns {string}
 	 */
 	_compileBlock(block, labels, flags, opt_sourceMap) {
 		switch (block.type) {
@@ -299,9 +299,7 @@ export class FileStructure {
 							}
 
 							const
-								{info} = block;
-
-							const
+								{info} = block,
 								compiledBlock = this._compileBlock(block, labels, flags, opt_sourceMap);
 
 							if (opt_sourceMap && info && compiledBlock) {
@@ -347,7 +345,7 @@ export class FileStructure {
 	 * @param {!Object} block - structure object
 	 * @param {!Object} labels - map of Monic labels
 	 * @param {!Object} flags - map of Monic flags
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	static isValidContentBlock(block, labels, flags) {
 		let res;
