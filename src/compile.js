@@ -58,7 +58,7 @@ export let CompileResult;
  */
 export async function compile(file, opt_params) {
 	file = url(file);
-	opt_params = {
+	const p = {
 		flags: {},
 		labels: {},
 		eol: '\n',
@@ -66,12 +66,12 @@ export async function compile(file, opt_params) {
 	};
 
 	const
-		sourceMaps = opt_params.sourceMaps,
-		sourceRoot = url(opt_params.sourceRoot),
-		fileToSave = opt_params.file ? url(opt_params.file) : file;
+		sourceMaps = p.sourceMaps,
+		sourceRoot = url(p.sourceRoot),
+		fileToSave = p.file ? url(p.file) : file;
 
 	const
-		sourceMapFile = sourceMaps && (opt_params.sourceMapFile ? url(opt_params.sourceMapFile) : `${fileToSave}.map`),
+		sourceMapFile = sourceMaps && (p.sourceMapFile ? url(p.sourceMapFile) : `${fileToSave}.map`),
 		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
 	function url(url) {
@@ -79,8 +79,8 @@ export async function compile(file, opt_params) {
 			return undefined;
 		}
 
-		if (opt_params.cwd) {
-			url = path.resolve(opt_params.cwd, url);
+		if (p.cwd) {
+			url = path.resolve(p.cwd, url);
 
 		} else {
 			url = path.resolve(module.parent ? path.dirname(module.parent.filename) : '', url);
@@ -92,18 +92,18 @@ export async function compile(file, opt_params) {
 	const parser = new Parser({
 		sourceRoot,
 		sourceMaps: Boolean(sourceMaps),
-		inputSourceMap: opt_params.inputSourceMap,
-		eol: opt_params.eol,
-		replacers: opt_params.replacers,
-		flags: opt_params.flags
+		inputSourceMap: p.inputSourceMap,
+		eol: p.eol,
+		replacers: p.replacers,
+		flags: p.flags
 	});
 
 	Parser.cursor = 1;
 	Parser.current = null;
 
 	const {fileStructure} = await (
-		opt_params.content != null ?
-			parser.parse(await parser.testFile(file), String(opt_params.content)) :
+		p.content != null ?
+			parser.parse(await parser.testFile(file), String(p.content)) :
 			parser.parseFile(file)
 	);
 
@@ -117,7 +117,7 @@ export async function compile(file, opt_params) {
 		tasks = [];
 
 	let
-		result = fileStructure.compile(opt_params.labels, opt_params.flags, map),
+		result = fileStructure.compile(p.labels, p.flags, map),
 		sourceMapDecl,
 		sourceMapUrl;
 
@@ -133,7 +133,7 @@ export async function compile(file, opt_params) {
 		}
 	}
 
-	if (opt_params.saveFiles) {
+	if (p.saveFiles) {
 		if (externalSourceMap) {
 			tasks.push((async () => {
 				await fs.mkdirsAsync(path.dirname(sourceMapFile));
@@ -141,7 +141,7 @@ export async function compile(file, opt_params) {
 			})());
 		}
 
-		if (opt_params.file) {
+		if (p.file) {
 			tasks.push((async () => {
 				if (externalSourceMap) {
 					result += sourceMapDecl + sourceMapUrl;
