@@ -157,7 +157,7 @@ monic.compile(
 );
 ```
 
-### Использование Promise API ([When](https://www.npmjs.com/package/when))
+### Использование Promise API
 
 ```js
 var monic = require('monic');
