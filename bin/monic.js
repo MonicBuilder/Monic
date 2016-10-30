@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 /*!
  * Monic
  * https://github.com/MonicBuilder/Monic
@@ -8,12 +10,12 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
-var
+const
 	monic = require('../monic'),
 	Parser = require('../dist/parser').default,
 	program = require('commander');
 
-var
+const
 	path = require('path'),
 	fs = require('fs');
 
@@ -30,15 +32,15 @@ program
 	.option('--source-root [path]', 'root for all URLs inside the generated source map')
 	.parse(process.argv);
 
-var
-	file,
-	input;
-
-var
+const
 	args = program['args'],
 	out = program['output'],
 	eol = program['eol'] || '\n',
 	cwd = process.cwd();
+
+let
+	file,
+	input;
 
 if (args.length) {
 	input = args.join(' ');
@@ -70,7 +72,7 @@ function action(file, input) {
 	}
 
 	function date(opt_error) {
-		console[opt_error ? 'error' : 'log']('[[ ' + new Date().toString() + ' ]]');
+		console[opt_error ? 'error' : 'log'](`[[ ${new Date().toString()} ]]`);
 	}
 
 	function error(err) {
@@ -78,11 +80,11 @@ function action(file, input) {
 		console.error(err.toString());
 
 		if (err.fileName) {
-			console.error('File: ' + url(err.fileName));
+			console.error(`File: ${url(err.fileName)}`);
 		}
 
 		if (err.lineNumber) {
-			console.error('Line: ' + err.lineNumber);
+			console.error(`Line: ${err.lineNumber}`);
 		}
 
 		date(true);
@@ -104,25 +106,25 @@ function action(file, input) {
 	}
 
 	monic.compile(file, {
-		cwd: cwd,
+		cwd,
+		eol,
 		saveFiles: true,
 		content: input,
-		eol: eol,
 		flags: (program['flags'] || '').split(',').reduce(toObj, {}),
 		labels: (program['labels'] || '').split(',').reduce(toObj, {}),
 		file: out,
 		sourceMaps: parse(program['sourceMaps']),
-		sourceMapFile: program['sourceMapFile'] || (out || file) + '.map',
+		sourceMapFile: `${program['sourceMapFile'] || (out || file)}.map`,
 		sourceRoot: program['sourceRoot']
 
-	}, function (err, data) {
+	}, (err, data) => {
 		if (err) {
 			error(err);
 		}
 
 		if (out) {
 			line();
-			console.log('File "' + url(file) + '" was successfully built -> "' + url(out) + '"');
+			console.log(`File "${url(file)}" was successfully built -> "${url(out)}"`);
 			console.timeEnd('Time');
 			date();
 			line();
@@ -134,21 +136,15 @@ function action(file, input) {
 }
 
 if (!file && input == null) {
-	var
+	const
 		stdin = process.stdin,
 		stdout = process.stdout;
 
-	var buf = '';
+	let buf = '';
 	stdin.setEncoding('utf8');
-	stdin.on('data', function (chunk) {
-		buf += chunk;
-	});
-
-	stdin.on('end', function () {
-		action(program['file'], buf);
-	}).resume();
-
-	process.on('SIGINT', function () {
+	stdin.on('data', (chunk) => buf += chunk);
+	stdin.on('end', () => action(program['file'], buf)).resume();
+	process.on('SIGINT', () => {
 		stdout.write(eol);
 		stdin.emit('end');
 		stdout.write(eol);
