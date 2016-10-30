@@ -194,12 +194,12 @@ export default class Parser {
 							parse(new Buffer(RegExp.$1, 'base64').toString());
 
 						} else {
-							parse(await fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
+							await parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
 						}
 
-						function parse(str) {
+						async function parse(str) {
 							try {
-								sourceMap = new SourceMapConsumer(JSON.parse(str));
+								sourceMap = new SourceMapConsumer(JSON.parse(await str));
 								content = content.replace(sstr, '');
 
 							} catch (ignore) {}
@@ -214,132 +214,115 @@ export default class Parser {
 		await $C(actions).async.forEach((fn) => fn());
 
 		const
-			fileStructure = new FileStructure({file, globals: this.flags}),
+			fileStructure = this.cache[file] = new FileStructure({file, globals: this.flags}),
 			lines = content.split(/\r?\n|\r/);
 
-		this.cache[file] = fileStructure;
-		const parseLines = (start) => {
-			let
-				info,
-				i;
+		let
+			original,
+			info;
 
-			function error(err) {
-				err.fileName = file;
-				err.lineNumber = i + 1;
-				callback(err);
+		if (sourceMap) {
+			const
+				originalMap = [];
+
+			sourceMap.eachMapping((el) => {
+				originalMap.push({
+					generated: {
+						line: el.generatedLine,
+						column: el.generatedColumn
+					},
+
+					original: {
+						line: el.originalLine,
+						column: el.originalColumn
+					},
+
+					source: el.source,
+					name: el.name
+				});
+			});
+
+			if (sourceMap.sourcesContent) {
+				$C(sourceMap.sourcesContent).forEach((content, i) => {
+					const
+						src = sourceMap.sources[i];
+
+					$C(originalMap).forEach((el) => {
+						if (el.source === src) {
+							el.source = Parser.normalizePath(path.resolve(el.source));
+
+							if (this.sourceRoot) {
+								el.source = Parser.getRelativePath(this.sourceRoot, el.source);
+							}
+
+							el.sourcesContent = content;
+						}
+					});
+				});
 			}
 
-			const
-				asyncParseCallback = ok(error, () => parseLines(i + 1));
+			original = $C(originalMap).group('generated.line');
+		}
 
-			let original;
-			if (sourceMap) {
-				const originalMap = [];
-				sourceMap.eachMapping((el) => {
-					originalMap.push({
+		for (let i = 0; i < lines.length; i++) {
+			const
+				pos = i + 1,
+				line = lines[i],
+				val = line + this.eol;
+
+			if (this.sourceMaps) {
+				if (original) {
+					info = original[pos] || {ignore: true};
+
+				} else {
+					info = {
 						generated: {
-							line: el.generatedLine,
-							column: el.generatedColumn
+							column: 0
 						},
 
 						original: {
-							line: el.originalLine,
-							column: el.originalColumn
+							line: pos,
+							column: 0
 						},
 
-						source: el.source,
-						name: el.name
-					});
-				});
-
-				if (sourceMap.sourcesContent) {
-					$C(sourceMap.sourcesContent).forEach((content, i) => {
-						const
-							src = sourceMap.sources[i];
-
-						$C(originalMap).forEach((el) => {
-							if (el.source === src) {
-								el.source = Parser.normalizePath(path.resolve(el.source));
-
-								if (this.sourceRoot) {
-									el.source = Parser.getRelativePath(this.sourceRoot, el.source);
-								}
-
-								el.sourcesContent = content;
-							}
-						});
-					});
+						source: this.sourceRoot ? Parser.getRelativePath(this.sourceRoot, file) : file,
+						sourcesContent: content || this.eol,
+						line
+					};
 				}
-
-				original = $C(originalMap).group('generated > line');
 			}
 
-			for (i = start; i < lines.length; i++) {
-				const
-					pos = i + 1,
-					line = lines[i],
-					val = line + this.eol;
+			if (line.match(/^\s*\/\/#(.*)/)) {
+				if (RegExp.$1) {
+					const
+						command = RegExp.$1.split(' '),
+						dir = command.shift();
 
-				if (this.sourceMaps) {
-					if (original) {
-						info = original[pos] || {ignore: true};
+					const
+						key = `_${dir}`,
+						params = command.join(' ');
+
+					if (this[key]) {
+						try {
+							await this[key](fileStructure, params);
+
+						} catch (err) {
+							err.fileName = file;
+							err.lineNumber = i + 1;
+							throw err;
+						}
 
 					} else {
-						info = {
-							generated: {
-								column: 0
-							},
-
-							original: {
-								line: pos,
-								column: 0
-							},
-
-							source: this.sourceRoot ?
-								Parser.getRelativePath(this.sourceRoot, file) : file,
-
-							sourcesContent: content || this.eol,
-							line
-						};
+						fileStructure.addCode(val, info);
 					}
 				}
 
-				if (line.match(/^\s*\/\/#(.*)/)) {
-					if (RegExp.$1) {
-						const
-							command = RegExp.$1.split(' '),
-							dir = command.shift();
-
-						const
-							key = `_${dir}`,
-							params = command.join(' ');
-
-						if (/^(?:include|without)$/.test(dir)) {
-							return this[key](fileStructure, params, asyncParseCallback);
-						}
-
-						if (this[key]) {
-							try {
-								this[key](fileStructure, params);
-
-							} catch (err) {
-								return error(err);
-							}
-
-						} else {
-							fileStructure.addCode(val, info);
-						}
-					}
-
-				} else {
-					fileStructure.addCode(val, info);
-				}
+			} else {
+				fileStructure.addCode(val, info);
 			}
+		}
 
-			callback(null, fileStructure, file);
-		};
-
-		parseLines(0);
+		return {fileStructure, file};
 	}
 
 	/**
