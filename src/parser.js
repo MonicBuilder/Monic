@@ -11,19 +11,16 @@
 import { FileStructure } from './file';
 
 const
-	ok = require('okay'),
-	glob = require('glob-promise'),
-	{hasMagic} = require('glob');
-
-const
-	path = require('path'),
-	fs = require('fs-extra-promise');
-
-const
 	$C = require('collection.js/compiled');
 
 const
-	{SourceMapConsumer} = require('source-map');
+	path = require('path'),
+	fs = require('fs-extra-promise'),
+	glob = require('glob-promise');
+
+const
+	{SourceMapConsumer} = require('source-map'),
+	{hasMagic} = require('glob');
 
 /**
  * Parser class
@@ -40,7 +37,7 @@ export default class Parser {
 	constructor({eol, replacers, flags, sourceMaps, sourceRoot, inputSourceMap}) {
 		this.eol = eol;
 		this.replacers = replacers;
-		this.flags = Object.assign({}, flags);
+		this.flags = {...flags};
 		this.sourceMaps = sourceMaps;
 		this.inputSourceMap = inputSourceMap;
 		this.sourceRoot = sourceRoot;

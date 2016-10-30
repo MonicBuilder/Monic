@@ -11,11 +11,11 @@
 import Parser from './parser';
 
 const
-	uuid = require('uuid'),
-	path = require('path');
+	$C = require('collection.js/compiled');
 
 const
-	$C = require('collection.js/compiled');
+	uuid = require('uuid'),
+	path = require('path');
 
 /**
  * File structure class
