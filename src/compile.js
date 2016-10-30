@@ -101,7 +101,7 @@ export async function compile(file, opt_params) {
 	Parser.cursor = 1;
 	Parser.current = null;
 
-	const fileStructure = await (
+	const {fileStructure} = await (
 		opt_params.content != null ?
 			parser.parse(await parser.testFile(file), String(opt_params.content)) :
 			parser.parseFile(file)

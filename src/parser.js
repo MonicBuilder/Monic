@@ -74,15 +74,11 @@ export default class Parser {
 	 */
 	async testFile(file) {
 		file = Parser.normalizePath(path.resolve(file));
-
 		if (this.realpathCache[file]) {
 			return file;
 		}
 
-		const
-			stat = await fs.statAsync(file);
-
-		if (stat.isFile()) {
+		if (!(await fs.statAsync(file)).isFile()) {
 			throw new Error(`"${file}" is not a file`);
 		}
 

@@ -26,64 +26,53 @@ if (fs.existsSync(logPath)) {
 }
 
 let log = '';
-fs.readdir(basePath, (err, dirs) => {
-	if (err) {
-		throw err;
-	}
+$C(fs.readdirSync(basePath)).forEach((dir) => {
+	const
+		dirPath = path.resolve(basePath, dir),
+		stat = fs.statSync(dirPath);
 
-	$C(dirs).forEach((dir) => {
-		const
-			dirPath = path.resolve(basePath, dir);
+	if (stat.isDirectory()) {
+		const test = (res) => {
+			res = res.trim();
 
-		fs.stat(dirPath, (err, stat) => {
+			const
+				expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
+				error = res !== expected;
+
+			let status = 'ok';
+			if (error) {
+				status = 'fail';
+
+				if (log) {
+					log += '~~~~~~~~~~~~~~\n\n';
+				}
+
+				log += `Test: ${dir}\n\nResult:\n${res}\n\nExpected:\n${expected}`;
+				fs.writeFileSync(logPath, log);
+			}
+
+			console[error ? 'error' : 'log'](`${dir} - ${status}`);
+			error && process.exit(1);
+		};
+
+		const promiseTest = (obj) => {
+			test(obj.result);
+		};
+
+		const cbTest = (err, res) => {
 			if (err) {
 				throw err;
 			}
 
-			if (stat.isDirectory()) {
-				const test = (res) => {
-					res = res.trim();
+			test(res);
+		};
 
-					const
-						expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
-						error = res !== expected;
+		const
+			src = path.join(dirPath, 'test.js'),
+			replacers = [(text) => text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1')];
 
-					let status = 'ok';
-					if (error) {
-						status = 'fail';
-
-						if (log) {
-							log += '~~~~~~~~~~~~~~\n\n';
-						}
-
-						log += `Test: ${dir}\n\nResult:\n${res}\n\nExpected:\n${expected}`;
-						fs.writeFileSync(logPath, log);
-					}
-
-					console[error ? 'error' : 'log'](`${dir} - ${status}`);
-					error && process.exit(1);
-				};
-
-				const promiseTest = (res) => {
-					test(res[0]);
-				};
-
-				const cbTest = (err, res) => {
-					if (err) {
-						throw err;
-					}
-
-					test(res);
-				};
-
-				const
-					src = path.join(dirPath, 'test.js'),
-					replacers = [(text) => text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1')];
-
-				monic.compile(src, {eol, replacers}).then(promiseTest, cbTest);
-				monic.compile(src, {eol, replacers}, cbTest);
-				monic.compile(src, {eol, replacers, content: String(fs.readFileSync(src))}, cbTest);
-			}
-		});
-	});
+		monic.compile(src, {eol, replacers}).then(promiseTest, cbTest);
+		monic.compile(src, {eol, replacers}, cbTest);
+		monic.compile(src, {eol, replacers, content: String(fs.readFileSync(src))}, cbTest);
+	}
 });

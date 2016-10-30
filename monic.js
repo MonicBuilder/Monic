@@ -38,7 +38,7 @@ exports.VERSION = [2, 3, 15];
 exports.compile = function (file, opt_params, opt_cb) {
 	if (opt_cb) {
 		return compile(file, opt_params).then(
-			(res) => opt_cb(null, res),
+			(obj) => opt_cb(null, obj.result, obj.sourceMap),
 			(err) => opt_cb(err)
 		);
 	}
