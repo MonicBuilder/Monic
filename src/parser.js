@@ -326,7 +326,7 @@ export default class Parser {
 	 * @param {string} value - directive value
 	 */
 	async _include(struct, value) {
-		$C(await this.parsePath(struct.file, value)).async.forEach(async (el) => {
+		return $C(await this.parsePath(struct.file, value)).async.forEach(async (el) => {
 			const includeFileName = String(el.shift());
 			el = $C(el).reduce((map, el) => (map[el] = true, map), {});
 
@@ -347,7 +347,7 @@ export default class Parser {
 	 * @param {string} value - directive value
 	 */
 	async _without(struct, value) {
-		$C(await this.parsePath(struct.file, value)).async.forEach(async (el) => {
+		return $C(await this.parsePath(struct.file, value)).async.forEach(async (el) => {
 			const includeFileName = String(el.shift());
 			el = $C(el).reduce((map, el) => (map[el] = true, map), {});
 
