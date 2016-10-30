@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 30 Oct 2016 19:19:59 GMT
+ * Date: Sun, 30 Oct 2016 20:13:54 GMT
  */
 
 'use strict';
@@ -180,10 +180,8 @@ class Parser {
 				return { fileStructure: _this4.cache[file], file: file };
 			}
 
-			const actions = [];
-
-			$C(_this4.replacers).forEach(function (replacer) {
-				actions.push(_asyncToGenerator(function* () {
+			yield $C(_this4.replacers).async.forEach((() => {
+				var _ref2 = _asyncToGenerator(function* (replacer) {
 					if (replacer.length > 2) {
 						yield new Promise(function (resolve, reject) {
 							replacer.call(_this4, content, file, function (err, res) {
@@ -204,44 +202,42 @@ class Parser {
 							throw err;
 						}
 					}
-				}));
-			});
+				});
+
+				return function (_x) {
+					return _ref2.apply(this, arguments);
+				};
+			})());
 
 			let sourceMap;
 			if (_this4.sourceMaps) {
 				if (_this4.inputSourceMap) {
 					sourceMap = new SourceMapConsumer(_this4.inputSourceMap);
-				} else {
-					content = content.replace(/(?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*$/, function (sstr, url) {
-						actions.push(_asyncToGenerator(function* () {
-							let parse = (() => {
-								var _ref4 = _asyncToGenerator(function* (str) {
-									try {
-										sourceMap = new SourceMapConsumer(JSON.parse((yield str)));
-										content = content.replace(sstr, '');
-									} catch (ignore) {}
-								});
+				} else if (/((?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*)$/.test(content)) {
+					const sstr = RegExp.$1;
+					const url = RegExp.$2;
 
-								return function parse(_x) {
-									return _ref4.apply(this, arguments);
-								};
-							})();
 
-							if (/data:application\/json;base64,(.*)/.exec(url)) {
-								parse(new Buffer(RegExp.$1, 'base64').toString());
-							} else {
-								yield parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
-							}
-						}));
+					const parse = (() => {
+						var _ref3 = _asyncToGenerator(function* (str) {
+							try {
+								sourceMap = new SourceMapConsumer(JSON.parse((yield str)));
+								content = content.replace(sstr, '');
+							} catch (ignore) {}
+						});
 
-						return sstr;
-					});
+						return function parse(_x2) {
+							return _ref3.apply(this, arguments);
+						};
+					})();
+
+					if (/data:application\/json;base64,(.*)/.exec(url)) {
+						parse(new Buffer(RegExp.$1, 'base64').toString());
+					} else {
+						yield parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
+					}
 				}
 			}
-
-			yield $C(actions).async.forEach(function (fn) {
-				return fn();
-			});
 
 			const fileStructure = _this4.cache[file] = new _file.FileStructure({ file: file, globals: _this4.flags }),
 			      lines = content.split(/\r?\n|\r/);
@@ -356,7 +352,7 @@ class Parser {
 
 		return _asyncToGenerator(function* () {
 			return $C((yield _this5.parsePath(struct.file, value))).async.forEach((() => {
-				var _ref5 = _asyncToGenerator(function* (el) {
+				var _ref4 = _asyncToGenerator(function* (el) {
 					const includeFileName = String(el.shift());
 					el = $C(el).reduce(function (map, el) {
 						return map[el] = true, map;
@@ -371,8 +367,8 @@ class Parser {
 					}
 				});
 
-				return function (_x2) {
-					return _ref5.apply(this, arguments);
+				return function (_x3) {
+					return _ref4.apply(this, arguments);
 				};
 			})());
 		})();
@@ -390,7 +386,7 @@ class Parser {
 
 		return _asyncToGenerator(function* () {
 			return $C((yield _this6.parsePath(struct.file, value))).async.forEach((() => {
-				var _ref6 = _asyncToGenerator(function* (el) {
+				var _ref5 = _asyncToGenerator(function* (el) {
 					const includeFileName = String(el.shift());
 					el = $C(el).reduce(function (map, el) {
 						return map[el] = true, map;
@@ -399,8 +395,8 @@ class Parser {
 					struct.addWithout((yield _this6.parseFile(struct.getRelativePathOf(includeFileName))).fileStructure, el);
 				});
 
-				return function (_x3) {
-					return _ref6.apply(this, arguments);
+				return function (_x4) {
+					return _ref5.apply(this, arguments);
 				};
 			})());
 		})();
