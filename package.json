@@ -44,8 +44,6 @@
     "fs-extra-promise": "^0.4.1",
     "glob": "^7.0.0",
     "glob-promise": "^1.0.6",
-    "okay": "^1.0.0",
-    "promisify-any": "^2.0.1",
     "source-map": "^0.5.3",
     "uuid": "^2.0.3"
   },
