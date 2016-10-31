@@ -13,12 +13,15 @@
   ],
 
   "dictionary": [
-    "/js/i",
-    "jossy",
     "monic",
-    "/node.?js/i",
-    "/ie|stdout|stdin|stdio/i",
-    "/f\\d+/",
+    "jossy",
+    "node",
+    "js|JS",
+    "ie",
+    "stdout",
+    "stdin",
+    "stdio",
+    "f\\d+",
     "webPack",
     "sourceMap",
     "форк",
@@ -26,11 +29,11 @@
     "пересобирать",
     "виджет(ов|а|е|ы|)",
     "булевые",
-    "/maintainers?/",
+    "maintainers?",
     "sexualized",
-    "/cli/i",
+    "CLI",
     "replacers",
-    "js on",
-    "ru|gb"
+    "ru",
+    "gb"
   ]
 }
