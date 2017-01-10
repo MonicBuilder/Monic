@@ -3,7 +3,7 @@
   "description": "File builder for JavaScript.",
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
-  "version": "2.3.16",
+  "version": "2.3.17",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -43,9 +43,9 @@
     "commander": "^2.5.0",
     "fs-extra-promise": "^0.4.1",
     "glob": "^7.0.0",
-    "glob-promise": "^1.0.6",
+    "glob-promise": "^3.0.0",
     "source-map": "^0.5.3",
-    "uuid": "^2.0.3"
+    "uuid": "^3.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.3.15",
