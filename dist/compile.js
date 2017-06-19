@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 10 Jan 2017 19:22:19 GMT
+ * Date: Mon, 19 Jun 2017 15:19:31 GMT
  */
 
 'use strict';
@@ -37,7 +37,7 @@ let compile = exports.compile = (() => {
 		      sourceRoot = url(opt_params.sourceRoot),
 		      fileToSave = opt_params.file ? url(opt_params.file) : file;
 
-		const sourceMapFile = sourceMaps && (opt_params.sourceMapFile ? url(opt_params.sourceMapFile) : `${ fileToSave }.map`),
+		const sourceMapFile = sourceMaps && (opt_params.sourceMapFile ? url(opt_params.sourceMapFile) : `${fileToSave}.map`),
 		      externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
 		function url(url) {
@@ -88,7 +88,7 @@ let compile = exports.compile = (() => {
 			if (externalSourceMap) {
 				sourceMapUrl = _parser2.default.getRelativePath(path.dirname(fileToSave), sourceMapFile);
 			} else {
-				sourceMapUrl = `data:application/json;base64,${ new Buffer(map.toString()).toString('base64') }`;
+				sourceMapUrl = `data:application/json;base64,${new Buffer(map.toString()).toString('base64')}`;
 				result += sourceMapDecl + sourceMapUrl;
 			}
 		}

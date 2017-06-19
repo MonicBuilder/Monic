@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 10 Jan 2017 19:22:19 GMT
+ * Date: Mon, 19 Jun 2017 15:19:31 GMT
  */
 
 'use strict';
@@ -199,7 +199,7 @@ class FileStructure {
   */
 	endIf() {
 		if (!{ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true }[this.currentBlock.type]) {
-			throw new SyntaxError(`Attempt to close an unopened block "#${ this.currentBlock.unless ? 'unless' : 'if' }"`);
+			throw new SyntaxError(`Attempt to close an unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -286,7 +286,7 @@ class FileStructure {
 				break;
 
 			case 'include':
-				const cacheKey = `${ block.fileStructure.file }@${ Object.keys(block.labels).sort() }@${ Object.keys(flags).sort() }`;
+				const cacheKey = `${block.fileStructure.file}@${Object.keys(block.labels).sort()}@${Object.keys(flags).sort()}`;
 
 				$C(labels).forEach((el, key) => block.labels[key] = true);
 
