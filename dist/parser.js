@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Tue, 10 Jan 2017 19:22:19 GMT
+ * Date: Mon, 19 Jun 2017 15:19:31 GMT
  */
 
 'use strict';
@@ -104,7 +104,7 @@ class Parser {
 			}
 
 			if (!(yield fs.statAsync(file)).isFile()) {
-				throw new Error(`"${ file }" is not a file`);
+				throw new Error(`"${file}" is not a file`);
 			}
 
 			_this.realpathCache[file] = true;
@@ -232,7 +232,7 @@ class Parser {
 					})();
 
 					if (/data:application\/json;base64,(.*)/.exec(url)) {
-						parse(new Buffer(RegExp.$1, 'base64').toString());
+						yield parse(new Buffer(RegExp.$1, 'base64').toString());
 					} else {
 						yield parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
 					}
@@ -316,7 +316,7 @@ class Parser {
 						const command = RegExp.$1.split(' '),
 						      dir = command.shift();
 
-						const key = `_${ dir }`,
+						const key = `_${dir}`,
 						      params = command.join(' ');
 
 						if (_this4[key]) {
@@ -417,10 +417,10 @@ class Parser {
 		}
 
 		const args = value.split(/\s+/),
-		      key = `_end${ args[0] }`;
+		      key = `_end${args[0]}`;
 
 		if (!this[key]) {
-			throw new SyntaxError(`Bad value (${ args[0] }) for "#end" directive`);
+			throw new SyntaxError(`Bad value (${args[0]}) for "#end" directive`);
 		}
 
 		this[key](struct, args.join(' '));
@@ -471,7 +471,7 @@ class Parser {
 		}
 
 		if (!value || args.length !== 3) {
-			throw new SyntaxError(`Bad "#${ opt_unless ? 'unless' : 'if' }" directive`);
+			throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
 		}
 
 		struct.beginIf.apply(struct, _toConsumableArray(args.concat(opt_unless)));

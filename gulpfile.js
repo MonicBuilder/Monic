@@ -13,12 +13,10 @@
 const
 	gulp = require('gulp'),
 	async = require('async'),
-	through = require('through2'),
 	fs = require('fs');
 
 const
-	babel = require('gulp-babel'),
-	bump = require('gulp-bump'),
+	plumber = require('gulp-plumber'),
 	header = require('gulp-header'),
 	replace = require('gulp-replace'),
 	cached = require('gulp-cached'),
@@ -43,13 +41,6 @@ function getHead(opt_version) {
 	);
 }
 
-function error(cb) {
-	return (err) => {
-		console.error(err.message);
-		cb();
-	};
-}
-
 const
 	headRgxp = /(\/\*![\s\S]*?\*\/\n{2})/;
 
@@ -58,7 +49,7 @@ let
 
 gulp.task('copyright', (cb) => {
 	gulp.src('./LICENSE')
-		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, (sstr, intro, from, to) => {
+		.pipe(replace(/(Copyright \(c\) )(\d+)-?(\d*)/, (str, intro, from, to) => {
 			const year = new Date().getFullYear();
 			return intro + from + (to || from != year ? `-${year}` : '');
 		}))
@@ -71,6 +62,7 @@ gulp.task('head', (cb) => {
 	readyToWatcher = false;
 
 	const
+		through = require('through2'),
 		fullHead = `${getHead()} */\n\n`;
 
 	function test() {
@@ -97,7 +89,7 @@ gulp.task('head', (cb) => {
 			gulp.src('./bin/monic.js')
 				.pipe(test())
 				.pipe(replace(headRgxp, ''))
-				.pipe(replace(/^#!.*\n{2}/, (sstr) => sstr + fullHead))
+				.pipe(replace(/^#!.*\n{2}/, (str) => str + fullHead))
 				.pipe(gulp.dest('./bin'))
 				.on('end', cb);
 		}
@@ -109,6 +101,9 @@ gulp.task('head', (cb) => {
 });
 
 gulp.task('build', ['bump'], (cb) => {
+	const
+		babel = require('gulp-babel');
+
 	/* eslint-disable prefer-template */
 
 	const fullHead =
@@ -120,10 +115,10 @@ gulp.task('build', ['bump'], (cb) => {
 	/* eslint-enable prefer-template */
 
 	gulp.src('./src/*.js')
+		.pipe(plumber())
 		.pipe(cached('build'))
 		.pipe(replace(headRgxp, ''))
 		.pipe(babel())
-		.on('error', error(cb))
 		.pipe(header(fullHead))
 		.pipe(eol('\n'))
 		.pipe(gulp.dest('./dist'))
@@ -131,6 +126,9 @@ gulp.task('build', ['bump'], (cb) => {
 });
 
 gulp.task('bump', (cb) => {
+	const
+		bump = require('gulp-bump');
+
 	gulp.src('./package.json')
 		.pipe(bump({version: getVersion()}))
 		.pipe(gulp.dest('./'))
@@ -146,15 +144,15 @@ gulp.task('npmignore', (cb) => {
 
 function test(cb) {
 	run('node test').exec()
-		.on('error', error(cb))
+		.pipe(plumber())
 		.on('finish', cb);
 }
 
-gulp.task('full-build', ['build'], test);
+gulp.task('fullBuild', ['build'], test);
 gulp.task('test', test);
 gulp.task('yaspeller', (cb) => {
 	run('yaspeller ./').exec()
-		.on('error', error(cb))
+		.pipe(plumber())
 		.on('finish', cb);
 });
 
@@ -167,7 +165,7 @@ gulp.task('watch', ['default'], () => {
 			setTimeout(cb, 500),
 
 		() => {
-			gulp.watch('./src/*.js', ['full-build']).on('change', unbind('build'));
+			gulp.watch('./src/*.js', ['fullBuild']).on('change', unbind('build'));
 			gulp.watch('./monic.js', ['bump']);
 			gulp.watch(['./test/**/*', './monic.js'], ['test']);
 			gulp.watch('./*.md', ['yaspeller']);
@@ -184,4 +182,4 @@ gulp.task('watch', ['default'], () => {
 	}
 });
 
-gulp.task('default', ['copyright', 'head', 'full-build', 'yaspeller', 'npmignore']);
+gulp.task('default', ['copyright', 'head', 'fullBuild', 'yaspeller', 'npmignore']);
