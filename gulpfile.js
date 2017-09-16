@@ -129,7 +129,7 @@ gulp.task('bump', (cb) => {
 	const
 		bump = require('gulp-bump');
 
-	gulp.src('./package.json')
+	gulp.src('./@(package-lock|package).json')
 		.pipe(bump({version: getVersion()}))
 		.pipe(gulp.dest('./'))
 		.on('end', cb);
