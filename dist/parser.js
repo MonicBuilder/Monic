@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.17
+ * Monic v2.4.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 19 Jun 2017 15:19:31 GMT
+ * Date: Sun, 29 Oct 2017 10:45:13 GMT
  */
 
 'use strict';
@@ -126,7 +126,7 @@ class Parser {
 			const parts = src.split('::'),
 			      dirname = path.dirname(base);
 
-			parts[0] = parts[0].replace(/\$\{(.*?)}/g, function (sstr, flag) {
+			parts[0] = parts[0].replace(/\${(.*?)}/g, function (str, flag) {
 				return flag in _this2.flags ? _this2.flags[flag] : '';
 			});
 
@@ -213,7 +213,7 @@ class Parser {
 			if (_this4.sourceMaps) {
 				if (_this4.inputSourceMap) {
 					sourceMap = new SourceMapConsumer(_this4.inputSourceMap);
-				} else if (/((?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*)$/.test(content)) {
+				} else if (/((?:\r?\n|\r)?[^\S\r\n]*\/\/[#@] sourceMappingURL=([^\r\n]*)\s*)$/.test(content)) {
 					const sstr = RegExp.$1;
 					const url = RegExp.$2;
 
@@ -223,7 +223,7 @@ class Parser {
 							try {
 								sourceMap = new SourceMapConsumer(JSON.parse((yield str)));
 								content = content.replace(sstr, '');
-							} catch (ignore) {}
+							} catch (_) {}
 						});
 
 						return function parse(_x2) {

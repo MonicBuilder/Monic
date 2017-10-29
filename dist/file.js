@@ -1,11 +1,11 @@
 /*!
- * Monic v2.3.17
+ * Monic v2.4.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 19 Jun 2017 15:19:31 GMT
+ * Date: Sun, 29 Oct 2017 10:45:13 GMT
  */
 
 'use strict';
@@ -117,7 +117,7 @@ class FileStructure {
   * Sets a flag
   *
   * @param {string} flag - flag name
-  * @param {boolean=} [opt_value] - flag value
+  * @param {?=} [opt_value] - flag value
   * @returns {!FileStructure}
   */
 	addSet(flag) {
@@ -161,7 +161,7 @@ class FileStructure {
   *
   * @param {string} flag - condition
   * @param {string} type - condition type
-  * @param {(boolean|string)=} [opt_value] - condition value
+  * @param {?=} [opt_value] - condition value
   * @param {boolean=} [opt_unless] - unless mode
   * @returns {!FileStructure}
   */

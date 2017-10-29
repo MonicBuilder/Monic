@@ -12,7 +12,7 @@ const
 	{compile} = require('./dist/compile');
 
 /** @type {!Array} */
-exports.VERSION = [2, 3, 17];
+exports.VERSION = [2, 4, 0];
 
 /**
  * Builds a file
@@ -37,10 +37,9 @@ exports.VERSION = [2, 3, 17];
  */
 exports.compile = function (file, opt_params, opt_cb) {
 	if (opt_cb) {
-		return compile(file, opt_params).then(
-			(obj) => opt_cb(null, obj.result, obj.sourceMap),
-			(err) => opt_cb(err)
-		);
+		/** @type {Promise} */
+		const p = compile(file, opt_params);
+		return p.then((obj) => opt_cb(null, obj.result, obj.sourceMap), opt_cb);
 	}
 
 	return compile(file, opt_params);
