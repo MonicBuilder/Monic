@@ -98,7 +98,7 @@ export default class Parser {
 			parts = src.split('::'),
 			dirname = path.dirname(base);
 
-		parts[0] = parts[0].replace(/\$\{(.*?)}/g, (sstr, flag) =>
+		parts[0] = parts[0].replace(/\${(.*?)}/g, (str, flag) =>
 			flag in this.flags ? this.flags[flag] : '');
 
 		const
@@ -174,7 +174,7 @@ export default class Parser {
 			if (this.inputSourceMap) {
 				sourceMap = new SourceMapConsumer(this.inputSourceMap);
 
-			} else if (/((?:\r?\n|\r)?[^\S\r\n]*\/\/(?:#|@) sourceMappingURL=([^\r\n]*)\s*)$/.test(content)) {
+			} else if (/((?:\r?\n|\r)?[^\S\r\n]*\/\/[#@] sourceMappingURL=([^\r\n]*)\s*)$/.test(content)) {
 				const
 					[sstr, url] = [RegExp.$1, RegExp.$2];
 
@@ -183,7 +183,7 @@ export default class Parser {
 						sourceMap = new SourceMapConsumer(JSON.parse(await str));
 						content = content.replace(sstr, '');
 
-					} catch (ignore) {}
+					} catch (_) {}
 				};
 
 				if (/data:application\/json;base64,(.*)/.exec(url)) {

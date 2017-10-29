@@ -105,7 +105,7 @@ export class FileStructure {
 	 * Sets a flag
 	 *
 	 * @param {string} flag - flag name
-	 * @param {boolean=} [opt_value] - flag value
+	 * @param {?=} [opt_value] - flag value
 	 * @returns {!FileStructure}
 	 */
 	addSet(flag, opt_value = true) {
@@ -147,7 +147,7 @@ export class FileStructure {
 	 *
 	 * @param {string} flag - condition
 	 * @param {string} type - condition type
-	 * @param {(boolean|string)=} [opt_value] - condition value
+	 * @param {?=} [opt_value] - condition value
 	 * @param {boolean=} [opt_unless] - unless mode
 	 * @returns {!FileStructure}
 	 */
