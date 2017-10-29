@@ -8,7 +8,7 @@
 
 /// <reference types="source-map" />
 
-declare namespace Monic {
+declare namespace MonicBuilder {
 	class FileStructure {
 		static isValidContentBlock(block: Record<string, any>, labels: Record<string, boolean>, flags: Record<string, any>): boolean;
 		constructor(params: {file: string, globals: Record<string, any>});
@@ -30,10 +30,10 @@ declare namespace Monic {
 		static normalizePath(src: string): string;
 		static getRelativePath(from: string, to: string): string;
 		constructor(params: CompileParams);
-		async testFile(file: string): string;
-		async parsePath(base: string, src: string): string[][];
-		async parseFile(file: string): {fileStructure: FileStructure, file: string};
-		async parse(file: string, content: string): {fileStructure: FileStructure, file: string};
+		testFile(file: string): Promise<string>;
+		parsePath(base: string, src: string): Promise<string[][]>;
+		parseFile(file: string): Promise<{fileStructure: FileStructure, file: string}>;
+		parse(file: string, content: string): Promise<{fileStructure: FileStructure, file: string}>;
 	}
 
 	interface CompileParams {
@@ -67,5 +67,5 @@ declare namespace Monic {
 }
 
 declare module 'monic' {
-	export = Monic.Monic;
+	export = MonicBuilder.Monic;
 }
