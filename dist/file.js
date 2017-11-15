@@ -1,11 +1,11 @@
 /*!
- * Monic v2.4.0
+ * Monic v2.4.1
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 29 Oct 2017 10:45:13 GMT
+ * Date: Wed, 15 Nov 2017 16:19:32 GMT
  */
 
 'use strict';
@@ -198,7 +198,7 @@ class FileStructure {
   * @returns {!FileStructure}
   */
 	endIf() {
-		if (!{ eq: true, ne: true, gt: true, gte: true, lt: true, lte: true }[this.currentBlock.type]) {
+		if (!{ is: true, eq: true, ne: true, gt: true, gte: true, lt: true, lte: true }[this.currentBlock.type]) {
 			throw new SyntaxError(`Attempt to close an unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
 		}
 
@@ -363,6 +363,10 @@ class FileStructure {
 
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
+
+			case 'is':
+				res = Boolean(flags[block.varName]);
+				break;
 
 			case 'eq':
 				res = flags[block.varName] === block.value;

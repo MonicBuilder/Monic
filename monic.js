@@ -12,7 +12,7 @@ const
 	{compile} = require('./dist/compile');
 
 /** @type {!Array} */
-exports.VERSION = [2, 4, 0];
+exports.VERSION = [2, 4, 1];
 
 /**
  * Builds a file

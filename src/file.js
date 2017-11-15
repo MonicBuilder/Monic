@@ -181,7 +181,7 @@ export class FileStructure {
 	 * @returns {!FileStructure}
 	 */
 	endIf() {
-		if (!{eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
+		if (!{is: true, eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
 			throw new SyntaxError(`Attempt to close an unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
 		}
 
@@ -355,6 +355,10 @@ export class FileStructure {
 
 			case 'label':
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
+
+			case 'is':
+				res = Boolean(flags[block.varName]);
+				break;
 
 			case 'eq':
 				res = flags[block.varName] === block.value;

@@ -1,11 +1,11 @@
 /*!
- * Monic v2.4.0
+ * Monic v2.4.1
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sun, 29 Oct 2017 10:45:13 GMT
+ * Date: Wed, 15 Nov 2017 16:19:32 GMT
  */
 
 'use strict';
@@ -462,7 +462,7 @@ class Parser {
 
 		switch (args.length) {
 			case 1:
-				args.push('eq', true);
+				args.push('is', true);
 				break;
 
 			case 2:

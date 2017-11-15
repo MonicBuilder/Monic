@@ -406,7 +406,7 @@ export default class Parser {
 
 		switch (args.length) {
 			case 1:
-				args.push('eq', true);
+				args.push('is', true);
 				break;
 
 			case 2:
