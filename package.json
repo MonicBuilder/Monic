@@ -50,15 +50,15 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "@types/async": "^2.0.44",
+    "@types/async": "^2.0.45",
     "@types/fs-extra-promise": "^1.0.3",
     "@types/glob": "^5.0.33",
     "@types/gulp": "^4.0.5",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.1",
+    "babel-eslint": "^8.0.2",
     "babel-preset-es2016-node4": "^6.0.1",
     "coveralls": "^3.0.0",
-    "eslint": "^4.10.0",
+    "eslint": "^4.11.0",
     "gulp": "^3.8.9",
     "gulp-babel": "^7.0.0",
     "gulp-bump": "^2.8.0",
@@ -70,6 +70,6 @@
     "gulp-run": "^1.6.7",
     "istanbul": "^1.1.0-alpha.1",
     "through2": "^2.0.0",
-    "yaspeller": "^4.0.0"
+    "yaspeller": "^4.0.3"
   }
 }
