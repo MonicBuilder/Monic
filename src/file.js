@@ -363,8 +363,8 @@ export class FileStructure {
 	 */
 	static isValidContentBlock(block, labels, flags) {
 		const
-			name = block.varName,
-			flagVal = flags[name],
+			flag = block.varName,
+			flagVal = flags[flag],
 			blockVal = block.value;
 
 		let res;
@@ -376,7 +376,7 @@ export class FileStructure {
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
 
 			case 'is':
-				res = typeof flagVal === 'function' ? flagVal({name, flags, labels}) : flagVal;
+				res = typeof flagVal === 'function' ? flagVal({flag, flags, labels}) : flagVal;
 				break;
 
 			case 'eq':
@@ -429,7 +429,7 @@ export class FileStructure {
 
 			case 'call':
 				if (typeof flagVal === 'function') {
-					res = flagVal({name, value: blockVal, flags, labels});
+					res = flagVal({flag, value: blockVal, flags, labels});
 				}
 
 				break;

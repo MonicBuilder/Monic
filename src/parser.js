@@ -137,8 +137,20 @@ export default class Parser {
 			parts = src.split('::'),
 			dirname = path.dirname(base);
 
-		parts[0] = parts[0].replace(/\${(.*?)}/g, (str, flag) =>
-			flag in this.flags ? this.flags[flag] : '');
+		parts[0] = parts[0].replace(/\${(.*?)}/g, (str, flag) => {
+			if (flag in this.flags) {
+				const
+					f = this.flags[flag];
+
+				if (typeof f === 'function') {
+					return f({flags: this.flags});
+				}
+
+				return f;
+			}
+
+			return '';
+		});
 
 		const
 			pattern = path.join(dirname, parts[0]);
