@@ -1,11 +1,11 @@
 /*!
- * Monic v2.4.2
+ * Monic v2.5.0
  * https://github.com/MonicBuilder/Monic
  *
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Thu, 23 Nov 2017 11:35:42 GMT
+ * Date: Thu, 23 Nov 2017 16:05:19 GMT
  */
 
 'use strict';
@@ -42,6 +42,63 @@ const hasMagic = _require2.hasMagic;
 
 class Parser {
 	/**
+  * Tries to parse the specified expression as JS
+  *
+  * @param expr
+  * @returns {?}
+  */
+	static parseExpr(expr) {
+		const isStr = typeof expr === 'string';
+
+		if (isStr) {
+			expr = expr.trim();
+		}
+
+		if (expr === '') {
+			return undefined;
+		}
+
+		if (!isStr) {
+			return expr;
+		}
+
+		if (!/[^\w ]/.test(expr)) {
+			try {
+				return JSON.parse(expr);
+			} catch (_) {
+				return expr;
+			}
+		}
+
+		try {
+			return new Function(`return ${expr}`)();
+		} catch (_) {
+			return expr;
+		}
+	}
+
+	/**
+  * Normalizes a path
+  *
+  * @param {string} src
+  * @returns {string}
+  */
+	static normalizePath(src) {
+		return path.normalize(src).split(path.sep).join('/');
+	}
+
+	/**
+  * Solves the relative path from "from" to "to"
+  *
+  * @param {string} from
+  * @param {string} to
+  * @returns {string}
+  */
+	static getRelativePath(from, to) {
+		return Parser.normalizePath(path.relative(from, to));
+	}
+
+	/**
   * @param {string} eol - EOL symbol
   * @param {Array=} [replacers] - array of transform functions
   * @param {Object=} [flags] - map of global Monic flags
@@ -65,27 +122,6 @@ class Parser {
 		this.sourceRoot = sourceRoot;
 		this.realpathCache = {};
 		this.cache = {};
-	}
-
-	/**
-  * Normalizes a path
-  *
-  * @param {string} src
-  * @returns {string}
-  */
-	static normalizePath(src) {
-		return path.normalize(src).split(path.sep).join('/');
-	}
-
-	/**
-  * Solves the relative path from "from" to "to"
-  *
-  * @param {string} from
-  * @param {string} to
-  * @returns {string}
-  */
-	static getRelativePath(from, to) {
-		return Parser.normalizePath(path.relative(from, to));
 	}
 
 	/**
@@ -127,7 +163,17 @@ class Parser {
 			      dirname = path.dirname(base);
 
 			parts[0] = parts[0].replace(/\${(.*?)}/g, function (str, flag) {
-				return flag in _this2.flags ? _this2.flags[flag] : '';
+				if (flag in _this2.flags) {
+					const f = _this2.flags[flag];
+
+					if (typeof f === 'function') {
+						return f({ flags: _this2.flags });
+					}
+
+					return f;
+				}
+
+				return '';
 			});
 
 			const pattern = path.join(dirname, parts[0]);
@@ -458,7 +504,11 @@ class Parser {
 	_if(struct, value, opt_unless) {
 		value = value.trim();
 
-		const args = value.split(/\s+/);
+		if (!value) {
+			throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
+		}
+
+		let args = value.split(/\s+/);
 
 		switch (args.length) {
 			case 1:
@@ -470,11 +520,9 @@ class Parser {
 				break;
 		}
 
-		if (!value || args.length !== 3) {
-			throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
-		}
+		args = args.slice(0, 2).concat(Parser.parseExpr(args.length > 3 ? args.slice(2).join(' ') : args[2]), opt_unless);
 
-		struct.beginIf.apply(struct, _toConsumableArray(args.concat(opt_unless)));
+		struct.beginIf.apply(struct, _toConsumableArray(args));
 	}
 
 	/**
@@ -522,7 +570,8 @@ class Parser {
 			throw new SyntaxError('Bad "#set" directive');
 		}
 
-		struct.addSet.apply(struct, _toConsumableArray(value.split(/\s+/)));
+		const args = value.split(/\s+/);
+		struct.addSet(args[0], Parser.parseExpr(args.slice(1).join(' ')));
 	}
 
 	/**
