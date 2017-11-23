@@ -27,6 +27,7 @@ declare namespace MonicBuilder {
 	}
 
 	class Parser {
+		static parseExpr(expr: any): any;
 		static normalizePath(src: string): string;
 		static getRelativePath(from: string, to: string): string;
 		eol: string;

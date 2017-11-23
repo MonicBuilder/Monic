@@ -181,7 +181,20 @@ export class FileStructure {
 	 * @returns {!FileStructure}
 	 */
 	endIf() {
-		if (!{is: true, eq: true, ne: true, gt: true, gte: true, lt: true, lte: true}[this.currentBlock.type]) {
+		const validIf = {
+			is: true,
+			eq: true,
+			ne: true,
+			gt: true,
+			gte: true,
+			lt: true,
+			lte: true,
+			has: true,
+			call: true,
+			like: true
+		};
+
+		if (!validIf[this.currentBlock.type]) {
 			throw new SyntaxError(`Attempt to close an unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
 		}
 
@@ -272,8 +285,9 @@ export class FileStructure {
 				const
 					cacheKey = `${block.fileStructure.file}@${Object.keys(block.labels).sort()}@${Object.keys(flags).sort()}`;
 
-				$C(labels).forEach((el, key) =>
-					block.labels[key] = true);
+				$C(labels).forEach((el, key) => {
+					block.labels[key] = true;
+				});
 
 				if (!this.included[cacheKey]) {
 					this.included[cacheKey] = true;
@@ -348,6 +362,11 @@ export class FileStructure {
 	 * @returns {boolean}
 	 */
 	static isValidContentBlock(block, labels, flags) {
+		const
+			name = block.varName,
+			flagVal = flags[name],
+			blockVal = block.value;
+
 		let res;
 		switch (block.type) {
 			case 'root':
@@ -357,31 +376,62 @@ export class FileStructure {
 				return Boolean(!Object.keys(labels).length || labels[block.label]);
 
 			case 'is':
-				res = Boolean(flags[block.varName]);
+				res = typeof flagVal === 'function' ? flagVal({name, flags, labels}) : flagVal;
 				break;
 
 			case 'eq':
-				res = flags[block.varName] === block.value;
+				// eslint-disable-next-line
+				res = flagVal == blockVal;
 				break;
 
 			case 'ne':
-				res = flags[block.varName] !== block.value;
+				// eslint-disable-next-line
+				res = flagVal != blockVal;
 				break;
 
 			case 'gt':
-				res = Number(flags[block.varName]) > Number(block.value);
+				res = flagVal > blockVal;
 				break;
 
 			case 'gte':
-				res = Number(flags[block.varName]) >= Number(block.value);
+				res = flagVal >= blockVal;
 				break;
 
 			case 'lt':
-				res = Number(flags[block.varName]) < Number(block.value);
+				res = flagVal < blockVal;
 				break;
 
 			case 'lte':
-				res = Number(flags[block.varName]) <= Number(block.value);
+				res = flagVal <= blockVal;
+				break;
+
+			case 'has':
+				if (Array.isArray(flagVal)) {
+					res = flagVal.includes(blockVal);
+
+				} else if (flagVal instanceof RegExp) {
+					res = flagVal.test(blockVal);
+
+				} else if (flagVal) {
+					if (typeof flagVal.has === 'function') {
+						res = flagVal.has(blockVal);
+
+					} else {
+						res = flagVal[blockVal];
+					}
+				}
+
+				break;
+
+			case 'like':
+				res = new RegExp(flagVal).test(blockVal);
+				break;
+
+			case 'call':
+				if (typeof flagVal === 'function') {
+					res = flagVal({name, value: blockVal, flags, labels});
+				}
+
 				break;
 		}
 
@@ -389,6 +439,6 @@ export class FileStructure {
 			res = !res;
 		}
 
-		return res || false;
+		return Boolean(res || false);
 	}
 }

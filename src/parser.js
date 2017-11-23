@@ -27,22 +27,42 @@ const
  */
 export default class Parser {
 	/**
-	 * @param {string} eol - EOL symbol
-	 * @param {Array=} [replacers] - array of transform functions
-	 * @param {Object=} [flags] - map of global Monic flags
-	 * @param {boolean} sourceMaps - if is true, then will be enabled support for source maps
-	 * @param {Object=} [inputSourceMap] - base source map object for the output source map
-	 * @param {?string=} [sourceRoot] - root for all URLs in the generated source map
+	 * Tries to parse the specified expression as JS
+	 *
+	 * @param expr
+	 * @returns {?}
 	 */
-	constructor({eol, replacers, flags, sourceMaps, sourceRoot, inputSourceMap}) {
-		this.eol = eol;
-		this.replacers = replacers;
-		this.flags = {...flags};
-		this.sourceMaps = sourceMaps;
-		this.inputSourceMap = inputSourceMap;
-		this.sourceRoot = sourceRoot;
-		this.realpathCache = {};
-		this.cache = {};
+	static parseExpr(expr) {
+		const
+			isStr = typeof expr === 'string';
+
+		if (isStr) {
+			expr = expr.trim();
+		}
+
+		if (expr === '') {
+			return undefined;
+		}
+
+		if (!isStr) {
+			return expr;
+		}
+
+		if (!/[^\w ]/.test(expr)) {
+			try {
+				return JSON.parse(expr);
+
+			} catch (_) {
+				return expr;
+			}
+		}
+
+		try {
+			return new Function(`return ${expr}`)();
+
+		} catch (_) {
+			return expr;
+		}
 	}
 
 	/**
@@ -64,6 +84,25 @@ export default class Parser {
 	 */
 	static getRelativePath(from, to) {
 		return Parser.normalizePath(path.relative(from, to));
+	}
+
+	/**
+	 * @param {string} eol - EOL symbol
+	 * @param {Array=} [replacers] - array of transform functions
+	 * @param {Object=} [flags] - map of global Monic flags
+	 * @param {boolean} sourceMaps - if is true, then will be enabled support for source maps
+	 * @param {Object=} [inputSourceMap] - base source map object for the output source map
+	 * @param {?string=} [sourceRoot] - root for all URLs in the generated source map
+	 */
+	constructor({eol, replacers, flags, sourceMaps, sourceRoot, inputSourceMap}) {
+		this.eol = eol;
+		this.replacers = replacers;
+		this.flags = {...flags};
+		this.sourceMaps = sourceMaps;
+		this.inputSourceMap = inputSourceMap;
+		this.sourceRoot = sourceRoot;
+		this.realpathCache = {};
+		this.cache = {};
 	}
 
 	/**
@@ -401,7 +440,11 @@ export default class Parser {
 	_if(struct, value, opt_unless) {
 		value = value.trim();
 
-		const
+		if (!value) {
+			throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
+		}
+
+		let
 			args = value.split(/\s+/);
 
 		switch (args.length) {
@@ -414,11 +457,12 @@ export default class Parser {
 				break;
 		}
 
-		if (!value || args.length !== 3) {
-			throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
-		}
+		args = args.slice(0, 2).concat(
+			Parser.parseExpr(args.length > 3 ? args.slice(2).join(' ') : args[2]),
+			opt_unless
+		);
 
-		struct.beginIf(...args.concat(opt_unless));
+		struct.beginIf(...args);
 	}
 
 	/**
@@ -466,7 +510,8 @@ export default class Parser {
 			throw new SyntaxError('Bad "#set" directive');
 		}
 
-		struct.addSet(...value.split(/\s+/));
+		const args = value.split(/\s+/);
+		struct.addSet(args[0], Parser.parseExpr(args.slice(1).join(' ')));
 	}
 
 	/**
