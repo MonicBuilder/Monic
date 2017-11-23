@@ -29,6 +29,12 @@ declare namespace MonicBuilder {
 	class Parser {
 		static normalizePath(src: string): string;
 		static getRelativePath(from: string, to: string): string;
+		eol: string;
+		replacers: Function[];
+		flags: Record<string, any>;
+		sourceMaps?: boolean | string;
+		inputSourceMap?: sourceMap.SourceMapConsumer;
+		sourceRoot?: string;
 		constructor(params: CompileParams);
 		testFile(file: string): Promise<string>;
 		parsePath(base: string, src: string): Promise<string[][]>;
