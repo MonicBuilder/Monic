@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Thu, 23 Nov 2017 16:05:19 GMT
+ * Date: Fri, 24 Nov 2017 13:37:22 GMT
  */
 
 'use strict';

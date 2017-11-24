@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Thu, 23 Nov 2017 16:05:19 GMT
+ * Date: Fri, 24 Nov 2017 13:37:22 GMT
  */
 
 'use strict';
@@ -208,7 +208,10 @@ class FileStructure {
 			lte: true,
 			has: true,
 			call: true,
-			like: true
+			callRight: true,
+			like: true,
+			instanceof: true,
+			typeof: true
 		};
 
 		if (!validIf[this.currentBlock.type]) {
@@ -388,13 +391,11 @@ class FileStructure {
 				break;
 
 			case 'eq':
-				// eslint-disable-next-line
-				res = flagVal == blockVal;
+				res = flagVal === blockVal;
 				break;
 
 			case 'ne':
-				// eslint-disable-next-line
-				res = flagVal != blockVal;
+				res = flagVal !== blockVal;
 				break;
 
 			case 'gt':
@@ -437,6 +438,21 @@ class FileStructure {
 					res = flagVal({ flag: flag, value: blockVal, flags: flags, labels: labels });
 				}
 
+				break;
+
+			case 'callRight':
+				if (typeof blockVal === 'function') {
+					res = blockVal({ flag: flag, value: flagVal, flags: flags, labels: labels });
+				}
+
+				break;
+
+			case 'typeof':
+				res = typeof flagVal === String(blockVal);
+				break;
+
+			case 'instanceof':
+				res = flagVal instanceof blockVal;
 				break;
 		}
 

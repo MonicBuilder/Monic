@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Thu, 23 Nov 2017 16:05:19 GMT
+ * Date: Fri, 24 Nov 2017 13:37:22 GMT
  */
 
 'use strict';
@@ -437,7 +437,6 @@ class Parser {
 					el = $C(el).reduce(function (map, el) {
 						return map[el] = true, map;
 					}, {});
-
 					struct.addWithout((yield _this6.parseFile(struct.getRelativePathOf(includeFileName))).fileStructure, el);
 				});
 
