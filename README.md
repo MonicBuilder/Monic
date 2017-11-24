@@ -2,7 +2,7 @@ Monic
 =====
 
 Monic is a JavaScript file builder ([fork of Jossy](https://github.com/Kolyaj/Jossy)) to one or several files.
-When it used properly, Monic allows not only easy to build modules, but also easy to rebuild them, when changing principles
+When it used properly, Monic allows not only easy to build modules, but also easy to rebuild, when changing principles
 of the build.
 
 [Russian documentation](https://github.com/MonicBuilder/Monic/blob/master/README.ru.md)
@@ -399,8 +399,8 @@ alert('ie = 7');
 //#endif
 ```
 
-All the flags are declared globally. To set them in your code, you should use the directives `#set` and `#unset`,
-and also you can specify them when you run Monic. For example:
+All the flags are declared globally. To set it in your code, you should use the directives `#set` and `#unset`,
+and also you can specify it when you run Monic. For example:
 
 **file.js**
 
@@ -501,7 +501,7 @@ String.truncate = function () {};
 //#endlabel truncate
 ```
 
-Please note that the marked-thus the area of the file in built code can change the order between them and may
+Please note that the marked-thus the area of the file in built code can change the order between it and may
 receive another code.
 
 For example:
