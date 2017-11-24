@@ -390,7 +390,6 @@ export default class Parser {
 		return $C(await this.parsePath(struct.file, value)).async.forEach(async (el) => {
 			const includeFileName = String(el.shift());
 			el = $C(el).reduce((map, el) => (map[el] = true, map), {});
-
 			struct.addWithout((await this.parseFile(struct.getRelativePathOf(includeFileName))).fileStructure, el);
 		});
 	}

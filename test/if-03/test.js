@@ -23,3 +23,15 @@ alert('ie as function');
 //#if ie
 alert('ie as function 2');
 //#end if
+
+//#if ie callRight function (o) { return typeof o.value === 'function'; }
+alert('ie as function rightCall');
+//#end if
+
+//#if ie instanceof (Function)
+alert('instanceof');
+//#end if
+
+//#if ie typeof function
+alert('typeof');
+//#end if

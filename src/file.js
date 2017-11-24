@@ -191,7 +191,10 @@ export class FileStructure {
 			lte: true,
 			has: true,
 			call: true,
-			like: true
+			callRight: true,
+			like: true,
+			instanceof: true,
+			typeof: true
 		};
 
 		if (!validIf[this.currentBlock.type]) {
@@ -380,13 +383,11 @@ export class FileStructure {
 				break;
 
 			case 'eq':
-				// eslint-disable-next-line
-				res = flagVal == blockVal;
+				res = flagVal === blockVal;
 				break;
 
 			case 'ne':
-				// eslint-disable-next-line
-				res = flagVal != blockVal;
+				res = flagVal !== blockVal;
 				break;
 
 			case 'gt':
@@ -432,6 +433,21 @@ export class FileStructure {
 					res = flagVal({flag, value: blockVal, flags, labels});
 				}
 
+				break;
+
+			case 'callRight':
+				if (typeof blockVal === 'function') {
+					res = blockVal({flag, value: flagVal, flags, labels});
+				}
+
+				break;
+
+			case 'typeof':
+				res = typeof flagVal === String(blockVal);
+				break;
+
+			case 'instanceof':
+				res = flagVal instanceof blockVal;
 				break;
 		}
 
