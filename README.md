@@ -118,10 +118,15 @@ monic.compile(
     labels: {
       escapeHTML: true
     },
-
+    
     // The map of Monic flags (optional)
+    // The flags can have different values, for example
     flags: {
-      ie: true
+      ie: true,
+      ieVersions: [7, 8, 9],
+      needInclude({flags}) {
+        return flags.ie && flags.ieVersions.includes(7);
+      }
     },
 
     // If is true, then generated files will be saved
@@ -370,6 +375,28 @@ alert('ie < 8');
 //#if ie <= 7
 alert('ie <= 7');
 //#endif
+
+// If flag is an array or a table,
+// then can be used "has" statement
+//#set ie [7, 8, 9]
+//#if ie has 7
+alert('ie = 7');
+//#endif
+
+// If flag is a regular expression
+// then can be used "like" statement
+//#set ie /[7-9]/
+//#if ie like 7
+alert('ie = 7');
+//#endif
+
+// If flag is a function
+// then can be used "call" statement
+//#set ieVersions [7, 8, 9]
+//#set ie function (o) { return o.flags.ieVersions.includes(o.value); }
+//#if ie call 7
+alert('ie = 7');
+//#endif
 ```
 
 All the flags are declared globally. To set them in your code, you should use the directives `#set` and `#unset`,
@@ -409,6 +436,7 @@ The flags that were specified as a build parameter or in the global scope of a f
 //#include lang/${lang}.json
 ```
 
+If the flag is a function, then it will be executed and the result will be inserted to the template.
 If the flag doesn't exist, then will be inserted an empty string.
 
 ### Including chunks of files
