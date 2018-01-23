@@ -116,6 +116,7 @@ gulp.task('default', gulp.parallel([
 	'copyright',
 	'head',
 	'build',
+	'bump',
 	'yaspeller',
 	'npmignore'
 ]));
