@@ -56,6 +56,14 @@ gulp.task('build:js', () => {
 		.pipe(gulp.dest('./dist'));
 });
 
+gulp.task('ts', () => {
+	const monic = require('./monic');
+	return monic.compile('./ts-definitions/index.d.ts', {
+		file: './monic.d.ts',
+		saveFiles: true
+	});
+});
+
 gulp.task('build', gulp.series(['build:js', testBuild]));
 gulp.task('yaspeller', () => $.run('yaspeller ./').exec().on('error', console.error));
 gulp.task('test', testBuild);
@@ -99,6 +107,7 @@ gulp.task('head', () => {
 
 	const paths = [
 		'./@(src|test)/*.js',
+		'./ts-definitions/*.d.ts',
 		'./@(monic|gulpfile).js',
 		'./bin/monic.js',
 		'./monic.d.ts'
@@ -115,6 +124,7 @@ gulp.task('head', () => {
 gulp.task('default', gulp.parallel([
 	'copyright',
 	'head',
+	'ts',
 	'build',
 	'bump',
 	'yaspeller',
