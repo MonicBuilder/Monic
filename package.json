@@ -4,7 +4,7 @@
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
   "typings": "monic.d.ts",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -39,7 +39,6 @@
     "pack"
   ],
   "dependencies": {
-    "@types/source-map": "^0.5.7",
     "collection.js": "^6.3.16",
     "commander": "^2.13.0",
     "fs-extra-promise": "^1.0.1",
