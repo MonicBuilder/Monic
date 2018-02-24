@@ -128,7 +128,7 @@ export async function compile(file, opt_params) {
 			sourceMapUrl = Parser.getRelativePath(path.dirname(fileToSave), sourceMapFile);
 
 		} else {
-			sourceMapUrl = `data:application/json;base64,${new Buffer(map.toString()).toString('base64')}`;
+			sourceMapUrl = `data:application/json;base64,${Buffer.from(map.toString()).toString('base64')}`;
 			result += sourceMapDecl + sourceMapUrl;
 		}
 	}

@@ -238,7 +238,7 @@ export default class Parser {
 				};
 
 				if (/data:application\/json;base64,(.*)/.exec(url)) {
-					await parse(new Buffer(RegExp.$1, 'base64').toString());
+					await parse(Buffer.from(RegExp.$1, 'base64').toString());
 
 				} else {
 					await parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
