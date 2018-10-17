@@ -6,6 +6,8 @@
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  */
 
+/// <reference lib="es2015"/>
+
 declare namespace SourceMap {
 	//#include ../node_modules/source-map/source-map.d.ts
 }
