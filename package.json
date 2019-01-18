@@ -4,7 +4,7 @@
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
   "typings": "monic.d.ts",
-  "version": "2.5.2",
+  "version": "2.6.0",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
