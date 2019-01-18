@@ -4,7 +4,7 @@
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
   "typings": "monic.d.ts",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -22,7 +22,7 @@
     "monic": "bin/monic.js"
   },
   "engines": {
-    "node": ">= 4"
+    "node": ">= 8"
   },
   "scripts": {
     "test": "node test",
@@ -57,16 +57,16 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^10.0.1",
     "coveralls": "^3.0.2",
-    "eslint": "^5.7.0",
+    "eslint": "^5.12.0",
     "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
-    "gulp-bump": "^3.1.0",
+    "gulp-bump": "^3.1.3",
     "gulp-eol": "^0.2.0",
-    "gulp-header": "^2.0.5",
+    "gulp-header": "^2.0.7",
     "gulp-if": "^2.0.2",
     "gulp-ignore": "^2.0.2",
     "gulp-load-plugins": "^1.5.0",
-    "gulp-plumber": "^1.2.0",
+    "gulp-plumber": "^1.2.1",
     "gulp-replace": "^1.0.0",
     "gulp-run": "^1.7.1",
     "istanbul": "^1.1.0-alpha.1",
