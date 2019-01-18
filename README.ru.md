@@ -376,9 +376,21 @@ alert('ie <= 7');
 
 // Если флаг задан как массив или таблица, 
 // то можно использовать оператор has
-//#set ie [7, 8, 9]
+//#set ie [7, 8]
 //#if ie has 7
 alert('ie = 7');
+//#endif
+
+// Можно добавлять данные в существующий массив
+//#set ie. 9
+//#if ie has 9
+alert('ie = 7');
+//#endif
+
+// Можно добавлять или создавать вложенные поля у таблиц
+//#set runtime.offlineMode
+//#if runtime has offlineMode
+alert('Offline mode enabled!');
 //#endif
 
 // Если флаг задан как регулярное выражение, 

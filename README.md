@@ -378,9 +378,21 @@ alert('ie <= 7');
 
 // If flag is an array or a table,
 // then can be used "has" statement
-//#set ie [7, 8, 9]
+//#set ie [7, 8]
 //#if ie has 7
 alert('ie = 7');
+//#endif
+
+// It's possible to add data to an existing array
+//#set ie. 9
+//#if ie has 9
+alert('ie = 7');
+//#endif
+
+// It's possible to add or create nested fields on tables
+//#set runtime.offlineMode
+//#if runtime has offlineMode
+alert('Offline mode enabled!');
 //#endif
 
 // If flag is a regular expression

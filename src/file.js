@@ -303,9 +303,28 @@ export class FileStructure {
 				block.fileStructure.without(block.labels, flags);
 				break;
 
-			case 'set':
-				flags[block.varName] = block.value;
-				break;
+			case 'set': {
+				const
+					store = $C(flags),
+					path = block.varName,
+					val = block.value;
+
+				if (path.slice(-1) === '.') {
+					const
+						ctx = store.get(path.slice(0, -1));
+
+					if (Array.isArray(ctx)) {
+						ctx.push(val);
+
+					} else {
+						store.set(val, path.slice(-1));
+					}
+
+				} else {
+					store.set(val, path);
+				}
+
+			} break;
 
 			default:
 				if (FileStructure.isValidContentBlock(block, labels, flags)) {
@@ -367,7 +386,7 @@ export class FileStructure {
 	static isValidContentBlock(block, labels, flags) {
 		const
 			flag = block.varName,
-			flagVal = flags[flag],
+			flagVal = $C(flags).get(flag),
 			blockVal = block.value;
 
 		let res;

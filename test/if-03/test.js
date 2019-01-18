@@ -1,11 +1,26 @@
+//#set ie.9
+//#if ie has 9
+alert('ie has 9 from deep {}');
+//#end if
+
 //#set ie {7: true, 8: true}
 //#if ie has 7
 alert('ie has 7 from {}');
 //#end if
 
+//#set ie.10 compat
+//#if ie.10 = compat
+alert('ie has 10 from modified {} with custom value');
+//#end if
+
 //#set ie [7, 8]
 //#if ie has 8
 alert('ie has 8 from []');
+//#end if
+
+//#set ie. 9
+//#if ie has 9
+alert('ie has 9 from modified []');
 //#end if
 
 //#set ie /[78]/
