@@ -39,25 +39,25 @@
     "pack"
   ],
   "dependencies": {
-    "collection.js": "^6.6.27",
-    "commander": "^2.19.0",
+    "collection.js": "^6.7.2",
+    "commander": "^2.20.0",
     "fs-extra-promise": "^1.0.1",
-    "glob": "^7.1.3",
+    "glob": "^7.1.4",
     "glob-promise": "^3.4.0",
     "source-map": "^0.7.3",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "@types/fs-extra-promise": "^1.0.4",
     "@types/glob": "^7.1.1",
-    "@types/gulp": "^4.0.5",
+    "@types/gulp": "^4.0.6",
     "@types/gulp-load-plugins": "0.0.31",
     "babel-eslint": "^10.0.1",
-    "coveralls": "^3.0.2",
-    "eslint": "^5.12.1",
-    "gulp": "^4.0.0",
+    "coveralls": "^3.0.3",
+    "eslint": "^5.16.0",
+    "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-bump": "^3.1.3",
     "gulp-eol": "^0.2.0",
@@ -69,6 +69,6 @@
     "gulp-replace": "^1.0.0",
     "gulp-run": "^1.7.1",
     "istanbul": "^1.1.0-alpha.1",
-    "yaspeller": "^5.0.1"
+    "yaspeller": "^5.1.0"
   }
 }
