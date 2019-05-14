@@ -122,11 +122,13 @@ gulp.task('head', () => {
 });
 
 gulp.task('default', gulp.parallel([
-	'copyright',
-	'head',
+	gulp.series([
+		gulp.parallel(['bump', 'head']),
+		'build'
+	]),
+
 	'ts',
-	'build',
-	'bump',
+	'copyright',
 	'yaspeller',
 	'npmignore'
 ]));
