@@ -324,7 +324,8 @@ export class FileStructure {
 					store.set(val, path);
 				}
 
-			} break;
+				break;
+			}
 
 			default:
 				if (FileStructure.isValidContentBlock(block, labels, flags)) {
