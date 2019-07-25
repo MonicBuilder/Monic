@@ -39,7 +39,7 @@
     "pack"
   ],
   "dependencies": {
-    "collection.js": "^6.7.9",
+    "collection.js": "^6.7.10",
     "commander": "^2.20.0",
     "fs-extra-promise": "^1.0.1",
     "glob": "^7.1.4",
@@ -48,27 +48,27 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@types/fs-extra-promise": "^1.0.8",
     "@types/glob": "^7.1.1",
     "@types/gulp": "^4.0.6",
     "@types/gulp-load-plugins": "0.0.31",
     "babel-eslint": "^10.0.2",
-    "coveralls": "^3.0.4",
-    "eslint": "^6.0.1",
+    "coveralls": "^3.0.5",
+    "eslint": "^6.1.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-bump": "^3.1.3",
     "gulp-eol": "^0.2.0",
-    "gulp-header": "^2.0.7",
-    "gulp-if": "^2.0.2",
-    "gulp-ignore": "^2.0.2",
-    "gulp-load-plugins": "^1.6.0",
+    "gulp-header": "^2.0.9",
+    "gulp-if": "^3.0.0",
+    "gulp-ignore": "^3.0.0",
+    "gulp-load-plugins": "^2.0.0",
     "gulp-plumber": "^1.2.1",
     "gulp-replace": "^1.0.0",
     "gulp-run": "^1.7.1",
     "istanbul": "^1.1.0-alpha.1",
-    "yaspeller": "^5.1.0"
+    "yaspeller": "^6.0.0"
   }
 }
