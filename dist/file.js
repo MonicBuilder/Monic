@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sat, 03 Jul 2021 16:59:48 GMT
+ * Date: Sat, 03 Jul 2021 17:45:51 GMT
  */
 
 'use strict';
@@ -208,7 +208,7 @@ class FileStructure {
     };
 
     if (!validIf[this.currentBlock.type]) {
-      throw new SyntaxError(`Attempt to close an unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
+      throw new SyntaxError(`Attempt to close the unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
     }
 
     this.currentBlock = this.currentBlock.parent;
@@ -241,7 +241,7 @@ class FileStructure {
 
   endLabel() {
     if (this.currentBlock.type !== 'label') {
-      throw new SyntaxError('Attempt to close an unopened block "#label"');
+      throw new SyntaxError('Attempt to close the unopened block "#label"');
     }
 
     this.currentBlock = this.currentBlock.parent;

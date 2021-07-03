@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sat, 03 Jul 2021 16:59:48 GMT
+ * Date: Sat, 03 Jul 2021 17:45:51 GMT
  */
 
 'use strict';
@@ -414,14 +414,14 @@ class Parser {
     value = value.trim();
 
     if (!value) {
-      throw new SyntaxError('Bad "#end" directive');
+      throw new SyntaxError('Invalid "#end" declaration');
     }
 
     const args = value.split(/\s+/),
           key = `_end${args[0]}`;
 
     if (!this[key]) {
-      throw new SyntaxError(`Bad value (${args[0]}) for "#end" directive`);
+      throw new SyntaxError(`Invalid value (${args[0]}) for the "#end" directive`);
     }
 
     this[key](struct, args.join(' '));
@@ -463,7 +463,7 @@ class Parser {
     value = value.trim();
 
     if (!value) {
-      throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
+      throw new SyntaxError(`Invalid "#${opt_unless ? 'unless' : 'if'}" declaration`);
     }
 
     let args = value.split(/\s+/);
@@ -528,7 +528,7 @@ class Parser {
     value = value.trim();
 
     if (!value) {
-      throw new SyntaxError('Bad "#set" directive');
+      throw new SyntaxError('Invalid "#set" declaration');
     }
 
     const args = value.split(/\s+/);
@@ -547,7 +547,7 @@ class Parser {
     value = value.trim();
 
     if (!value) {
-      throw new SyntaxError('Bad "#unset" directive');
+      throw new SyntaxError('Invalid "#unset" declaration');
     }
 
     struct.addUnset(value);
