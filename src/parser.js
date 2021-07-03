@@ -27,7 +27,7 @@ const
  */
 export default class Parser {
 	/**
-	 * Tries to parse the specified expression as JS
+	 * Tries to parse the specified expression as JavaScript
 	 *
 	 * @param expr
 	 * @returns {?}
@@ -52,7 +52,7 @@ export default class Parser {
 			try {
 				return JSON.parse(expr);
 
-			} catch (_) {
+			} catch {
 				return expr;
 			}
 		}
@@ -60,13 +60,13 @@ export default class Parser {
 		try {
 			return new Function(`return ${expr}`)();
 
-		} catch (_) {
+		} catch {
 			return expr;
 		}
 	}
 
 	/**
-	 * Normalizes a path
+	 * Normalizes the specified path
 	 *
 	 * @param {string} src
 	 * @returns {string}
@@ -76,7 +76,7 @@ export default class Parser {
 	}
 
 	/**
-	 * Solves the relative path from "from" to "to"
+	 * Solves the specified relative path from "from" to "to"
 	 *
 	 * @param {string} from
 	 * @param {string} to
@@ -106,7 +106,7 @@ export default class Parser {
 	}
 
 	/**
-	 * Checks a file for existence and returns the absolute path to it
+	 * Checks the specified file for existence and returns an absolute path to it
 	 *
 	 * @param {string} file - file path
 	 * @returns {string}
@@ -126,7 +126,7 @@ export default class Parser {
 	}
 
 	/**
-	 * Parses a path with glob
+	 * Parses the specified path with glob
 	 *
 	 * @param {string} base - path to a base file
 	 * @param {string} src - path
@@ -167,7 +167,7 @@ export default class Parser {
 	}
 
 	/**
-	 * Parses a file and returns it structure
+	 * Parses the specified file and returns it structure
 	 *
 	 * @param {string} file - file path
 	 * @returns {{fileStructure: (!FileStructure|undefined), file: string}}
@@ -185,7 +185,7 @@ export default class Parser {
 	}
 
 	/**
-	 * Parses a text and returns it structure
+	 * Parses the specified text and returns it structure
 	 *
 	 * @param {string} file - file path
 	 * @param {string} content - source text
@@ -234,7 +234,7 @@ export default class Parser {
 						sourceMap = new SourceMapConsumer(JSON.parse(await str));
 						content = content.replace(sstr, '');
 
-					} catch (_) {}
+					} catch {}
 				};
 
 				if (/data:application\/json;base64,(.*)/.exec(url)) {

@@ -72,17 +72,6 @@ function testBuild() {
 	return $.run('node test').exec().on('error', console.error);
 }
 
-gulp.task('copyright', () =>
-	gulp.src('./LICENSE')
-		.pipe($.plumber())
-		.pipe($.replace(/(Copyright \(c\) )(\d+)-?(\d*)/, (str, intro, from, to) => {
-			const year = new Date().getFullYear();
-			return intro + from + (to || from != year ? `-${year}` : '');
-		}))
-
-		.pipe(gulp.dest('./'))
-);
-
 gulp.task('bump', () =>
 	gulp.src('./@(package-lock|package|bower).json')
 		.pipe($.plumber())
@@ -128,7 +117,6 @@ gulp.task('default', gulp.parallel([
 	]),
 
 	'ts',
-	'copyright',
 	'yaspeller',
 	'npmignore'
 ]));

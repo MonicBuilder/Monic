@@ -14,7 +14,7 @@ const
 	$C = require('collection.js/compiled');
 
 const
-	uuid = require('uuid'),
+	uuid = require('uuid').v4,
 	path = require('path');
 
 /**
@@ -23,7 +23,7 @@ const
 export class FileStructure {
 	/**
 	 * @param {string} file - file path
-	 * @param {!Object} globals - map of global Monic flags
+	 * @param {!Object} globals - map of the global Monic flags
 	 */
 	constructor({file, globals}) {
 		this.root = {
@@ -33,7 +33,7 @@ export class FileStructure {
 		};
 
 		this.file = file;
-		this.uid = uuid();
+		this.uuid = uuid();
 		this.currentBlock = this.root;
 		this.included = {};
 		this.globals = globals;
@@ -42,15 +42,15 @@ export class FileStructure {
 	/**
 	 * Returns a file path relative to the base folder
 	 *
-	 * @param {string} src - file path
+	 * @param {string} file - file path
 	 * @returns {string}
 	 */
-	getRelativePathOf(src) {
-		return Parser.normalizePath(path.resolve(path.dirname(this.file), src));
+	getRelativePathOf(file) {
+		return Parser.normalizePath(path.resolve(path.dirname(this.file), file));
 	}
 
 	/**
-	 * Adds custom code (text) to the structure
+	 * Adds a custom code (text) to the structure
 	 *
 	 * @param {string} code - some code
 	 * @param {Object=} [opt_info] - information object for a source map
@@ -102,7 +102,7 @@ export class FileStructure {
 	}
 
 	/**
-	 * Sets a flag
+	 * Sets a new flag
 	 *
 	 * @param {string} flag - flag name
 	 * @param {?=} [opt_value] - flag value
@@ -123,7 +123,7 @@ export class FileStructure {
 	}
 
 	/**
-	 * Cancels a flag
+	 * Cancels (removes) the specified flag
 	 *
 	 * @param {string} flag - flag name
 	 * @returns {!FileStructure}
@@ -143,7 +143,7 @@ export class FileStructure {
 	}
 
 	/**
-	 * Sets a condition
+	 * Sets a new condition
 	 *
 	 * @param {string} flag - condition
 	 * @param {string} type - condition type
@@ -206,7 +206,7 @@ export class FileStructure {
 	}
 
 	/**
-	 * Sets a label
+	 * Sets a new label
 	 *
 	 * @param {string} label - label name
 	 * @returns {!FileStructure}
@@ -252,7 +252,7 @@ export class FileStructure {
 	}
 
 	/**
-	 * Compiles expulsion of a file
+	 * Compiles expulsion of the file
 	 *
 	 * @param {Array=} [opt_labels] - a map of Monic labels
 	 * @param {Object=} [opt_flags] - map of Monic flags
@@ -265,7 +265,7 @@ export class FileStructure {
 	}
 
 	/**
-	 * Compiles some file structure
+	 * Compiles the specified file structure
 	 *
 	 * @private
 	 * @param {!Object} block - structure object
@@ -331,8 +331,8 @@ export class FileStructure {
 				if (FileStructure.isValidContentBlock(block, labels, flags)) {
 					return $C(block.content)
 						.map((block) => {
-							if (!Parser.current || this.uid !== Parser.current) {
-								Parser.current = this.uid;
+							if (!Parser.current || this.uuid !== Parser.current) {
+								Parser.current = this.uuid;
 							}
 
 							const
@@ -377,7 +377,7 @@ export class FileStructure {
 	}
 
 	/**
-	 * Returns true if an object is a valid file structure
+	 * Returns true if the specified object is a valid file structure
 	 *
 	 * @param {!Object} block - structure object
 	 * @param {!Object} labels - map of Monic labels

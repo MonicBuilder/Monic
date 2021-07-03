@@ -50,14 +50,14 @@ export let CompileParams;
 export let CompileResult;
 
 /**
- * Builds a file
+ * Builds the specified file
  *
  * @param {string} file - file path
  * @param {?CompileParams=} [opt_params] - additional parameters
  * @returns {CompileResult}
  */
 export async function compile(file, opt_params) {
-	file = url(file);
+	file = resolvePath(file);
 	opt_params = {
 		flags: {},
 		labels: {},
@@ -67,14 +67,14 @@ export async function compile(file, opt_params) {
 
 	const
 		sourceMaps = opt_params.sourceMaps,
-		sourceRoot = url(opt_params.sourceRoot),
-		fileToSave = opt_params.file ? url(opt_params.file) : file;
+		sourceRoot = resolvePath(opt_params.sourceRoot),
+		fileToSave = opt_params.file ? resolvePath(opt_params.file) : file;
 
 	const
-		sourceMapFile = sourceMaps && (opt_params.sourceMapFile ? url(opt_params.sourceMapFile) : `${fileToSave}.map`),
+		sourceMapFile = sourceMaps && (opt_params.sourceMapFile ? resolvePath(opt_params.sourceMapFile) : `${fileToSave}.map`),
 		externalSourceMap = sourceMaps && sourceMaps !== 'inline';
 
-	function url(url) {
+	function resolvePath(url) {
 		if (!url) {
 			return undefined;
 		}

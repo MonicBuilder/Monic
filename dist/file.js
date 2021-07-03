@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Fri, 18 Jan 2019 16:24:09 GMT
+ * Date: Sat, 03 Jul 2021 16:59:48 GMT
  */
 
 'use strict';
@@ -21,7 +21,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const $C = require('collection.js/compiled');
 
-const uuid = require('uuid'),
+const uuid = require('uuid').v4,
       path = require('path');
 /**
  * File structure class
@@ -31,7 +31,7 @@ const uuid = require('uuid'),
 class FileStructure {
   /**
    * @param {string} file - file path
-   * @param {!Object} globals - map of global Monic flags
+   * @param {!Object} globals - map of the global Monic flags
    */
   constructor({
     file,
@@ -43,7 +43,7 @@ class FileStructure {
       labels: {}
     };
     this.file = file;
-    this.uid = uuid();
+    this.uuid = uuid();
     this.currentBlock = this.root;
     this.included = {};
     this.globals = globals;
@@ -51,16 +51,16 @@ class FileStructure {
   /**
    * Returns a file path relative to the base folder
    *
-   * @param {string} src - file path
+   * @param {string} file - file path
    * @returns {string}
    */
 
 
-  getRelativePathOf(src) {
-    return _parser.default.normalizePath(path.resolve(path.dirname(this.file), src));
+  getRelativePathOf(file) {
+    return _parser.default.normalizePath(path.resolve(path.dirname(this.file), file));
   }
   /**
-   * Adds custom code (text) to the structure
+   * Adds a custom code (text) to the structure
    *
    * @param {string} code - some code
    * @param {Object=} [opt_info] - information object for a source map
@@ -112,7 +112,7 @@ class FileStructure {
     return this;
   }
   /**
-   * Sets a flag
+   * Sets a new flag
    *
    * @param {string} flag - flag name
    * @param {?=} [opt_value] - flag value
@@ -133,7 +133,7 @@ class FileStructure {
     return this;
   }
   /**
-   * Cancels a flag
+   * Cancels (removes) the specified flag
    *
    * @param {string} flag - flag name
    * @returns {!FileStructure}
@@ -153,7 +153,7 @@ class FileStructure {
     return this;
   }
   /**
-   * Sets a condition
+   * Sets a new condition
    *
    * @param {string} flag - condition
    * @param {string} type - condition type
@@ -215,7 +215,7 @@ class FileStructure {
     return this;
   }
   /**
-   * Sets a label
+   * Sets a new label
    *
    * @param {string} label - label name
    * @returns {!FileStructure}
@@ -262,7 +262,7 @@ class FileStructure {
     return this._compileBlock(this.root, this.root.labels, opt_flags || {}, opt_sourceMap);
   }
   /**
-   * Compiles expulsion of a file
+   * Compiles expulsion of the file
    *
    * @param {Array=} [opt_labels] - a map of Monic labels
    * @param {Object=} [opt_flags] - map of Monic flags
@@ -277,7 +277,7 @@ class FileStructure {
     return this;
   }
   /**
-   * Compiles some file structure
+   * Compiles the specified file structure
    *
    * @private
    * @param {!Object} block - structure object
@@ -332,14 +332,15 @@ class FileStructure {
           } else {
             store.set(val, path);
           }
+
+          break;
         }
-        break;
 
       default:
         if (FileStructure.isValidContentBlock(block, labels, flags)) {
           return $C(block.content).map(block => {
-            if (!_parser.default.current || this.uid !== _parser.default.current) {
-              _parser.default.current = this.uid;
+            if (!_parser.default.current || this.uuid !== _parser.default.current) {
+              _parser.default.current = this.uuid;
             }
 
             const {
@@ -379,7 +380,7 @@ class FileStructure {
     return '';
   }
   /**
-   * Returns true if an object is a valid file structure
+   * Returns true if the specified object is a valid file structure
    *
    * @param {!Object} block - structure object
    * @param {!Object} labels - map of Monic labels

@@ -15,7 +15,7 @@ const
 exports.VERSION = [2, 6, 0];
 
 /**
- * Builds a file
+ * Builds the specified file
  *
  * @param {string} file - file path
  * @param {?CompileParams=} [opt_params] - additional parameters:
@@ -27,7 +27,7 @@ exports.VERSION = [2, 6, 0];
  *   *) [replacers] - array of transform functions
  *   *) [saveFiles=false] - if is true, then generated files will be saved
  *   *) [file] - path to the generated file
- *   *) [sourceMaps=false] - if is true or 'inline', then will be generated a source map
+ *   *) [sourceMaps=false] - if is `true` or `'inline'`, then will be generated a source map
  *   *) [inputSourceMap] - base source map object for the output source map
  *   *) [sourceMapFile] - path to the generated source map
  *   *) [sourceRoot] - root for all URLs inside the generated source map
