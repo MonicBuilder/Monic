@@ -405,7 +405,7 @@ export default class Parser {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "#end" directive');
+			throw new SyntaxError('Invalid "#end" declaration');
 		}
 
 		const
@@ -413,7 +413,7 @@ export default class Parser {
 			key = `_end${args[0]}`;
 
 		if (!this[key]) {
-			throw new SyntaxError(`Bad value (${args[0]}) for "#end" directive`);
+			throw new SyntaxError(`Invalid value (${args[0]}) for the "#end" directive`);
 		}
 
 		this[key](struct, args.join(' '));
@@ -452,7 +452,7 @@ export default class Parser {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError(`Bad "#${opt_unless ? 'unless' : 'if'}" directive`);
+			throw new SyntaxError(`Invalid "#${opt_unless ? 'unless' : 'if'}" declaration`);
 		}
 
 		let
@@ -518,7 +518,7 @@ export default class Parser {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "#set" directive');
+			throw new SyntaxError('Invalid "#set" declaration');
 		}
 
 		const args = value.split(/\s+/);
@@ -536,7 +536,7 @@ export default class Parser {
 		value = value.trim();
 
 		if (!value) {
-			throw new SyntaxError('Bad "#unset" directive');
+			throw new SyntaxError('Invalid "#unset" declaration');
 		}
 
 		struct.addUnset(value);

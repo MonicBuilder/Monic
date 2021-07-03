@@ -198,7 +198,7 @@ export class FileStructure {
 		};
 
 		if (!validIf[this.currentBlock.type]) {
-			throw new SyntaxError(`Attempt to close an unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
+			throw new SyntaxError(`Attempt to close the unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
 		}
 
 		this.currentBlock = this.currentBlock.parent;
@@ -231,7 +231,7 @@ export class FileStructure {
 	 */
 	endLabel() {
 		if (this.currentBlock.type !== 'label') {
-			throw new SyntaxError('Attempt to close an unopened block "#label"');
+			throw new SyntaxError('Attempt to close the unopened block "#label"');
 		}
 
 		this.currentBlock = this.currentBlock.parent;
