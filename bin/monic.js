@@ -24,12 +24,12 @@ program
 	.usage('[options] [file ...]')
 	.option('-f, --file [src]', 'path to the source file (meta information)')
 	.option('-o, --output [src]', 'path to the output file')
-	.option('--eol [char]', 'EOL symbol')
+	.option('--eol [char]', 'symbol that will be used as EOL')
 	.option('--flags [list]', 'list of flags separated by commas')
 	.option('--labels [list]', 'list of labels separated by commas')
 	.option('-s, --source-maps [val]', '[true|false|inline]')
 	.option('--source-map-file [src]', 'path to the generated source map')
-	.option('--source-root [path]', 'root for all URLs inside the generated source map')
+	.option('--source-root [path]', 'root for all URL-s inside the generated source map')
 	.parse(process.argv);
 
 const

@@ -2,7 +2,7 @@ Monic
 =====
 
 Monic is a JavaScript file builder ([fork of Jossy](https://github.com/Kolyaj/Jossy)) to one or several files.
-When it used properly, Monic allows not only easy to build modules, but also easy to rebuild, when changing principles
+When used properly, Monic allows not only easy to build modules but also easy to rebuild when changing principles
 of the build.
 
 [Russian documentation](https://github.com/MonicBuilder/Monic/blob/master/README.ru.md)
@@ -38,7 +38,7 @@ monic [options] [file ...]
 -V, --version
 -f, --file [src]             path to the source file (meta information)
 -o, --output [src]           path to the output file
---eol [char]                 EOL symbol
+--eol [char]                 symbol that will be used as EOL
 --flags [list]               list of flags separated by commas
 --labels [list]              list of labels separated by commas
 -s, --source-maps [val]      [true|false|inline]
@@ -48,7 +48,7 @@ monic [options] [file ...]
 
 ### Addition
 
-The build result will be output to `stdout`, so to save it to a file you need use your shell, e.g.,
+The build result will be output to `stdout`. To save it to a file, you need to use your shell, e.g.,
 
 ```bash
 monic file.js --flags ie --labels escapeHTML > _file.js
@@ -99,7 +99,7 @@ monic '//#include foo/*.js' -f myFile.js
 echo '//#include foo/*.js' | monic -f myFile.js
 ```
 
-## Using in NodeJS
+## Using as a library
 
 ```js
 var monic = require('monic');
@@ -107,20 +107,20 @@ monic.compile(
   'myFile.js',
 
   {
-    // The path to the working directory
-    // (optional, by default module.parent)
+    // A path to the working directory
+    // (optional, by default `module.parent`)
     cwd: 'myDir/',
 
-    // EOL symbol (optional, by default \n)
+    // A symbol that will be used as EOL (optional, by default `\n`)
     eol: '\r\n',
 
-    // The map of Monic labels (optional)
+    // A map of Monic labels (optional)
     labels: {
       escapeHTML: true
     },
-    
-    // The map of Monic flags (optional)
-    // The flags can have different values, for example
+
+    // A map of Monic flags (optional).
+    // The flags can have different values, for instance
     flags: {
       ie: true,
       ieVersions: [7, 8, 9],
@@ -129,29 +129,29 @@ monic.compile(
       }
     },
 
-    // If is true, then generated files will be saved
+    // If is `true`, then the generated files will be saved
     // (optional, by default false)
     saveFiles: true,
 
-    // The path to the generated file (optional)
+    // A path to the generated file (optional)
     file: 'myFiled-compiled.js',
 
-    // If is true or 'inline', then will be generated a source map
-    // (optional, by default false)
+    // If is `true` or `'inline'`, then will be generated a source map
+    // (optional, by default `false`)
     sourceMaps: true,
 
-    // The base source map object for the output source map
+    // A base source map object for the output source map
     // (optional)
     inputSourceMap: null,
 
-    // The path to the generated source map (optional, by default ${file}.map)
+    // A path to the generated source map (optional, by default ${file}.map)
     sourceMapFile: 'myFiled.map',
 
-    // The root for all URLs in the generated source map (optional)
+    // A root for all URL-s within the generated source map (optional)
     sourceRoot: 'myDir/'
   },
 
-  function (err, result, {map, decl, url, isExternal}) {
+  (err, result, {map, decl, url, isExternal}) => {
     if (err) {
       throw err;
     }
@@ -166,12 +166,12 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile('myFile.js')
-  .then(function ({result, sourceMap: {map, decl, url, isExternal}}) {
-    ...
+  .then(({result, sourceMap: {map, decl, url, isExternal}}) => {
+    // ...
   })
 
-  .catch(function (err) {
-    ...
+  .catch((err) => {
+    // ...
   });
 ```
 
@@ -186,8 +186,8 @@ monic.compile(
     content: '...'
   },
 
-  function (err, result) {
-    ...
+  (err, result) => {
+    // ...
   }
 );
 ```
@@ -201,21 +201,22 @@ monic.compile(
 
   {
     replacers: [
-      // Replaces require to #include
-      // ("this" refers to the instance of the compiler)
+      // Replaces all require expressions to `#include` directives
+      // ("this" refers to the compiler' instance)
       function (text, file) {
         return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
       }
     ]
   },
 
-  function (err, result) {
-    ...
+  (err, result) => {
+    // ...
   }
 );
 ```
 
 ## The syntax and capabilities
+
 ### Including files
 
 To include an external file into the current need to use the `#include` directive.
@@ -224,15 +225,15 @@ To include an external file into the current need to use the `#include` directiv
 //#include file.js
 ```
 
-The file path is relative to the location of the current file, but also you can use an absolute path.
-In the file path can also be used [templates](https://github.com/isaacs/node-glob).
+A file path is relative to the current file's location, but you can also use an absolute path.
+Within the path can also be used [templates](https://github.com/isaacs/node-glob).
 
 ```js
 //#include lib/*.js
 ```
 
-Technically, the line with the directive is simply replaced to a text of the attached file.
-However, if the specified file is already included to the current module before, then it won't be included again.
+Technically, the line with the directive is simply replaced with a text of the attached file.
+However, if the specified file is already included in the current module, it won't be included again.
 For example:
 
 **f1.js**
@@ -273,11 +274,11 @@ alert(2);
 The `#without` indicates Monic exclude from the build all the files that are used in the specified
 (including specified, of course).
 
-**Example**
+**An example**
 
 Our project has several dozen widgets. The code for each widget is inside a separate file.
-Each widget indicated its dependence with the `#include`.
-Some widgets are used on most pages, and is logical to place their code in a separate file, for example *common.js*.
+Each widget indicated its dependence on the `#include`.
+Some widgets are used on most pages, and it is logical to place their code in a separate file, for example, *common.js*.
 Select frequently-used widgets, create the file *common.js* and write back:
 
 ```js
@@ -286,42 +287,40 @@ Select frequently-used widgets, create the file *common.js* and write back:
 //#include widget3.js
 ```
 
-On one of the pages the widget is used, large enough not to include it in the *common.js*,
-let's call it *big widget*. In the file *big-widget.js* its dependencies, and many of those who
-already in the *common.js*. If we will simply build the *big-widget.js* we will get a lot of duplicated code.
-Therefore, next to the *common.js* create a file *feature.js* with the code:
+The widget is used on one of the pages, large enough not to include it in the *common.js*,
+let's call it *big widget*. In the file *big-widget.js*, its dependencies, many of those
+already in the *common.js*. If we build the *big-widget.js*, we will get a lot of duplicated code.
+Therefore, next to the *common.js*, create a file *feature.js* with the code:
 
 ```js
 //#without common.js
 //#include big-widget.js
 ```
 
-Now the code in the *common.js*, misses the *feature.js*.
-Most importantly don't forget to include to a page not only the *feature.js*, but the *common.js* too.
+Now the code in the *common.js* misses the *feature.js*.
+Most importantly, don't forget to include to a page not only the *feature.js*, but the *common.js* too.
 
 The path format in the directive is the same as in the `#include`.
 
 ### Conditional build
 
-In the build process can be defined special flags that define whether or not to include selected code sections.
+In the build process can be defined special flags that determine whether or not to include selected code sections.
 
 ```js
 //#set flag
 
 //#if flag
 alert('flag');
-/*? Or //#end if */
 //#endif
 
 //#unset flag
 
 //#unless flag
 alert('not flag');
-/*? Or //#end unless */
 //#endunless
 ```
 
-Flags can take values.
+The flags can take values.
 
 ```js
 //#set ie 7
@@ -335,21 +334,11 @@ alert('Cool!');
 //#endunless
 ```
 
-More examples:
+#### More examples
+
+##### Different compare operators within the `#if` directives
 
 ```js
-//#set foo
-
-//#if foo
-alert('foo');
-//#endif
-
-//#unset foo
-
-//#unless foo
-alert('foo !=');
-//#endunless
-
 //#set ie 7
 
 //#if ie = 7
@@ -375,44 +364,60 @@ alert('ie < 8');
 //#if ie <= 7
 alert('ie <= 7');
 //#endif
+```
 
-// If flag is an array or a table,
-// then can be used "has" statement
+##### Checking a value from a dictionary or array
+
+```js
 //#set ie [7, 8]
 //#if ie has 7
 alert('ie = 7');
 //#endif
 
-// It's possible to add data to an existing array
+// It's possible to add data to the existing array
 //#set ie. 9
+
 //#if ie has 9
 alert('ie = 7');
 //#endif
 
-// It's possible to add or create nested fields on tables
+// It's possible to add or create nested fields within a dictionaries
 //#set runtime.offlineMode
+
 //#if runtime has offlineMode
 alert('Offline mode enabled!');
 //#endif
+```
 
-// If flag is a regular expression
-// then can be used "like" statement
+##### Testing a regular expression
+
+```js
 //#set ie /[7-9]/
-//#if ie like 7
-alert('ie = 7');
-//#endif
 
-// If flag is a function
-// then can be used "call" statement
-//#set ieVersions [7, 8, 9]
-//#set ie function (o) { return o.flags.ieVersions.includes(o.value); }
-//#if ie call 7
+//#if ie like 7
 alert('ie = 7');
 //#endif
 ```
 
+##### Invoking a functional flag
+
+```js
+//#set ieVersions [7, 8, 9]
+//#set ie function (o) { return o.flags.ieVersions.includes(o.value); }
+
+//#if ie call 7
+alert('ie = 7');
+//#endif
+
+//#if 7 callRight ie
+alert('ie = 7');
+//#endif
+```
+
+#### Flags
+
 All the flags are declared globally. To set it in your code, you should use the directives `#set` and `#unset`,
-and also you can specify it when you run Monic. For example:
+and also, you can specify it when you run Monic. For example:
 
 **file.js**
 
@@ -435,12 +440,12 @@ alert('IE only');
 //#include file.js
 ```
 
-Similarly, you can create a debug flag and write debug code within `//#if debug ... //#endif`,
-that code never gets to production server.
+Similarly, you can create a debug flag and write debugging code within `//#if debug ... //#endif`,
+that code never gets to the production server.
 
-#### Using the flags inside path patterns
+#### Using flags inside a path pattern
 
-The flags that were specified as a build parameter or in the global scope of a file can be used inside
+Flags that have been specified as build parameters or declared in the file' global scope can be used inside
 `#include` and `#without` with using a special syntax.
 
 ```js
@@ -448,15 +453,15 @@ The flags that were specified as a build parameter or in the global scope of a f
 //#include lang/${lang}.json
 ```
 
-If the flag is a function, then it will be executed and the result will be inserted to the template.
+If the flag is a function, it will be executed. The result will be inserted into the template.
 If the flag doesn't exist, then will be inserted an empty string.
 
 ### Including chunks of files
 
-This functionality is very useful for development of libraries and frameworks.
-For example, in your library there is a file *String.js* containing several dozens of functions for working with strings.
+This functionality is handy to develop libraries and frameworks.
+For example, there is a file *String.js* in your library containing several dozens of functions for working with strings.
 Isolate each function in a separate file somehow wrong, but attach a few hundred lines of code for only one function
-is also not desirable. To solve this problem Monic can can mark the file *String.js* on specific areas.
+is also not desirable. To solve this problem, Monic can mark the file *String.js* on specific areas.
 Names in areas can be arbitrary, but it is better to coincide with the names of functions.
 
 ```js
@@ -466,7 +471,6 @@ var String = {};
 String.truncate = function () {
 
 };
-/*? Or //#end label */
 //#endlabel truncate
 
 //#label escapeHTML
@@ -513,10 +517,10 @@ String.truncate = function () {};
 //#endlabel truncate
 ```
 
-Please note that the marked-thus the area of the file in built code can change the order between it and may
+Please note that the marked-thus the area of the file inbuilt code can change the order between it and may
 receive another code.
 
-For example:
+For instance:
 
 ```js
 //#include String.js::escapeHTML
@@ -524,7 +528,7 @@ alert(1);
 //#include String.js::truncate
 ```
 
-After build will receive
+After the build will receive
 
 ```js
 var String = {};
