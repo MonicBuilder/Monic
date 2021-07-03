@@ -144,7 +144,7 @@ monic.compile(
     // (optional)
     inputSourceMap: null,
 
-    // A path to the generated source map (optional, by default ${file}.map)
+    // A path to the generated source map (optional, by default `${file}.map`)
     sourceMapFile: 'myFiled.map',
 
     // A root for all URL-s within the generated source map (optional)
@@ -203,9 +203,7 @@ monic.compile(
     replacers: [
       // Replaces all require expressions to `#include` directives
       // ("this" refers to the compiler' instance)
-      function (text, file) {
-        return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
-      }
+      (text, file) => text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1')
     ]
   },
 

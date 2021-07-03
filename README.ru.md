@@ -100,7 +100,7 @@ monic '//#include foo/*.js' -f myFile.js
 echo '//#include foo/*.js' | monic -f myFile.js
 ```
 
-## Использование в NodeJS
+## Использование как библиотеки
 
 ```js
 var monic = require('monic');
@@ -109,10 +109,10 @@ monic.compile(
 
   {
     // Путь к рабочей директории
-    // (опционально, по умолчанию module.parent)
+    // (опционально, по умолчанию `module.parent`)
     cwd: 'myDir/',
 
-    // Разделитель строки (опционально, по умолчанию \n)
+    // Разделитель строки (опционально, по умолчанию `\n`)
     eol: '\r\n',
 
     // Таблица задаваемых меток (опционально)
@@ -120,7 +120,7 @@ monic.compile(
       escapeHTML: true
     },
 
-    // Таблица задаваемых флагов (опционально)
+    // Таблица задаваемых флагов (опционально).
     // Флаги могут иметь различные значение, например
     flags: {
       ie: true,
@@ -130,14 +130,14 @@ monic.compile(
       }
     },
 
-    // Если true, то сгенерированные файлы будут сохранены
-    // (опционально, по умолчанию false)
+    // Если `true`, то сгенерированные файлы будут сохранены
+    // (опционально, по умолчанию `false`)
     saveFiles: true,
 
     // Путь к сгенерированному файлу (опционально)
     file: 'myFiled-compiled.js',
 
-    // Если true или 'inline', то будет сгенерирован source map
+    // Если `true` или `'inline'`, то будет сгенерирован source map
     // (опционально, по умолчанию false)
     sourceMaps: true,
 
@@ -145,7 +145,7 @@ monic.compile(
     // (опционально)
     inputSourceMap: null,
 
-    // Путь к сгенерированному source map (опционально, по умолчанию ${file}.map)
+    // Путь к сгенерированному source map (опционально, по умолчанию `${file}.map`)
     sourceMapFile: 'myFiled.map',
 
     // Корень для всех ссылок внутри SourceMap (опционально)
@@ -167,12 +167,12 @@ monic.compile(
 ```js
 var monic = require('monic');
 monic.compile('myFile.js')
-  .then(function ({result, sourceMap: {map, decl, url, isExternal}}) {
-    ...
+  .then(({result, sourceMap: {map, decl, url, isExternal}}) => {
+    // ...
   })
 
-  .catch(function (err) {
-    ...
+  .catch((err) => {
+    // ...
   });
 ```
 
@@ -187,8 +187,8 @@ monic.compile(
     content: '...'
   },
 
-  function (err, result) {
-    ...
+  (err, result) => {
+    // ...
   }
 );
 ```
@@ -204,19 +204,18 @@ monic.compile(
     replacers: [
       // Замена require конструкций на #include
       // (this ссылается на экземпляр сборщика)
-      function (text, file) {
-        return text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1');
-      }
+      (text, file) => text.replace(/^\s*require\('(.*?)'\);/gm, '//#include $1')
     ]
   },
 
-  function (err, result) {
-    ...
+  (err, result) => {
+    // ...
   }
 );
 ```
 
 ## Синтаксис и возможности
+
 ### Подключение файлов
 
 Включить содержимое внешнего файла в текущий можно директивой `#include ...`.
@@ -308,14 +307,12 @@ alert(2);
 
 //#if flag
 alert('flag');
-/*? Можно использовать //#end if */
 //#endif
 
 //#unset flag
 
 //#unless flag
 alert('not flag');
-/*? Можно использовать //#end unless */
 //#endunless
 ```
 
@@ -333,21 +330,11 @@ alert('Cool!');
 //#endunless
 ```
 
-Примеры:
+#### Дополнительные примеры
+
+##### Различные операторы сравнения внутри `#if`
 
 ```js
-//#set foo
-
-//#if foo
-alert('foo');
-//#endif
-
-//#unset foo
-
-//#unless foo
-alert('foo !=');
-//#endunless
-
 //#set ie 7
 
 //#if ie = 7
@@ -373,41 +360,54 @@ alert('ie < 8');
 //#if ie <= 7
 alert('ie <= 7');
 //#endif
+```
 
-// Если флаг задан как массив или таблица, 
-// то можно использовать оператор has
+##### Проверка значения словаря или массива
+
+```js
 //#set ie [7, 8]
+
 //#if ie has 7
 alert('ie = 7');
 //#endif
 
 // Можно добавлять данные в существующий массив
 //#set ie. 9
+
 //#if ie has 9
 alert('ie = 7');
 //#endif
 
 // Можно добавлять или создавать вложенные поля у таблиц
 //#set runtime.offlineMode
+
 //#if runtime has offlineMode
 alert('Offline mode enabled!');
 //#endif
+```
 
-// Если флаг задан как регулярное выражение, 
-// то можно использовать оператор like
+##### Проверка регулярного выражения
+
+```js
 //#set ie /[7-9]/
+
 //#if ie like 7
 alert('ie = 7');
 //#endif
+```
 
-// Если флаг задан как функция, 
-// то можно использовать оператор call
+##### Вызов функционального флага
+
+```js
 //#set ieVersions [7, 8, 9]
 //#set ie function (o) { return o.flags.ieVersions.includes(o.value); }
+
 //#if ie call 7
 alert('ie = 7');
 //#endif
 ```
+
+#### Флаги
 
 Флаги глобальные. Указать их можно не только в коде директивами `#set` и `#unset`, но при запуске сборщика. Например:
 
@@ -450,7 +450,7 @@ alert('IE only');
 
 ### Подключение кусков файлов
 
-Эта функциональность очень полезна полезна при разработке библиотек и фреймворков.
+Эта функциональность очень полезна при разработке библиотек и фреймворков.
 Например, в нашей библиотеке есть файл *String.js*, содержащий несколько десятков функций для работы со строками.
 Выделять каждую функцию в отдельный файл как-то неправильно, но и подключать потом несколько сотен строк кода ради одной
 функции тоже не хочется. В случае с Monic файл *String.js* размечается на области.
@@ -463,7 +463,6 @@ var String = {};
 String.truncate = function () {
 
 };
-/*? Можно использовать //#end label */
 //#endlabel truncate
 
 //#label escapeHTML
