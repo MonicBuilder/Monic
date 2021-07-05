@@ -22,7 +22,7 @@
     "monic": "bin/monic.js"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 12"
   },
   "scripts": {
     "test": "node test",
