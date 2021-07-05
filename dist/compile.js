@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sat, 03 Jul 2021 17:45:51 GMT
+ * Date: Mon, 05 Jul 2021 04:32:11 GMT
  */
 
 'use strict';
@@ -24,7 +24,7 @@ const sourceMapFile = require('source-map'),
       SourceMapGenerator = sourceMapFile.SourceMapGenerator;
 
 const path = require('path'),
-      fs = require('fs-extra-promise');
+      fs = require('fs-extra');
 /**
  * @typedef {{
  *   cwd: (?string|undefined),
@@ -132,8 +132,8 @@ async function compile(file, opt_params) {
   if (opt_params.saveFiles) {
     if (externalSourceMap) {
       tasks.push((async () => {
-        await fs.mkdirsAsync(path.dirname(sourceMapFile));
-        await fs.writeFileAsync(sourceMapFile, map.toString());
+        await fs.mkdirs(path.dirname(sourceMapFile));
+        await fs.writeFile(sourceMapFile, map.toString());
       })());
     }
 

@@ -16,7 +16,7 @@ const
 
 const
 	path = require('path'),
-	fs = require('fs-extra-promise');
+	fs = require('fs-extra');
 
 /**
  * @typedef {{
@@ -136,8 +136,8 @@ export async function compile(file, opt_params) {
 	if (opt_params.saveFiles) {
 		if (externalSourceMap) {
 			tasks.push((async () => {
-				await fs.mkdirsAsync(path.dirname(sourceMapFile));
-				await fs.writeFileAsync(sourceMapFile, map.toString());
+				await fs.mkdirs(path.dirname(sourceMapFile));
+				await fs.writeFile(sourceMapFile, map.toString());
 			})());
 		}
 
@@ -147,8 +147,8 @@ export async function compile(file, opt_params) {
 					result += sourceMapDecl + sourceMapUrl;
 				}
 
-				await fs.mkdirsAsync(path.dirname(fileToSave));
-				await fs.writeFileAsync(fileToSave, result);
+				await fs.mkdirs(path.dirname(fileToSave));
+				await fs.writeFile(fileToSave, result);
 			})());
 		}
 	}

@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Sat, 03 Jul 2021 17:45:51 GMT
+ * Date: Mon, 05 Jul 2021 04:32:11 GMT
  */
 
 'use strict';
@@ -20,7 +20,7 @@ var _file = require("./file");
 const $C = require('collection.js/compiled');
 
 const path = require('path'),
-      fs = require('fs-extra-promise'),
+      fs = require('fs-extra'),
       glob = require('glob-promise');
 
 const {
@@ -136,7 +136,7 @@ class Parser {
       return file;
     }
 
-    if (!(await fs.statAsync(file)).isFile()) {
+    if (!(await fs.stat(file)).isFile()) {
       throw new Error(`"${file}" is not a file`);
     }
 
@@ -192,7 +192,7 @@ class Parser {
 
   async parseFile(file) {
     const src = await this.testFile(file),
-          content = this.cache[src] || (await fs.readFileAsync(src, 'utf8'));
+          content = this.cache[src] || (await fs.readFile(src, 'utf8'));
 
     if (typeof content !== 'string') {
       return {
@@ -260,7 +260,7 @@ class Parser {
         if (/data:application\/json;base64,(.*)/.exec(url)) {
           await parse(Buffer.from(RegExp.$1, 'base64').toString());
         } else {
-          await parse(fs.readFileAsync(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
+          await parse(fs.readFile(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
         }
       }
     }
