@@ -34,3 +34,4 @@ alert('ie < 8');
 alert('ie <= 7');
 //#end if
 
+//#include test-1.js
