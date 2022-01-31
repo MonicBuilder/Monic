@@ -10,8 +10,6 @@ of the build.
 [![NPM version](http://img.shields.io/npm/v/monic.svg?style=flat)](http://badge.fury.io/js/monic)
 [![Build Status](https://github.com/MonicBuilder/Monic/workflows/build/badge.svg?branch=master)](https://github.com/MonicBuilder/Monic/actions?query=workflow%3Abuild)
 [![Coverage Status](http://img.shields.io/coveralls/MonicBuilder/Monic.svg?style=flat)](https://coveralls.io/r/MonicBuilder/Monic?branch=master)
-[![NPM dependencies](http://img.shields.io/david/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic)
-[![NPM devDependencies](http://img.shields.io/david/dev/MonicBuilder/Monic.svg?style=flat)](https://david-dm.org/MonicBuilder/Monic?type=dev)
 
 ## Install
 
