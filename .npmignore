@@ -42,6 +42,7 @@ node_modules
 
 # Build && test
 /coverage
+/test
 
 # Log
 *.log
@@ -64,3 +65,7 @@ error.txt
 /.gitignore
 /.gitattributes
 /.npmignore
+/.github
+/.yarn
+./.yarnrc.yml
+/.browserlistrc

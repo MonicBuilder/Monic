@@ -43,6 +43,10 @@ node_modules
 # Build && test
 /coverage
 
+# Yarn
+.yarn/*
+!.yarn/releases
+
 # Log
 *.log
 error.txt
