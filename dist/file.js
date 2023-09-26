@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 05 Jul 2021 05:34:25 GMT
+ * Date: Tue, 26 Sep 2023 11:26:31 GMT
  */
 
 'use strict';
@@ -14,20 +14,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FileStructure = void 0;
-
 var _parser = _interopRequireDefault(require("./parser"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 const $C = require('collection.js/compiled');
-
 const uuid = require('uuid').v4,
-      path = require('path');
+  path = require('path');
+
 /**
  * File structure class
  */
-
-
 class FileStructure {
   /**
    * @param {string} file - file path
@@ -48,17 +43,17 @@ class FileStructure {
     this.included = {};
     this.globals = globals;
   }
+
   /**
    * Returns a file path relative to the base folder
    *
    * @param {string} file - file path
    * @returns {string}
    */
-
-
   getRelativePathOf(file) {
     return _parser.default.normalizePath(path.resolve(path.dirname(this.file), file));
   }
+
   /**
    * Adds a custom code (text) to the structure
    *
@@ -66,8 +61,6 @@ class FileStructure {
    * @param {Object=} [opt_info] - information object for a source map
    * @returns {!FileStructure}
    */
-
-
   addCode(code, opt_info) {
     this.currentBlock.content.push({
       type: 'code',
@@ -77,6 +70,7 @@ class FileStructure {
     });
     return this;
   }
+
   /**
    * Adds a file to the structure
    *
@@ -84,8 +78,6 @@ class FileStructure {
    * @param {!Object} labels - map of Monic labels
    * @returns {!FileStructure}
    */
-
-
   addInclude(fileStructure, labels) {
     this.currentBlock.content.push({
       type: 'include',
@@ -94,6 +86,7 @@ class FileStructure {
     });
     return this;
   }
+
   /**
    * Adds expulsion to the structure
    *
@@ -101,8 +94,6 @@ class FileStructure {
    * @param {!Object} labels - map of Monic labels
    * @returns {!FileStructure}
    */
-
-
   addWithout(fileStructure, labels) {
     this.currentBlock.content.push({
       type: 'without',
@@ -111,6 +102,7 @@ class FileStructure {
     });
     return this;
   }
+
   /**
    * Sets a new flag
    *
@@ -118,13 +110,10 @@ class FileStructure {
    * @param {?=} [opt_value] - flag value
    * @returns {!FileStructure}
    */
-
-
   addSet(flag, opt_value = true) {
     if (this.currentBlock.type === 'root') {
       this.globals[flag] = opt_value;
     }
-
     this.currentBlock.content.push({
       type: 'set',
       varName: flag,
@@ -132,19 +121,17 @@ class FileStructure {
     });
     return this;
   }
+
   /**
    * Cancels (removes) the specified flag
    *
    * @param {string} flag - flag name
    * @returns {!FileStructure}
    */
-
-
   addUnset(flag) {
     if (this.currentBlock.type === 'root') {
       delete this.globals[flag];
     }
-
     this.currentBlock.content.push({
       type: 'set',
       varName: flag,
@@ -152,6 +139,7 @@ class FileStructure {
     });
     return this;
   }
+
   /**
    * Sets a new condition
    *
@@ -161,8 +149,6 @@ class FileStructure {
    * @param {boolean=} [opt_unless] - unless mode
    * @returns {!FileStructure}
    */
-
-
   beginIf(flag, type, opt_value = true, opt_unless = false) {
     const aliases = {
       '=': 'eq',
@@ -184,12 +170,11 @@ class FileStructure {
     this.currentBlock = ifBlock;
     return this;
   }
+
   /**
    * Ends a condition
    * @returns {!FileStructure}
    */
-
-
   endIf() {
     const validIf = {
       is: true,
@@ -206,22 +191,19 @@ class FileStructure {
       instanceof: true,
       typeof: true
     };
-
     if (!validIf[this.currentBlock.type]) {
       throw new SyntaxError(`Attempt to close the unopened block "#${this.currentBlock.unless ? 'unless' : 'if'}"`);
     }
-
     this.currentBlock = this.currentBlock.parent;
     return this;
   }
+
   /**
    * Sets a new label
    *
    * @param {string} label - label name
    * @returns {!FileStructure}
    */
-
-
   beginLabel(label) {
     const labelBlock = {
       parent: this.currentBlock,
@@ -233,20 +215,19 @@ class FileStructure {
     this.currentBlock = labelBlock;
     return this;
   }
+
   /**
    * Ends a label
    * @returns {!FileStructure}
    */
-
-
   endLabel() {
     if (this.currentBlock.type !== 'label') {
       throw new SyntaxError('Attempt to close the unopened block "#label"');
     }
-
     this.currentBlock = this.currentBlock.parent;
     return this;
   }
+
   /**
    * Compiles the structure
    *
@@ -255,12 +236,11 @@ class FileStructure {
    * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
    * @returns {string}
    */
-
-
   compile(opt_labels, opt_flags, opt_sourceMap) {
     $C(opt_labels).forEach((el, key) => this.root.labels[key] = true);
     return this._compileBlock(this.root, this.root.labels, opt_flags || {}, opt_sourceMap);
   }
+
   /**
    * Compiles expulsion of the file
    *
@@ -269,13 +249,11 @@ class FileStructure {
    * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
    * @returns {!FileStructure}
    */
-
-
   without(opt_labels, opt_flags, opt_sourceMap) {
     this._compileBlock(this.root, opt_labels || {}, opt_flags || {}, opt_sourceMap);
-
     return this;
   }
+
   /**
    * Compiles the specified file structure
    *
@@ -286,8 +264,6 @@ class FileStructure {
    * @param {SourceMapGenerator=} [opt_sourceMap] - source map object
    * @returns {string}
    */
-
-
   _compileBlock(block, labels, flags, opt_sourceMap) {
     switch (block.type) {
       case 'code':
@@ -295,35 +271,27 @@ class FileStructure {
           block.included = true;
           return block.code;
         }
-
         break;
-
       case 'include':
         const cacheKey = `${block.fileStructure.file}@${Object.keys(block.labels).sort()}@${Object.keys(flags).sort()}`;
         $C(labels).forEach((el, key) => {
           block.labels[key] = true;
         });
-
         if (!this.included[cacheKey]) {
           this.included[cacheKey] = true;
           return block.fileStructure.compile(block.labels, flags, opt_sourceMap);
         }
-
         break;
-
       case 'without':
         block.fileStructure.without(block.labels, flags);
         break;
-
       case 'set':
         {
           const store = $C(flags),
-                path = block.varName,
-                val = block.value;
-
+            path = block.varName,
+            val = block.value;
           if (path.slice(-1) === '.') {
             const ctx = store.get(path.slice(0, -1));
-
             if (Array.isArray(ctx)) {
               ctx.push(val);
             } else {
@@ -332,53 +300,44 @@ class FileStructure {
           } else {
             store.set(val, path);
           }
-
           break;
         }
-
       default:
         if (FileStructure.isValidContentBlock(block, labels, flags)) {
           return $C(block.content).map(block => {
             if (!_parser.default.current || this.uuid !== _parser.default.current) {
               _parser.default.current = this.uuid;
             }
-
             const {
-              info
-            } = block,
-                  compiledBlock = this._compileBlock(block, labels, flags, opt_sourceMap);
-
-            if (opt_sourceMap && info && compiledBlock) {
+                info
+              } = block,
+              compiledBlock = this._compileBlock(block, labels, flags, opt_sourceMap);
+            if (opt_sourceMap && info && info.original && info.original.line != null && compiledBlock) {
               if (!info.ignore) {
                 const test = {},
-                      selfMap = info.source;
+                  selfMap = info.source;
                 $C(selfMap ? [info] : info).forEach(info => {
                   if (selfMap) {
                     info.generated.line = _parser.default.cursor;
                   } else {
                     info.generated.line += _parser.default.cursor - info.generated.line;
                   }
-
                   opt_sourceMap.addMapping(info);
-
                   if (!test[info.source]) {
                     test[info.source] = true;
                     opt_sourceMap.setSourceContent(info.source, info.sourcesContent);
                   }
                 });
               }
-
               _parser.default.cursor++;
             }
-
             return compiledBlock;
           }).join('');
         }
-
     }
-
     return '';
   }
+
   /**
    * Returns true if the specified object is a valid file structure
    *
@@ -387,21 +346,16 @@ class FileStructure {
    * @param {!Object} flags - map of Monic flags
    * @returns {boolean}
    */
-
-
   static isValidContentBlock(block, labels, flags) {
     const flag = block.varName,
-          flagVal = $C(flags).get(flag),
-          blockVal = block.value;
+      flagVal = $C(flags).get(flag),
+      blockVal = block.value;
     let res;
-
     switch (block.type) {
       case 'root':
         return true;
-
       case 'label':
         return Boolean(!Object.keys(labels).length || labels[block.label]);
-
       case 'is':
         res = typeof flagVal === 'function' ? flagVal({
           flag,
@@ -409,31 +363,24 @@ class FileStructure {
           labels
         }) : flagVal;
         break;
-
       case 'eq':
         res = flagVal === blockVal;
         break;
-
       case 'ne':
         res = flagVal !== blockVal;
         break;
-
       case 'gt':
         res = flagVal > blockVal;
         break;
-
       case 'gte':
         res = flagVal >= blockVal;
         break;
-
       case 'lt':
         res = flagVal < blockVal;
         break;
-
       case 'lte':
         res = flagVal <= blockVal;
         break;
-
       case 'has':
         if (Array.isArray(flagVal)) {
           res = flagVal.includes(blockVal);
@@ -446,13 +393,10 @@ class FileStructure {
             res = flagVal[blockVal];
           }
         }
-
         break;
-
       case 'like':
         res = new RegExp(flagVal).test(blockVal);
         break;
-
       case 'call':
         if (typeof flagVal === 'function') {
           res = flagVal({
@@ -462,9 +406,7 @@ class FileStructure {
             labels
           });
         }
-
         break;
-
       case 'callRight':
         if (typeof blockVal === 'function') {
           res = blockVal({
@@ -474,25 +416,18 @@ class FileStructure {
             labels
           });
         }
-
         break;
-
       case 'typeof':
         res = typeof flagVal === String(blockVal);
         break;
-
       case 'instanceof':
         res = flagVal instanceof blockVal;
         break;
     }
-
     if (block.unless) {
       res = !res;
     }
-
     return Boolean(res || false);
   }
-
 }
-
 exports.FileStructure = FileStructure;

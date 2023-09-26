@@ -5,7 +5,7 @@
  * Released under the MIT license
  * https://github.com/MonicBuilder/Monic/blob/master/LICENSE
  *
- * Date: Mon, 05 Jul 2021 05:34:25 GMT
+ * Date: Tue, 26 Sep 2023 11:26:31 GMT
  */
 
 'use strict';
@@ -13,18 +13,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.compile = compile;
 exports.CompileResult = exports.CompileParams = void 0;
-
+exports.compile = compile;
 var _parser = _interopRequireDefault(require("./parser"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 const sourceMapFile = require('source-map'),
-      SourceMapGenerator = sourceMapFile.SourceMapGenerator;
-
+  SourceMapGenerator = sourceMapFile.SourceMapGenerator;
 const path = require('path'),
-      fs = require('fs-extra');
+  fs = require('fs-extra');
+
 /**
  * @typedef {{
  *   cwd: (?string|undefined),
@@ -41,9 +38,8 @@ const path = require('path'),
  *   sourceRoot: (?string|undefined)
  * }}
  */
+let CompileParams = exports.CompileParams = void 0;
 
-
-let CompileParams;
 /**
  * @typedef {{
  *   result: string,
@@ -55,9 +51,8 @@ let CompileParams;
  *   })
  * }}
  */
+let CompileResult = exports.CompileResult = void 0;
 
-exports.CompileParams = CompileParams;
-let CompileResult;
 /**
  * Builds the specified file
  *
@@ -65,9 +60,6 @@ let CompileResult;
  * @param {?CompileParams=} [opt_params] - additional parameters
  * @returns {CompileResult}
  */
-
-exports.CompileResult = CompileResult;
-
 async function compile(file, opt_params) {
   file = resolvePath(file);
   opt_params = {
@@ -77,25 +69,21 @@ async function compile(file, opt_params) {
     ...opt_params
   };
   const sourceMaps = opt_params.sourceMaps,
-        sourceRoot = resolvePath(opt_params.sourceRoot),
-        fileToSave = opt_params.file ? resolvePath(opt_params.file) : file;
+    sourceRoot = resolvePath(opt_params.sourceRoot),
+    fileToSave = opt_params.file ? resolvePath(opt_params.file) : file;
   const sourceMapFile = sourceMaps && (opt_params.sourceMapFile ? resolvePath(opt_params.sourceMapFile) : `${fileToSave}.map`),
-        externalSourceMap = sourceMaps && sourceMaps !== 'inline';
-
+    externalSourceMap = sourceMaps && sourceMaps !== 'inline';
   function resolvePath(url) {
     if (!url) {
       return undefined;
     }
-
     if (opt_params.cwd) {
       url = path.resolve(opt_params.cwd, url);
     } else {
       url = path.resolve(module.parent ? path.dirname(module.parent.filename) : '', url);
     }
-
     return _parser.default.normalizePath(url);
   }
-
   const parser = new _parser.default({
     sourceRoot,
     sourceMaps: Boolean(sourceMaps),
@@ -115,12 +103,10 @@ async function compile(file, opt_params) {
   }) : undefined;
   const tasks = [];
   let result = fileStructure.compile(opt_params.labels, opt_params.flags, map),
-      sourceMapDecl,
-      sourceMapUrl;
-
+    sourceMapDecl,
+    sourceMapUrl;
   if (sourceMaps) {
     sourceMapDecl = '//# sourceMappingURL=';
-
     if (externalSourceMap) {
       sourceMapUrl = _parser.default.getRelativePath(path.dirname(fileToSave), sourceMapFile);
     } else {
@@ -128,7 +114,6 @@ async function compile(file, opt_params) {
       result += sourceMapDecl + sourceMapUrl;
     }
   }
-
   if (opt_params.saveFiles) {
     if (externalSourceMap) {
       tasks.push((async () => {
@@ -136,19 +121,16 @@ async function compile(file, opt_params) {
         await fs.writeFile(sourceMapFile, map.toString());
       })());
     }
-
     if (opt_params.file) {
       tasks.push((async () => {
         if (externalSourceMap) {
           result += sourceMapDecl + sourceMapUrl;
         }
-
         await fs.mkdirs(path.dirname(fileToSave));
         await fs.writeFile(fileToSave, result);
       })());
     }
   }
-
   await Promise.all(tasks);
   return {
     result,

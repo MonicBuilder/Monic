@@ -4,7 +4,7 @@
   "homepage": "https://github.com/MonicBuilder/Monic",
   "main": "monic.js",
   "typings": "monic.d.ts",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "license": "MIT",
   "author": {
     "name": "kobezzza",
@@ -20,9 +20,11 @@
   },
   "bin": "bin/monic.js",
   "engines": {
-    "node": ">= 12"
+    "node": ">= 16"
   },
   "scripts": {
+    "prepublish": "yarn build",
+    "build": "gulp build:js && gulp build:ts",
     "test": "node test",
     "full-test": "nyc yarn test && yaspeller ./"
   },

@@ -51,13 +51,6 @@ gulp.task('build', gulp.series(['build:js', test]));
 gulp.task('yaspeller', () => $.run('yaspeller ./').exec().on('error', console.error));
 gulp.task('test', test);
 
-gulp.task('bump', () =>
-	gulp.src('./@(package-lock|package).json')
-		.pipe(plumber())
-		.pipe($.bump({version: getVersion()}))
-		.pipe(gulp.dest('./'))
-);
-
 gulp.task('npmignore', () =>
 	gulp.src('./.npmignore')
 		.pipe(plumber())
@@ -91,7 +84,7 @@ gulp.task('head', () => {
 
 gulp.task('default', gulp.parallel([
 	gulp.series([
-		gulp.parallel(['bump', 'head']),
+		gulp.parallel(['head']),
 		'build'
 	]),
 
