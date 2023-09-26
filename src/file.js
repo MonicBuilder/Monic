@@ -339,7 +339,7 @@ export class FileStructure {
 								{info} = block,
 								compiledBlock = this._compileBlock(block, labels, flags, opt_sourceMap);
 
-							if (opt_sourceMap && info && compiledBlock) {
+							if (opt_sourceMap && info && info.original && info.original.line != null && compiledBlock) {
 								if (!info.ignore) {
 									const
 										test = {},
