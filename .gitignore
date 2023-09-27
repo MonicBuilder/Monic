@@ -43,6 +43,7 @@ node_modules
 # Build && test
 /dist
 /coverage
+.nyc_output
 
 # Yarn
 .yarn/*
