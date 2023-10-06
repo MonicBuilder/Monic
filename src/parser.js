@@ -16,11 +16,10 @@ const
 const
 	path = require('path'),
 	fs = require('fs-extra'),
-	glob = require('glob-promise');
+	glob = require('fast-glob');
 
 const
-	{SourceMapConsumer} = require('source-map'),
-	{hasMagic} = require('glob');
+	{SourceMapConsumer} = require('source-map');
 
 /**
  * Parser class
@@ -155,7 +154,7 @@ export default class Parser {
 		const
 			pattern = path.join(dirname, parts[0]);
 
-		if (hasMagic(pattern)) {
+		if (glob.isDynamicPattern(pattern)) {
 			return $C(await glob(pattern)).reduce((res, el) => {
 				parts[0] = path.relative(dirname, el);
 				res.push(parts.slice());
@@ -223,7 +222,7 @@ export default class Parser {
 		let sourceMap;
 		if (this.sourceMaps) {
 			if (this.inputSourceMap) {
-				sourceMap = new SourceMapConsumer(this.inputSourceMap);
+				sourceMap = await new SourceMapConsumer(this.inputSourceMap);
 
 			} else if (/((?:\r?\n|\r)?[^\S\r\n]*\/\/[#@] sourceMappingURL=([^\r\n]*)\s*)$/.test(content)) {
 				const
@@ -231,7 +230,7 @@ export default class Parser {
 
 				const parse = async (str) => {
 					try {
-						sourceMap = new SourceMapConsumer(JSON.parse(await str));
+						sourceMap = await new SourceMapConsumer(JSON.parse(await str));
 						content = content.replace(sstr, '');
 
 					} catch {}
@@ -241,7 +240,7 @@ export default class Parser {
 					await parse(Buffer.from(RegExp.$1, 'base64').toString());
 
 				} else {
-					await parse(fs.readFile(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
+					await parse(await fs.readFile(path.normalize(path.resolve(path.dirname(file), url)), 'utf8'));
 				}
 			}
 		}

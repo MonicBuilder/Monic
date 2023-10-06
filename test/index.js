@@ -39,7 +39,9 @@ $C(fs.readdirSync(basePath)).forEach((dir) => {
 				expected = fs.readFileSync(path.join(dirPath, 'result.js')).toString().trim(),
 				error = res !== expected;
 
-			let status = 'ok';
+			let
+				status = 'ok';
+
 			if (error) {
 				status = 'fail';
 

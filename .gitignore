@@ -41,7 +41,13 @@ bower_components
 node_modules
 
 # Build && test
+/dist
 /coverage
+.nyc_output
+
+# Yarn
+.yarn/*
+!.yarn/releases
 
 # Log
 *.log
